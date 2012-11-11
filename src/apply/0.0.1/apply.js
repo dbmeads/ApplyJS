@@ -5,6 +5,7 @@
 
 	var Apply = {};
 
+	
 	// Apply.util
 	// ----------
 
@@ -50,6 +51,7 @@
 		}
 	};
 
+	
 	// Apply.dependency
 	// ----------------
 
@@ -88,6 +90,7 @@
 
 	dependency.wait = $.proxy(outstanding.wait, outstanding);
 
+	
 	// Apply.namespace
 	// ---------------
 
@@ -107,6 +110,7 @@
 		return obj;
 	};
 
+	
 	// Apply.mixin
 	// -----------
 
@@ -175,6 +179,7 @@
 		return constructor;
 	};
 
+	
 	// Apply.singleton
 	// ---------------
 
@@ -191,7 +196,8 @@
 		return instance;
 	};
 
-	// Apply.events
+	
+	// Apply.Events
 	// ------------
 
 	var events = Apply.Events = mixin({
@@ -225,6 +231,7 @@
 		}
 	});
 
+	
 	// Apply.Model
 	// -----------
 
@@ -303,7 +310,35 @@
 			crud.prototype.fetch.call(this, options).then($.proxy(this.set, this));
 		})
 	});
+	
+	
+	// Apply.List
+	// ----------
+	
+	var list = Apply.List = mixin({
+		mapping : Apply.Model,
+		init : function(list) {
+			this.list = [];
+			this.add(list);
+		},
+		size : function() {
+			return this.list.length;
+		},
+		get : function(index) {
+			return this.list[index];
+		},
+		add : function(list) {
+			if(isArray(list)) {
+				for(var key in list) {
+					this.list.push(new this.mapping(list[key]));
+				}
+			} else if(list) {
+				this.list.push(new this.mapping(list));
+			}
+		}
+	});
 
+	
 	// Apply.View
 	// ----------
 
@@ -386,11 +421,13 @@
 
 	var router = Apply.router = new Router();
 
+	
 	// Apply.route
 	// -----------
 
 	Apply.route = $.proxy(router.route, router);
 
+	
 	// Apply.ready
 	// -----------
 
@@ -400,6 +437,7 @@
 		});
 	};
 
+	
 	// Apply.toScope
 	// -------------
 
@@ -407,6 +445,7 @@
 		$.extend(scope, Apply);
 	};
 
+	
 	// Apply.library
 	// -------------
 
