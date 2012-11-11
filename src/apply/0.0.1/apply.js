@@ -178,7 +178,7 @@
 	// Apply.singleton
 	// ---------------
 
-	var singleton = function() {
+	var singleton = Apply.singleton = function() {
 		var ns;
 		var args = $.makeArray(arguments);
 		if (isString(args[0])) {
