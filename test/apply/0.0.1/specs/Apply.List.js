@@ -48,8 +48,22 @@ describe('Apply.List', function() {
 		
 		var object = new MyList([{name: 'Frank'}]).get(0);
 		
-		expect(object.__proto__.constructor).toBe(MyModel);
+		expect(Object.getPrototypeOf(object)).toBe(MyModel.prototype);
 		expect(object.deflate()).toEqual({name: 'Frank'});
 	});
-	
+
+    it('should support the addition of models', function() {
+        var MyModel = Apply.Model();
+        var MyList = Apply.List({mapping: MyModel});
+        var object = new MyModel();
+
+        expect(new MyList(object).get(0)).toBe(object);
+    });
+
+    it('should reject the addition of models and other mixins that do not match the mapping', function() {
+        var DifferentModel = Apply.Model();
+
+        expect(function() {new Apply.List(new DifferentModel());}).toThrow(new Error('Attempted to add an incompatible model to a list.'));
+    });
+
 });

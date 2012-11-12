@@ -1,4 +1,4 @@
-/*global Apply, it, expect, window */
+/*global Apply, it, expect, window, objects */
 describe('Apply.singleton', function() {
 	'use strict';
 	

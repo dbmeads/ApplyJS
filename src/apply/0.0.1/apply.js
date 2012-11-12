@@ -9,13 +9,37 @@
 	// Apply.util
 	// ----------
 
+    var getPrototypeOf = function(obj) {
+        if(obj) {
+            if(isFunction(obj)) {
+                return obj.prototype;
+            }
+            return Object.getPrototypeOf(obj);
+        }
+    };
+
+	var isArray = function(obj) {
+        return getPrototypeOf(obj) === Array.prototype;
+	};
+
 	var isFunction = function(obj) {
 		return typeof obj === 'function';
 	};
 
-	var isArray = function(obj) {
-		return obj && obj.length && !isFunction(obj);
-	};
+    var isMixin = function(obj) {
+        if(isFunction(obj)) {
+            return obj.mixin !== undefined;
+        }
+        var prototype = getPrototypeOf(obj);
+        if(prototype.constructor) {
+            return prototype.constructor.mixin !== undefined;
+        }
+        return false;
+    };
+
+    var isNumeric = function(obj) {
+        return typeof  obj === 'number';
+    };
 
 	var isString = function(obj) {
 		return typeof obj === 'string';
@@ -43,8 +67,11 @@
 
 	Apply.util = {
 		ajax : ajax,
+        getPrototypeOf : getPrototypeOf,
 		isArray : isArray,
 		isFunction : isFunction,
+        isMixin : isMixin,
+        isNumeric : isNumeric,
 		isString : isString,
 		string : {
 			endsWith : endsWith
@@ -333,7 +360,13 @@
 					this.list.push(new this.mapping(list[key]));
 				}
 			} else if(list) {
-				this.list.push(new this.mapping(list));
+                if(getPrototypeOf(list) === getPrototypeOf(this.mapping)) {
+                    this.list.push(list);
+                } else if(isMixin(list)) {
+                    throw 'Attempted to add an incompatible model to a list.';
+                } else {
+                    this.list.push(new this.mapping(list));
+                }
 			}
 		}
 	});
