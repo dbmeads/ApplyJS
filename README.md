@@ -7,3 +7,5 @@ Current Priorities:
 - Data Binding
 - Super References
 - View Delegation
+
+Want documentation? https://github.com/dbmeads/ApplyJS/tree/master/test/apply/0.0.1/specs
