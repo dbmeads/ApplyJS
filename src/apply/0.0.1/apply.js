@@ -243,9 +243,6 @@
 			}
 			callbacks.push(callback);
 		},
-		off : function() {
-			throw 'Events.off needs implemented';
-		},
 		trigger : function(event) {
 			var callbacks = this.events[event];
 			if (callbacks) {
@@ -342,7 +339,7 @@
 	// Apply.List
 	// ----------
 
-	var list = Apply.List = mixin({
+	var list = Apply.List = events({
 		mapping : Apply.Model,
 		init : function(list) {
 			this.list = [];
