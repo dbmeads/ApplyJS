@@ -85,4 +85,38 @@ describe('Apply.List', function() {
         expect(list.get(0).get('name')).toBe('Jim');
     });
 
+    describe('events', function() {
+        it('should support "on" and "trigger"', function() {
+            var list = new Apply.List();
+            var callback = jasmine.createSpy();
+
+            list.on('test', callback);
+            list.trigger('test', 'cool');
+
+            expect(callback).toHaveBeenCalledWith('cool');
+        });
+
+        it('should trigger an "add" event when a model is added', function() {
+            var list = new Apply.List();
+            var callback = jasmine.createSpy();
+
+            list.on('add', callback);
+            list.add({name: 'Tedd'});
+
+            expect(callback).toHaveBeenCalledWith(list.get(0));
+        });
+
+        it('should trigger a "remove" event when a model is removed', function() {
+            var list = new Apply.List({name: 'Tedd'});
+            var model = list.get(0);
+            var callback = jasmine.createSpy();
+
+            list.on('remove', callback);
+            list.remove(model);
+
+            expect(callback).toHaveBeenCalledWith(model);
+        });
+
+    });
+
 });

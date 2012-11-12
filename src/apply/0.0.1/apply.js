@@ -339,6 +339,20 @@
 	// Apply.List
 	// ----------
 
+    var addAndTrigger = function(list, model) {
+        list.list.push(model);
+        list.trigger('add', model);
+    };
+
+    var removeAndTrigger = function(list, model) {
+        for(var i = 0; i < list.list.length; i++) {
+            if(list.list[i] === model) {
+                list.list.splice(i, 1);
+                list.trigger('remove', model);
+            }
+        }
+    };
+
 	var list = Apply.List = events({
 		mapping : Apply.Model,
 		init : function(list) {
@@ -354,15 +368,15 @@
 		add : function(list) {
 			if(isArray(list)) {
 				for(var key in list) {
-					this.list.push(new this.mapping(list[key]));
+					addAndTrigger(this, new this.mapping(list[key]));
 				}
 			} else if(list) {
                 if(getPrototypeOf(list) === getPrototypeOf(this.mapping)) {
-                    this.list.push(list);
+                    addAndTrigger(this, list);
                 } else if(isMixin(list)) {
                     throw 'Attempted to add an incompatible model to a list.';
                 } else {
-                    this.list.push(new this.mapping(list));
+                    addAndTrigger(this, new this.mapping(list));
                 }
 			}
 		},
@@ -371,12 +385,7 @@
                 list = [list];
             }
             for(var key in list) {
-                var model = list[key];
-                for(var i = 0; i < this.list.length; i++) {
-                    if(this.list[i] === model) {
-                        this.list.splice(i, 1);
-                    }
-                }
+                removeAndTrigger(this, list[key]);
             }
             return this;
         }
