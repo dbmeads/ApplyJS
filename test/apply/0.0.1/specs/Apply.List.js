@@ -66,4 +66,23 @@ describe('Apply.List', function() {
         expect(function() {new Apply.List(new DifferentModel());}).toThrow(new Error('Attempted to add an incompatible model to a list.'));
     });
 
+    it('should support the removal of a model from a list', function() {
+        var list = new Apply.List([{name: 'Todd'}, {name: 'Jim'}]);
+        var model = list.get(0);
+
+        list.remove(model);
+
+        expect(list.size()).toBe(1);
+        expect(list.get(0).get('name')).toBe('Jim');
+    });
+
+    it('should support the removal of an array of models', function() {
+        var list = new Apply.List([{name: 'Todd'}, {name: 'Jim'}, {name: 'frank'}]);
+
+        list.remove([list.get(0), list.get(2)]);
+
+        expect(list.size()).toBe(1);
+        expect(list.get(0).get('name')).toBe('Jim');
+    });
+
 });

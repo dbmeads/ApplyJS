@@ -5,7 +5,7 @@
 
 	var Apply = {};
 
-	
+
 	// Apply.util
 	// ----------
 
@@ -341,7 +341,7 @@
 	
 	// Apply.List
 	// ----------
-	
+
 	var list = Apply.List = mixin({
 		mapping : Apply.Model,
 		init : function(list) {
@@ -368,7 +368,21 @@
                     this.list.push(new this.mapping(list));
                 }
 			}
-		}
+		},
+        remove : function(list) {
+            if(!isArray(list)) {
+                list = [list];
+            }
+            for(var key in list) {
+                var model = list[key];
+                for(var i = 0; i < this.list.length; i++) {
+                    if(this.list[i] === model) {
+                        this.list.splice(i, 1);
+                    }
+                }
+            }
+            return this;
+        }
 	});
 
 	
