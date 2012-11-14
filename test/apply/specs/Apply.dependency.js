@@ -3,7 +3,7 @@ describe('Apply.dependency', function() {
 	'use strict';
 	
 	it('should be able to load a file from the internet', function() {
-		ajax('var x = 1;');
+		ajax.setResult('var x = 1;');
 		
 		Apply.dependency('test.atl', function(result) {
 			expect(result).toBe('var x = 1;');
@@ -13,7 +13,7 @@ describe('Apply.dependency', function() {
 	});
 	
 	it('should return a cached version if the resource was already requested', function() {
-		ajax('var x = 1;');
+		ajax.setResult('var x = 1;');
 		
 		Apply.dependency('test2.atl');
 		Apply.dependency('test2.atl', function(result) {
@@ -24,7 +24,7 @@ describe('Apply.dependency', function() {
 	});
 	
 	it('should work with deferred objects', function() {
-		ajax('var x = 1;');
+		ajax.setResult('var x = 1;');
 		
 		var check = jasmine.createSpy('check');
 		
@@ -43,7 +43,7 @@ describe('Apply.dependency', function() {
 	});
 	
 	it('should execute .js files by default', function() {
-		ajax('window.testVar = 2;');
+		ajax.setResult('window.testVar = 2;');
 		
 		Apply.dependency('test.js');
 		
