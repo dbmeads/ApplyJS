@@ -391,7 +391,11 @@
             return this.urlRoot;
         },
         deflate : function() {
-            return deflate($.extend({}, this.attributes), this.mappings);
+            var array = [];
+            for(var i = 0; i < this.list.length; i++) {
+                array.push(this.list[i].deflate ? this.list[i].deflate() : this.list[i]);
+            }
+            return array;
         }
 	});
 

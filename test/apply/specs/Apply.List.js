@@ -95,7 +95,17 @@ describe('Apply.List', function() {
             expect(list.get(1).get('name')).toBe('Pam');
         });
     });
-    
+
+    it('should have a getUrl function that returns urlRoot by default', function() {
+       expect(new (Apply.List({urlRoot: 'test'}))().getUrl()).toBe('test');
+    });
+
+    it('should be able to deflate back into the base javascript objects', function() {
+        var data = [{name:'Tom'},{name:'Dan'}];
+
+        expect(new Apply.List(data).deflate()).toEqual(data);
+    });
+
     describe('events', function() {
         it('should support "on" and "trigger"', function() {
             var list = new Apply.List();
