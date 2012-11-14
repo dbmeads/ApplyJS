@@ -255,6 +255,33 @@
 		}
 	});
 
+
+    // Apply.Crud
+    // ----------
+
+    var crud = Apply.Crud = events({
+        save : delegateOrHandle('save', function(options) {
+            return ajax(this.getUrl(), this.attributes.id ? 'PUT' : 'POST', $
+                .extend(options, {
+                    data : this.toString(),
+                    contentType : this.contentType
+                }));
+        }),
+        fetch : delegateOrHandle('fetch', function(options) {
+            return ajax(this.getUrl(), 'GET', options).then($.proxy(this.inflate, this));
+        }),
+        destroy : delegateOrHandle('destroy', function(options) {
+            return ajax(this.getUrl(), 'DELETE', options);
+        }),
+        toString : function() {
+            return JSON.stringify(this.deflate() || this);
+        },
+        parse : function(response) {
+            return response;
+        },
+        contentType : 'application/json'
+    });
+
 	
 	// Apply.Model
 	// -----------
@@ -288,25 +315,6 @@
 		return object;
 	};
 
-	var crud = events({
-		save : delegateOrHandle('save', function(options) {
-			return ajax(this.getUrl(), this.attributes.id ? 'PUT' : 'POST', $
-					.extend(options, {
-						data : this.toJson(),
-						contentType : 'application/json'
-					}));
-		}),
-		fetch : delegateOrHandle('fetch', function(options) {
-			return ajax(this.getUrl(), 'GET', options).then($.proxy(this.set || this.add, this));
-		}),
-		destroy : delegateOrHandle('destroy', function(options) {
-			return ajax(this.getUrl(), 'DELETE', options);
-		}),
-		toJson : function() {
-			return JSON.stringify(this.deflate() || this);
-		}
-	});
-
 	var model = Apply.Model = crud({
         urlRoot : '',
 		init : function(attributes) {
@@ -329,6 +337,9 @@
         },
         deflate : function() {
             return deflate($.extend({}, this.attributes), this.mappings);
+        },
+        inflate : function(data) {
+            return this.set(data);
         }
 	});
 	
@@ -377,6 +388,7 @@
                     addAndTrigger(this, new this.mapping(list));
                 }
 			}
+            return this;
 		},
         remove : function(list) {
             if(!isArray(list)) {
@@ -396,6 +408,9 @@
                 array.push(this.list[i].deflate ? this.list[i].deflate() : this.list[i]);
             }
             return array;
+        },
+        inflate : function(data) {
+            return this.add(data);
         }
 	});
 

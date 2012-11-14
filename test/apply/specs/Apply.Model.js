@@ -85,14 +85,6 @@ describe('Apply.Model', function() {
 		expect(result.get('school').get('name')).toBe('Prime Elementary');
 	});
 	
-	it('should support a toJson function that stringifies an object', function() {
-		var Student = Apply.Model({mappings: {'school': Apply.Model}});
-		
-		var result = new Student({name: 'Sam', school: {name: 'Prime Elementary'}});
-		
-		expect(result.toJson()).toBe('{"name":"Sam","school":{"name":"Prime Elementary"}}');
-	});
-	
 	it('should save models with the appropriate json', function() {
 		ajax();
 		var Student = Apply.Model({urlRoot: '/students', mappings: {'school': Apply.Model}});
