@@ -462,12 +462,11 @@
     // Apply.router
     // -----------
 
-    var Router = function () {
-        this.routes = {};
-        this.current = undefined;
-    };
-
-    Router.prototype = {
+    var router = Apply.router = new (mixin({
+        init: function() {
+            this.routes = {};
+            this.current = undefined;
+        },
         check:function () {
             if (window.location.hash !== this.current) {
                 var route = this.current = window.location.hash;
@@ -496,9 +495,7 @@
             clearInterval(this.iid);
             delete this.iid;
         }
-    };
-
-    var router = Apply.router = new Router();
+    }))();
 
 
     // Apply.route
