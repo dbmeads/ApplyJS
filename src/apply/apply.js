@@ -289,7 +289,6 @@
 	};
 
 	var crud = events({
-		urlRoot : '',
 		save : delegateOrHandle('save', function(options) {
 			return ajax(this.getUrl(), this.attributes.id ? 'PUT' : 'POST', $
 					.extend(options, {
@@ -298,23 +297,18 @@
 					}));
 		}),
 		fetch : delegateOrHandle('fetch', function(options) {
-			return ajax(this.getUrl(), 'GET', options);
+			return ajax(this.getUrl(), 'GET', options).then($.proxy(this.set || this.add, this));
 		}),
 		destroy : delegateOrHandle('destroy', function(options) {
 			return ajax(this.getUrl(), 'DELETE', options);
 		}),
-		getUrl : function() {
-			return this.urlRoot	+ (this.attributes.id ? '/' + this.attributes.id : '');
-		},
-		deflate : function() {
-			return deflate($.extend({}, this.attributes), this.mappings);
-		},
 		toJson : function() {
-			return JSON.stringify(this.deflate());
+			return JSON.stringify(this.deflate() || this);
 		}
 	});
 
 	var model = Apply.Model = crud({
+        urlRoot : '',
 		init : function(attributes) {
 			this.attributes = {};
 			this.set(attributes);
@@ -330,9 +324,12 @@
 		get : function(key) {
 			return this.attributes[key];
 		},
-		fetch : delegateOrHandle('fetch', function(options) {
-			crud.prototype.fetch.call(this, options).then($.proxy(this.set, this));
-		})
+        getUrl : function() {
+            return this.urlRoot	+ (this.attributes.id ? '/' + this.attributes.id : '');
+        },
+        deflate : function() {
+            return deflate($.extend({}, this.attributes), this.mappings);
+        }
 	});
 	
 	
@@ -353,7 +350,8 @@
         }
     };
 
-	var list = Apply.List = events({
+	var list = Apply.List = crud({
+        urlRoot : '',
 		mapping : Apply.Model,
 		init : function(list) {
 			this.list = [];
@@ -388,6 +386,12 @@
                 removeAndTrigger(this, list[key]);
             }
             return this;
+        },
+        getUrl : function() {
+            return this.urlRoot;
+        },
+        deflate : function() {
+            return deflate($.extend({}, this.attributes), this.mappings);
         }
 	});
 

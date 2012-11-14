@@ -1,17 +1,6 @@
-/*global $, Apply, window, spyOn, it, expect, jasmine */
+/*global $, Apply, window, spyOn, it, expect, jasmine, ajax */
 describe('Apply.Model', function() {
 	'use strict';
-	
-	var setupAjax = function(result) {
-		spyOn($, 'ajax').andCallFake(function(options) {
-			if(options && options.success) {
-				options.success(result);
-			}
-			var deferred = $.Deferred();
-			deferred.resolve(result);
-			return deferred.promise();
-		});
-	};
 	
 	it('should be able to construct a model that has attributes set on it', function() {
 		var model = new Apply.Model({name: 'Dave'});
@@ -41,7 +30,7 @@ describe('Apply.Model', function() {
 	});
 	
 	it('should support a save method that will POST to a urlRoot if id is not defined', function() {
-		setupAjax();
+		ajax();
 		var model = new (Apply.Model.mixin({urlRoot: '/users'}))({firstname: 'Dave'});
 		
 		model.save();
@@ -50,7 +39,7 @@ describe('Apply.Model', function() {
 	});
 
 	it('should support a save method that will PUT to urlRoot/{id} if id is defined', function() {
-		setupAjax();
+		ajax();
 		var model = new (Apply.Model.mixin({urlRoot: '/users'}))({id: 1, firstname: 'Dave'});
 		
 		model.save();
@@ -59,7 +48,7 @@ describe('Apply.Model', function() {
 	});
 
 	it('should support a destroy method that will DELETE a urlRoot/{id}', function() {
-		setupAjax();
+		ajax();
 		var model = new (Apply.Model.mixin({urlRoot: '/users'}))({id: 1});
 		
 		model.destroy();
@@ -68,7 +57,7 @@ describe('Apply.Model', function() {
 	});
 	
 	it('should support a fetch method that will GET a urlRoot/{id}', function() {
-		setupAjax();
+		ajax();
 		var model = new (Apply.Model.mixin({urlRoot: '/users'}))({id: 1});
 		
 		model.fetch();
@@ -77,7 +66,7 @@ describe('Apply.Model', function() {
 	});
 	
 	it('should apply any fetched attributes to the model', function() {
-		setupAjax({id: 1, firstname: 'Dave'});
+		ajax({id: 1, firstname: 'Dave'});
 		var model = new (Apply.Model.mixin({urlRoot: '/users'}))({id: 1});
 		
 		model.fetch();
@@ -105,7 +94,7 @@ describe('Apply.Model', function() {
 	});
 	
 	it('should save models with the appropriate json', function() {
-		setupAjax();
+		ajax();
 		var Student = Apply.Model({urlRoot: '/students', mappings: {'school': Apply.Model}});
 		
 		new Student({name: 'Sam', school: {name: 'Prime Elementary'}}).save();
@@ -114,7 +103,7 @@ describe('Apply.Model', function() {
 	});
 	
 	it('should delegate "save" calls to the top level parent by default', function() {
-		setupAjax();
+		ajax();
 		var Student = Apply.Model({urlRoot: '/students', mappings: {'school': Apply.Model}});
 		
 		new Student({name: 'Sam', school: {name: 'Prime Elementary'}}).get('school').save();
@@ -123,7 +112,7 @@ describe('Apply.Model', function() {
 	});
 	
 	it('should delegate "fetch" calls to the top level parent by default', function() {
-		setupAjax();
+		ajax();
 		var Student = Apply.Model({urlRoot: '/students', mappings: {'school': Apply.Model}});
 		
 		new Student({id: 1, name: 'Sam', school: {name: 'Prime Elementary'}}).get('school').fetch();
@@ -132,7 +121,7 @@ describe('Apply.Model', function() {
 	});
 	
 	it('should delegate "destroy" calls to the top level parent by default', function() {
-		setupAjax();
+		ajax();
 		var Student = Apply.Model({urlRoot: '/students', mappings: {'school': Apply.Model}});
 		
 		new Student({id: 1, name: 'Sam', school: {name: 'Prime Elementary'}}).get('school').destroy();

@@ -1,4 +1,4 @@
-/*global Apply, describe, it, expect */
+/*global Apply, describe, it, expect, ajax */
 describe('Apply.List', function() {
 	'use strict';
 	
@@ -85,6 +85,17 @@ describe('Apply.List', function() {
         expect(list.get(0).get('name')).toBe('Jim');
     });
 
+    it('should support fetching from a server', function() {
+        ajax([{name:'Don'},{name:'Pam'}]);
+        var list = new (Apply.List({urlRoot: '/animals'}))();
+
+        list.fetch(function(list) {
+            expect(list.size()).toBe(2);
+            expect(list.get(0).get('name')).toBe('Don');
+            expect(list.get(1).get('name')).toBe('Pam');
+        });
+    });
+    
     describe('events', function() {
         it('should support "on" and "trigger"', function() {
             var list = new Apply.List();
