@@ -1,5 +1,5 @@
 /*global Apply, it, expect, window, objects */
-describe('Apply.singleton', function () {
+describe('Apply.instance', function () {
     'use strict';
 
     beforeEach(function () {
@@ -7,14 +7,14 @@ describe('Apply.singleton', function () {
     });
 
     it('should create the singleton assigned to the specified namespace', function () {
-        Apply.singleton('objects.object1', {prop:'prop'});
+        Apply.instance('objects.object1', {prop:'prop'});
 
         expect(objects.object1).toBeDefined();
         expect(objects.object1.prop).toBeDefined();
     });
 
     it('should be available to any mixin constructor', function () {
-        Apply.mixin({prop1:'prop1'}).singleton('objects.object2', {prop2:'prop2'});
+        Apply.mixin({prop1:'prop1'}).instance('objects.object2', {prop2:'prop2'});
 
         expect(objects.object2).toBeDefined();
         expect(objects.object2.prop1).toBe('prop1');

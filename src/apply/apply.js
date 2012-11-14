@@ -168,8 +168,8 @@
         constructor.mixin = function () {
             return mixin.apply(this, mixinArgs(constructor, arguments));
         };
-        constructor.singleton = function () {
-            return singleton.apply(this, mixinArgs(constructor, arguments));
+        constructor.instance = function () {
+            return instance.apply(this, mixinArgs(constructor, arguments));
         };
         constructor.merge = function (object) {
             $.extend(constructor.prototype, object);
@@ -198,10 +198,10 @@
     };
 
 
-    // Apply.singleton
+    // Apply.instance
     // ---------------
 
-    var singleton = Apply.singleton = function () {
+    var instance = Apply.instance = function () {
         var ns;
         var args = $.makeArray(arguments);
         if (isString(args[0])) {
@@ -495,7 +495,7 @@
             clearInterval(this.iid);
             delete this.iid;
         }
-    }).singleton();
+    }).instance();
 
 
     // Apply.route
