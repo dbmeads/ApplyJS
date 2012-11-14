@@ -28,6 +28,20 @@ describe('Apply.Model', function() {
 		
 		expect(model.get('firstname')).toBe('Dave');
 	});
+
+    it('should be able to handle nested models via mappings', function() {
+        var Student = Apply.Model({mappings: {'school': Apply.Model}});
+
+        var result = new Student({name: 'Sam', school: {name: 'Prime Elementary'}});
+
+        expect(result.get('name')).toBe('Sam');
+        expect(result.get('school').constructor).toBe(Apply.Model);
+        expect(result.get('school').get('name')).toBe('Prime Elementary');
+    });
+
+    it('should support a getId method that will return whatever the id that the id property is mapped to', function() {
+        expect(new (Model({id: 'uid'}))({uid: 2}).getId()).toBe(2);
+    });
 	
 	it('should support a save method that will POST to a urlRoot if id is not defined', function() {
 		ajax();
@@ -75,16 +89,6 @@ describe('Apply.Model', function() {
 		expect(model.get('firstname')).toBe('Dave');
 	});
 	
-	it('should be able to handle nested models via mappings', function() {
-		var Student = Apply.Model({mappings: {'school': Apply.Model}});
-		
-		var result = new Student({name: 'Sam', school: {name: 'Prime Elementary'}});
-		
-		expect(result.get('name')).toBe('Sam');
-		expect(result.get('school').constructor).toBe(Apply.Model);
-		expect(result.get('school').get('name')).toBe('Prime Elementary');
-	});
-	
 	it('should save models with the appropriate json', function() {
 		ajax();
 		var Student = Apply.Model({urlRoot: '/students', mappings: {'school': Apply.Model}});
@@ -93,32 +97,34 @@ describe('Apply.Model', function() {
 				
 		expect($.ajax).toHaveBeenCalledWith({url: jasmine.any(String), type: jasmine.any(String), contentType: jasmine.any(String), data: '{"name":"Sam","school":{"name":"Prime Elementary"}}'});
 	});
-	
-	it('should delegate "save" calls to the top level parent by default', function() {
-		ajax();
-		var Student = Apply.Model({urlRoot: '/students', mappings: {'school': Apply.Model}});
-		
-		new Student({name: 'Sam', school: {name: 'Prime Elementary'}}).get('school').save();
-				
-		expect($.ajax).toHaveBeenCalledWith({url: jasmine.any(String), type: jasmine.any(String), contentType: jasmine.any(String), data: '{"name":"Sam","school":{"name":"Prime Elementary"}}'});
-	});
-	
-	it('should delegate "fetch" calls to the top level parent by default', function() {
-		ajax();
-		var Student = Apply.Model({urlRoot: '/students', mappings: {'school': Apply.Model}});
-		
-		new Student({id: 1, name: 'Sam', school: {name: 'Prime Elementary'}}).get('school').fetch();
-				
-		expect($.ajax).toHaveBeenCalledWith({url: '/students/1', type: 'GET'});
-	});
-	
-	it('should delegate "destroy" calls to the top level parent by default', function() {
-		ajax();
-		var Student = Apply.Model({urlRoot: '/students', mappings: {'school': Apply.Model}});
-		
-		new Student({id: 1, name: 'Sam', school: {name: 'Prime Elementary'}}).get('school').destroy();
-				
-		expect($.ajax).toHaveBeenCalledWith({url: '/students/1', type: 'DELETE'});
-	});
-	
+
+    describe('delegation', function() {
+        it('should delegate "save" calls to the top level parent by default', function() {
+            ajax();
+            var Student = Apply.Model({urlRoot: '/students', mappings: {'school': Apply.Model}});
+
+            new Student({name: 'Sam', school: {name: 'Prime Elementary'}}).get('school').save();
+
+            expect($.ajax).toHaveBeenCalledWith({url: jasmine.any(String), type: jasmine.any(String), contentType: jasmine.any(String), data: '{"name":"Sam","school":{"name":"Prime Elementary"}}'});
+        });
+
+        it('should delegate "fetch" calls to the top level parent by default', function() {
+            ajax();
+            var Student = Apply.Model({urlRoot: '/students', mappings: {'school': Apply.Model}});
+
+            new Student({id: 1, name: 'Sam', school: {name: 'Prime Elementary'}}).get('school').fetch();
+
+            expect($.ajax).toHaveBeenCalledWith({url: '/students/1', type: 'GET'});
+        });
+
+        it('should delegate "destroy" calls to the top level parent by default', function() {
+            ajax();
+            var Student = Apply.Model({urlRoot: '/students', mappings: {'school': Apply.Model}});
+
+            new Student({id: 1, name: 'Sam', school: {name: 'Prime Elementary'}}).get('school').destroy();
+
+            expect($.ajax).toHaveBeenCalledWith({url: '/students/1', type: 'DELETE'});
+        });
+    });
+
 });

@@ -56,15 +56,6 @@
 		return string.indexOf(suffix) === string.length - suffix.length;
 	};
 
-	var delegateOrHandle = function(method, callback) {
-		return function() {
-			if (this.parent && this.parent[method]) {
-				return this.parent[method].apply(this.parent, arguments);
-			}
-			return callback.apply(this, arguments);
-		};
-	};
-
 	Apply.util = {
 		ajax : ajax,
         getPrototypeOf : getPrototypeOf,
@@ -259,9 +250,18 @@
     // Apply.Crud
     // ----------
 
+    var delegateOrHandle = function(method, callback) {
+        return function() {
+            if (this.parent && this.parent[method]) {
+                return this.parent[method].apply(this.parent, arguments);
+            }
+            return callback.apply(this, arguments);
+        };
+    };
+    
     var crud = Apply.Crud = events({
         save : delegateOrHandle('save', function(options) {
-            return ajax(this.getUrl(), this.attributes.id ? 'PUT' : 'POST', $
+            return ajax(this.getUrl(), this.getId && this.getId() ? 'PUT' : 'POST', $
                 .extend(options, {
                     data : this.toString(),
                     contentType : this.contentType
@@ -316,6 +316,7 @@
 	};
 
 	var model = Apply.Model = crud({
+        id : 'id',
         urlRoot : '',
 		init : function(attributes) {
 			this.attributes = {};
@@ -332,6 +333,9 @@
 		get : function(key) {
 			return this.attributes[key];
 		},
+        getId : function() {
+          return this.attributes[this.id];
+        },
         getUrl : function() {
             return this.urlRoot	+ (this.attributes.id ? '/' + this.attributes.id : '');
         },
