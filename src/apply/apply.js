@@ -258,7 +258,7 @@
             return callback.apply(this, arguments);
         };
     };
-    
+
     var crud = Apply.Crud = events({
         save : delegateOrHandle('save', function(options) {
             return ajax(this.getUrl(), this.getId && this.getId() ? 'PUT' : 'POST', $

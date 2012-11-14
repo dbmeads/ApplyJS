@@ -40,7 +40,7 @@ describe('Apply.Model', function() {
     });
 
     it('should support a getId method that will return whatever the id that the id property is mapped to', function() {
-        expect(new (Model({id: 'uid'}))({uid: 2}).getId()).toBe(2);
+        expect(new (Apply.Model({id: 'uid'}))({uid: 2}).getId()).toBe(2);
     });
 	
 	it('should support a save method that will POST to a urlRoot if id is not defined', function() {
