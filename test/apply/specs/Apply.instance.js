@@ -6,7 +6,7 @@ describe('Apply.instance', function () {
         window.objects = undefined;
     });
 
-    it('should create the singleton assigned to the specified namespace', function () {
+    it('should create the instance assigned to the specified namespace', function () {
         Apply.instance('objects.object1', {prop:'prop'});
 
         expect(objects.object1).toBeDefined();
