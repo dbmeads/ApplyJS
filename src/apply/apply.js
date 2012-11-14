@@ -462,7 +462,7 @@
     // Apply.router
     // -----------
 
-    var router = Apply.router = new (mixin({
+    var router = Apply.router = mixin({
         init: function() {
             this.routes = {};
             this.current = undefined;
@@ -495,7 +495,7 @@
             clearInterval(this.iid);
             delete this.iid;
         }
-    }))();
+    }).singleton();
 
 
     // Apply.route
