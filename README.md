@@ -1,4 +1,4 @@
-ApplyJS is in it's earliest stages so don't expect any miracles yet.
+ApplyJS is in its earliest stages so don't expect any miracles yet.
 
 Current Priorities:
 
