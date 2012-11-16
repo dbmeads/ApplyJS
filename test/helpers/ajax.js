@@ -26,6 +26,11 @@
                 callback(options);
                 return promise;
             });
+        },
+        neverReturn:function() {
+            spyOn($, 'ajax').andCallFake(function() {
+                return $.Deferred().promise();
+            });
         }
     };
 })();

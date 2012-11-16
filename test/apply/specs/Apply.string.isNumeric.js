@@ -10,4 +10,4 @@ describe('Apply.string.isNumeric', function() {
         expect(Apply.string.isNumeric('test')).toBe(false);
     });
 
-})
+});

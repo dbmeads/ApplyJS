@@ -202,6 +202,8 @@
             mixins.push(mixin);
         }
         constructor.prototype.init = chain(mixins, 'init');
+        var construct = constructor.prototype.construct = chain(mixins, 'construct');
+        construct.call(constructor);
         if (ns) {
             namespace(ns, constructor);
         }
@@ -433,6 +435,8 @@
     // Apply.View
     // ----------
 
+    var div = '<div></div>';
+
     var bind = function ($el, events) {
         for (var key in events) {
             var event = key.split(' ').pop();
@@ -440,31 +444,48 @@
         }
     };
 
+    var peel = function (prototype, source) {
+        if (source) {
+            var $el = $(source);
+            if ($el.size() > 1) {
+                throw (prototype.resource? prototype.resource : 'All view source') + ' must have a single root element.';
+            }
+            prototype.template = prototype.compile($el.html());
+            prototype.rootHtml = $(div).html($el.empty()).html();
+        } else {
+            prototype.template = prototype.compile('');
+        }
+    };
+
     var view = Apply.View = mixin({
         urlRoot:'',
-        template:function () {
-            return '<div></div>';
+        rootHtml:div,
+        construct:function () {
+            var prototype = this.prototype;
+            delete prototype.template;
+            if (prototype.resource) {
+                dependency(prototype.urlRoot + prototype.resource, function (source) {
+                    peel(prototype, source);
+                });
+            } else {
+                peel(prototype, prototype.source);
+            }
         },
         init:function () {
-            if (this.resource) {
-                dependency(this.urlRoot + this.resource, $.proxy(function (source) {
-                    this.template = this.compile(source);
-                }, this));
+            this.$el = $(this.rootHtml);
+            if (this.events) {
+                bind(this.$el, this.events);
             }
         },
         render:function () {
-            var $el = $(this.template(this.data));
-            if (this.events) {
-                bind($el, this.events);
+            if (!this.template) {
+                throw 'Please wait for ' + this.resource + ' before rendering.';
             }
-            if (this.$el) {
-                this.$el.replaceWith($el);
-            }
-            return (this.$el = $el);
+            return this.$el.html(this.template(this.data));
         },
         compile:function (source) {
             return function () {
-                return source;
+                return source || '';
             };
         }
     });
