@@ -10,4 +10,13 @@ describe('Apply.namespace', function () {
         /*global Test*/
         expect(Test.Object).toBe(obj);
     });
+
+    it('should allow for extending an existing namespace', function () {
+        var obj = {prop: 'prop'};
+        var ns = {};
+
+        Apply.namespace('Test.Object', obj, ns);
+
+        expect(ns.Test.Object).toBe(obj);
+    });
 });

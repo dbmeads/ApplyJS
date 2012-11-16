@@ -37,7 +37,7 @@
         return false;
     };
 
-    var isNumeric = function (obj) {
+    var isNumber = function (obj) {
         return typeof  obj === 'number';
     };
 
@@ -52,21 +52,32 @@
         }));
     };
 
-    var endsWith = function (string, suffix) {
-        return string.indexOf(suffix) === string.length - suffix.length;
-    };
-
     Apply.util = {
-        ajax:ajax,
         getPrototypeOf:getPrototypeOf,
         isArray:isArray,
         isFunction:isFunction,
         isMixin:isMixin,
-        isNumeric:isNumeric,
-        isString:isString,
-        string:{
-            endsWith:endsWith
-        }
+        isNumber:isNumber,
+        isString:isString
+    };
+
+
+    // Apply.string
+    // ------------
+
+    var numeric = /^(0|[1-9][0-9]*)$/;
+
+    var isNumeric = function (string) {
+        return numeric.test(string);
+    };
+
+    var endsWith = function (string, suffix) {
+        return string.indexOf(suffix) === string.length - suffix.length;
+    };
+
+    Apply.string = {
+        endsWith:endsWith,
+        isNumeric:isNumeric
     };
 
 
@@ -112,8 +123,8 @@
     // Apply.namespace
     // ---------------
 
-    var namespace = Apply.namespace = function (namespace, object) {
-        var obj = window;
+    var namespace = Apply.namespace = function (namespace, object, src) {
+        var obj = src || window;
         if (namespace) {
             var parts = namespace.split('.');
             for (var i = 0; i < parts.length; i++) {
@@ -463,24 +474,45 @@
     // -----------
 
     var router = Apply.router = mixin({
-        init: function() {
+        autostart:true,
+        init:function () {
             this.routes = {};
             this.current = undefined;
+        },
+        compile:function (routes) {
+            try {
+                for (var key in routes) {
+                    namespace(key.replace(/^\//, '').replace('\/', '.'), routes[key], this.routes);
+                }
+            } catch (e) {
+                console.log(e);
+            }
         },
         check:function () {
             if (window.location.hash !== this.current) {
                 var route = this.current = window.location.hash;
-                if (route.indexOf('#') === 0) {
-                    route = route.substr(1);
+                var parts = route.replace(/^#?\/?/, '').split('/');
+                var args = [];
+                var fragments = this.routes;
+                for (var i = 0; i < parts.length; i++) {
+                    var part = parts[i];
+                    if (fragments[part]) {
+                        fragments = fragments[part];
+                    } else if (fragments['*']) {
+                        args.push(isNumeric(part) ? Number(part) : part);
+                        fragments = fragments['*'];
+                    } else {
+                        break;
+                    }
                 }
-                if (this.routes[route]) {
-                    this.routes[route]();
+                if (isFunction(fragments)) {
+                    fragments.apply(this, args);
                 }
             }
         },
         route:function (routes) {
-            $.extend(this.routes, routes);
-            if (!this.iid) {
+            this.compile(routes);
+            if (!this.iid && this.autostart) {
                 this.start();
             }
             return this;
