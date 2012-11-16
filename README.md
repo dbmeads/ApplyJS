@@ -2,6 +2,7 @@ ApplyJS is in its earliest stages so don't expect any miracles yet.
 
 Current Priorities:
 
+- Revisiting Views
 - Data Binding
 - Super References
 - View Delegation
