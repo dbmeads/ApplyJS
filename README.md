@@ -2,7 +2,6 @@ ApplyJS is in its earliest stages so don't expect any miracles yet.
 
 Current Priorities:
 
-- Parameterized Routes
 - Data Binding
 - Super References
 - View Delegation
