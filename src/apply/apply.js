@@ -6,6 +6,15 @@
     var Apply = {};
 
 
+    // On Loan
+    // -------
+
+    var slice = Array.prototype.slice;
+    var proxy = $.proxy;
+    var extend = $.extend;
+    var when = $.when;
+
+
     // Apply.util
     // ----------
 
@@ -46,7 +55,7 @@
     };
 
     var ajax = function (url, type, options) {
-        return $.ajax($.extend(options || {}, {
+        return $.ajax(extend(options || {}, {
             url:url,
             type:type || 'GET'
         }));
@@ -59,6 +68,37 @@
         isMixin:isMixin,
         isNumber:isNumber,
         isString:isString
+    };
+
+
+    // Apply.collection
+    // ----------------
+
+    var last = function (collection, value) {
+        if (value) {
+            collection[collection.length - 1] = value;
+        }
+        return collection[collection.length - 1];
+    };
+
+    var loop = function (array, callback, options) {
+        options = options || {};
+        var context = options.context || this;
+        var i;
+        if (options.reverse) {
+            for (i = options.start || array.length - 1; i >= 0; i--) {
+                callback.call(context, array[i], i);
+            }
+        } else {
+            for (i = options.start || 0; i < array.length; i++) {
+                callback.call(context, array[i], i);
+            }
+        }
+    };
+
+    Apply.collection = {
+        last:last,
+        loop:loop
     };
 
 
@@ -93,7 +133,7 @@
             return deferred;
         },
         wait:function (callback) {
-            var deferred = $.when.apply($, this.deferreds);
+            var deferred = when.apply($, this.deferreds);
             if (callback) {
                 deferred.then(callback);
             }
@@ -117,52 +157,70 @@
         return resources[resource].promise();
     };
 
-    dependency.wait = $.proxy(outstanding.wait, outstanding);
+    dependency.wait = proxy(outstanding.wait, outstanding);
 
 
     // Apply.namespace
     // ---------------
 
-    var namespace = Apply.namespace = function (namespace, object, src) {
-        var obj = src || window;
-        if (namespace) {
-            var parts = namespace.split('.');
-            for (var i = 0; i < parts.length; i++) {
-                if (i === parts.length - 1) {
-                    obj[parts[i]] = object;
-                } else if (!obj[parts[i]]) {
-                    obj[parts[i]] = {};
-                }
-                obj = obj[parts[i]];
+    var namespace = Apply.namespace = function () {
+        var args = slice.apply(arguments);
+        var obj = window;
+        if (!isString(args[0])) {
+            obj = args.shift();
+            if(!obj) {
+                throw 'Attempting to extend/access "' + args[0] + '" on an undefined namespace.';
             }
         }
+        var namespace = args[0], object = args[1];
+        if (namespace) {
+            var parts = namespace.split('.');
+            loop(parts, function (part, index) {
+                if (index === parts.length - 1) {
+                    if (object) {
+                        obj[part] = object;
+                    }
+                } else if (!obj[part]) {
+                    obj[part] = {};
+                }
+                obj = obj[part];
+            });
+        }
         return obj;
+    };
+
+
+    // Apply.cascade
+    // -------------
+
+    var cascade = Apply.cascade = function (objects, funcName, reverse) {
+        var cascade = [];
+        loop(objects, function (object) {
+            if (object[funcName]) {
+                cascade.push(object[funcName]);
+            }
+        }, {reverse:reverse});
+        if (cascade.length) {
+            return function () {
+                var args = slice.apply(arguments);
+                args.push(cascade[0].apply(this, args));
+                loop(cascade, function (func) {
+                    last(args, func.apply(this, args));
+                }, {context:this, start:1});
+                return args.pop();
+            };
+        } else {
+            return function () {
+            };
+        }
     };
 
 
     // Apply.mixin
     // -----------
 
-    var invoke = function (chain, args, context) {
-        for (var i = 0; i < chain.length; i++) {
-            chain[i].apply(context, args);
-        }
-    };
-
-    var chain = function (objects, funcName) {
-        var chain = [];
-        for (var i = 0; i < objects.length; i++) {
-            if (objects[i][funcName]) {
-                chain.push(objects[i][funcName]);
-            }
-        }
-        return function () {
-            invoke(chain, arguments, this);
-        };
-    };
-
     var mixinArgs = function (constructor, oldArguments) {
-        var args = $.makeArray(oldArguments);
+        var args = slice.apply(oldArguments);
         return isString(args[0]) ? [ args.shift(), constructor ].concat(args)
             : [ constructor ].concat(args);
     };
@@ -176,34 +234,54 @@
                 this.init.apply(this, arguments);
             }
         };
-        constructor.mixin = function () {
-            return mixin.apply(this, mixinArgs(constructor, arguments));
+        constructor.cascade = function (funcName) {
+            namespace(constructor, 'cascades.' + funcName, arguments);
+            constructor.prototype[funcName] = cascade.apply(this, [this.mixins].concat(slice.apply(arguments)));
+            return constructor;
         };
         constructor.instance = function () {
             return instance.apply(this, mixinArgs(constructor, arguments));
         };
         constructor.merge = function (object) {
-            $.extend(constructor.prototype, object);
+            extend(constructor.prototype, object);
+            return constructor;
+        };
+        constructor.mixin = function () {
+            return mixin.apply(this, mixinArgs(constructor, arguments));
         };
         return constructor;
     };
 
+    var mixinCascades = function (constructor, cascades) {
+        constructor.cascades = cascades;
+        for (var key in cascades) {
+            constructor.cascade.apply(constructor, cascades[key]);
+        }
+    };
+
     var mixin = Apply.mixin = function () {
         var mixins = [];
+        var cascades = {'init':['init'], 'construct':['construct']};
         var constructor = mixinConstructor();
-        var args = $.makeArray(arguments);
+        var args = slice.apply(arguments);
         var ns;
         if (isString(args[0])) {
             ns = args.shift();
         }
+        var mixin;
         for (var i = 0; i < args.length; i++) {
-            var mixin = isFunction(args[i]) ? args[i].prototype : args[i];
-            $.extend(constructor.prototype, mixin);
+            if (isFunction(args[i])) {
+                extend(cascades, args[i]['cascades']);
+                mixin = args[i].prototype;
+            } else {
+                mixin = args[i];
+            }
+            extend(constructor.prototype, mixin);
             mixins.push(mixin);
         }
-        constructor.prototype.init = chain(mixins, 'init');
-        var construct = constructor.prototype.construct = chain(mixins, 'construct');
-        construct.call(constructor);
+        constructor.mixins = mixins;
+        mixinCascades(constructor, cascades);
+        constructor.prototype.construct.call(constructor, constructor);
         if (ns) {
             namespace(ns, constructor);
         }
@@ -216,7 +294,7 @@
 
     var instance = Apply.instance = function () {
         var ns;
-        var args = $.makeArray(arguments);
+        var args = slice.apply(arguments);
         if (isString(args[0])) {
             ns = args.shift();
         }
@@ -243,14 +321,14 @@
                 callbacks = this.events[event] = [];
             }
             if (context) {
-                callback = $.proxy(callback, context);
+                callback = proxy(callback, context);
             }
             callbacks.push(callback);
         },
         trigger:function (event) {
             var callbacks = this.events[event];
             if (callbacks) {
-                var args = $.makeArray(arguments);
+                var args = slice.apply(arguments);
                 args.shift();
                 for (var i = 0; i < callbacks.length; i++) {
                     callbacks[i].apply(this, args);
@@ -281,7 +359,7 @@
                 }));
         }),
         fetch:delegateOrHandle('fetch', function (options) {
-            return ajax(this.getUrl(), 'GET', options).then($.proxy(this.inflate, this));
+            return ajax(this.getUrl(), 'GET', options).then(proxy(this.inflate, this));
         }),
         destroy:delegateOrHandle('destroy', function (options) {
             return ajax(this.getUrl(), 'DELETE', options);
@@ -336,7 +414,7 @@
             this.set(attributes);
         },
         set:function (attributes) {
-            $.extend(this.attributes, inflate(attributes, this.mappings, this));
+            extend(this.attributes, inflate(attributes, this.mappings, this));
             for (var key in attributes) {
                 this.trigger('change:' + key, this.attributes[key], this);
             }
@@ -353,7 +431,7 @@
             return this.urlRoot + (this.attributes.id ? '/' + this.attributes.id : '');
         },
         deflate:function () {
-            return deflate($.extend({}, this.attributes), this.mappings);
+            return deflate(extend({}, this.attributes), this.mappings);
         },
         inflate:function (data) {
             return this.set(data);
@@ -440,7 +518,7 @@
     var bind = function ($el, events) {
         for (var key in events) {
             var event = key.split(' ').pop();
-            $el.on(event, key.replace(event, ''), $.proxy(events[key], this));
+            $el.on(event, key.replace(event, ''), proxy(events[key], this));
         }
     };
 
@@ -448,7 +526,7 @@
         if (source) {
             var $el = $(source);
             if ($el.size() > 1) {
-                throw (prototype.resource? prototype.resource : 'All view source') + ' must have a single root element.';
+                throw (prototype.resource ? prototype.resource : 'All view source') + ' must have a single root element.';
             }
             prototype.template = prototype.compile($el.html());
             prototype.rootHtml = $(div).html($el.empty()).html();
@@ -471,7 +549,9 @@
                 peel(prototype, prototype.source);
             }
         },
-        init:function () {
+        init:function (options) {
+            options = options || {};
+            this.data = options.data;
             this.$el = $(this.rootHtml);
             if (this.events) {
                 bind(this.$el, this.events);
@@ -488,7 +568,29 @@
                 return source || '';
             };
         }
-    });
+    }).cascade('render');
+
+
+    // Apply.View.DataBinding
+    // ----------------------
+
+    var dataBinding = Apply.View.DataBinding = {
+        render:function () {
+            var data = this.data || {};
+            if (data && data.deflate) {
+                data = data.deflate();
+            }
+            this.$el.find('[data]').each(function (index, el) {
+                var $el = $(el);
+                var value = namespace(data, $el.attr('data'));
+                if ($el.is('input')) {
+                    $el.val(value);
+                } else {
+                    $el.text(value);
+                }
+            });
+        }
+    };
 
 
     // Apply.router
@@ -503,7 +605,7 @@
         compile:function (routes) {
             try {
                 for (var key in routes) {
-                    namespace(key.replace(/^\//, '').replace('\/', '.'), routes[key], this.routes);
+                    namespace(this.routes, key.replace(/^\//, '').replace('\/', '.'), routes[key]);
                 }
             } catch (e) {
                 console.log(e);
@@ -540,7 +642,7 @@
         },
         start:function (options) {
             options = options || {};
-            var callback = $.proxy(this.check, this);
+            var callback = proxy(this.check, this);
             this.iid = setInterval(callback, options.interval || 50);
             return this;
         },
@@ -554,7 +656,7 @@
     // Apply.route
     // -----------
 
-    Apply.route = $.proxy(router.route, router);
+    Apply.route = proxy(router.route, router);
 
 
     // Apply.ready
@@ -571,7 +673,7 @@
     // -------------
 
     Apply.toScope = function (scope) {
-        $.extend(scope, Apply);
+        extend(scope, Apply);
     };
 
 

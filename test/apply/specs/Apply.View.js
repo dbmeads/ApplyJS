@@ -45,4 +45,8 @@ describe('Apply.View', function () {
         }).toThrow(new Error('Please wait for test.tmpl before rendering.'));
     });
 
+    it('should store passed in data via an options object', function() {
+       expect(new Apply.View({data: 'test'}).data).toBe('test');
+    });
+
 });

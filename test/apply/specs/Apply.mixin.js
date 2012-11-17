@@ -1,4 +1,4 @@
-/*global window, Apply, mixin, it, expect, Mixin */
+/*global window, Apply, mixin, it, expect, Mixin, collection */
 describe('Apply.mixin', function () {
     'use strict';
 
@@ -39,12 +39,12 @@ describe('Apply.mixin', function () {
         expect(Constructor.prototype.prop1).toBe('Constructor');
     });
 
-    it('should chain init functions across mixins', function () {
+    it('should cascade init functions across mixins', function () {
         var Constructor = mixin({init:function () {
             this.prop1 = 'prop1';
         }}).mixin({init:function () {
-            this.prop2 = 'prop2';
-        }});
+                this.prop2 = 'prop2';
+            }});
 
         var result = new Constructor();
 
@@ -90,14 +90,26 @@ describe('Apply.mixin', function () {
         expect(Mixin.MyObject.prototype.prop2).toBe('prop2');
     });
 
-    it('should invoke any provided "construct" methods on any new constructor built with the mixin', function() {
+    it('should invoke any provided "construct" methods on any new constructor built with the mixin', function () {
         var result;
 
-        var Mixin = mixin({construct: function() {
+        var Mixin = mixin({construct:function () {
             result = this;
         }});
 
         expect(result).toBe(Mixin);
+    });
+
+    it('should retain the list of original mixins on the constructor', function () {
+        var mixins = [
+            {},
+            {}
+        ];
+
+        var Mixin = mixin(mixins[0], mixins[1]);
+
+        expect(Mixin.mixins[0]).toBe(mixins[0]);
+        expect(Mixin.mixins[1]).toBe(mixins[1]);
     });
 
 });
