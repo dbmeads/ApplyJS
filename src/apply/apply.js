@@ -168,7 +168,7 @@
         var obj = window;
         if (!isString(args[0])) {
             obj = args.shift();
-            if(!obj) {
+            if (!obj) {
                 throw 'Attempting to extend/access "' + args[0] + '" on an undefined namespace.';
             }
         }
@@ -571,28 +571,6 @@
     }).cascade('render');
 
 
-    // Apply.View.DataBinding
-    // ----------------------
-
-    var dataBinding = Apply.View.DataBinding = {
-        render:function () {
-            var data = this.data || {};
-            if (data && data.deflate) {
-                data = data.deflate();
-            }
-            this.$el.find('[data]').each(function (index, el) {
-                var $el = $(el);
-                var value = namespace(data, $el.attr('data'));
-                if ($el.is('input')) {
-                    $el.val(value);
-                } else {
-                    $el.text(value);
-                }
-            });
-        }
-    };
-
-
     // Apply.router
     // -----------
 
@@ -677,57 +655,87 @@
     };
 
 
-    // Apply.library
+    // Apply.mixins
     // -------------
 
-    Apply.library = {};
-
-    Apply.library.renderers = {
-        child:{
-            attachTo:'',
-            render:function (view) {
-                var $el = Apply.View.prototype.render.call(this);
-                if (view) {
-                    if (this.attachTo) {
-                        $el.find(this.attachTo).html(view.render());
+    Apply.mixins = {
+        view:{
+            dataBinding:{
+                render:function () {
+                    var that = this;
+                    var data = this.data || {};
+                    var deflated = data;
+                    if (data.deflate) {
+                        deflated = data.deflate();
+                    }
+                    this.$el.find('[data]').each(function (index, el) {
+                        var $el = $(el);
+                        var key = $el.attr('data');
+                        that.set($el, namespace(deflated, key));
+                        if (data.on) {
+                            data.on('change:' + key, function (value) {
+                                that.set($el, value);
+                            });
+                        }
+                    });
+                },
+                set:function ($el, value) {
+                    if ($el.is('input')) {
+                        $el.val(value);
                     } else {
-                        $el.html(view.render());
+                        $el.text(value);
                     }
                 }
-                return $el;
-            }
-        },
-        children:{
-            children:{},
-            render:function (children) {
-                var $el = Apply.View.prototype.render.call(this);
-                for (var key in this.children) {
-                    var $attachTo = $el.find(key).empty();
-                    var views = this.children[key];
-                    for (var i = 0; i < views.length; i++) {
-                        $attachTo.append(views[i].render());
+            },
+            render:{
+                child:{
+                    attachTo:'',
+                    render:function (view) {
+                        var $el = Apply.View.prototype.render.call(this);
+                        if (view) {
+                            if (this.attachTo) {
+                                $el.find(this.attachTo).html(view.render());
+                            } else {
+                                $el.html(view.render());
+                            }
+                        }
+                        return $el;
+                    }
+                },
+                children:{
+                    children:{},
+                    render:function (children) {
+                        var $el = Apply.View.prototype.render.call(this);
+                        for (var key in this.children) {
+                            var $attachTo = $el.find(key).empty();
+                            var views = this.children[key];
+                            for (var i = 0; i < views.length; i++) {
+                                $attachTo.append(views[i].render());
+                            }
+                        }
+                        return $el;
+                    }
+                },
+                list:{
+                    attachTo:'',
+                    itemView:view,
+                    render:function (data) {
+                        var $el = Apply.View.prototype.render.call(this);
+                        var $attachTo = $el.find(this.attachTo);
+                        var ItemView = this.itemView;
+                        data = data || this.data || [];
+                        $.each(data, function (index, value) {
+                            $attachTo.append(new ItemView({
+                                data:value
+                            }).render());
+                        });
+                        return $el;
                     }
                 }
-                return $el;
-            }
-        },
-        list:{
-            attachTo:'',
-            itemView:view,
-            render:function (data) {
-                var $el = Apply.View.prototype.render.call(this);
-                var $attachTo = $el.find(this.attachTo);
-                var ItemView = this.itemView;
-                data = data || this.data || [];
-                $.each(data, function (index, value) {
-                    $attachTo.append(new ItemView({
-                        data:value
-                    }).render());
-                });
-                return $el;
             }
         }
     };
+
 
     window.Apply = Apply;
 
