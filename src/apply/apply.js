@@ -658,37 +658,44 @@
     // Apply.mixins
     // -------------
 
+    var renderDataElement = function(context, el, data, deflatedData) {
+        var $el = $(el);
+        var key = $el.attr('data');
+        context.set($el, namespace(deflatedData, key));
+        if (data.on) {
+            data.on('change:' + key, function (value) {
+                context.set($el, value);
+            });
+        }
+        if ($el.is('input') || $el.is('textarea')) {
+            $el.on('change', function(ev) {
+                var value = $el.val();
+                if(data.set) {
+                    var attributes = {};
+                    attributes[key] = value;
+                    data.set(attributes);
+                } else {
+                    data[key] = value;
+                }
+            });
+        }
+    };
+
     Apply.mixins = {
         view:{
             dataBinding:{
                 render:function () {
                     var that = this;
                     var data = this.data || {};
-                    var deflated = data;
+                    var deflatedData = data;
                     if (data.deflate) {
-                        deflated = data.deflate();
+                        deflatedData = data.deflate();
+                    }
+                    if(this.$el.attr('data')) {
+                        renderDataElement(this, this.$el, data, deflatedData);
                     }
                     this.$el.find('[data]').each(function (index, el) {
-                        var $el = $(el);
-                        var key = $el.attr('data');
-                        that.set($el, namespace(deflated, key));
-                        if (data.on) {
-                            data.on('change:' + key, function (value) {
-                                that.set($el, value);
-                            });
-                        }
-                        if ($el.is('input') || $el.is('textarea')) {
-                            $el.on('change', function(ev) {
-                                var value = $el.val();
-                                if(data.set) {
-                                    var attributes = {};
-                                    attributes[key] = value;
-                                    data.set(attributes);
-                                } else {
-                                    data[key] = value;
-                                }
-                            });
-                        }
+                        renderDataElement(that, el, data, deflatedData);
                     });
                 },
                 set:function ($el, value) {
@@ -703,7 +710,7 @@
                     }
                 }
             },
-            render:{
+            renderer:{
                 child:{
                     attachTo:'',
                     render:function (view) {
@@ -733,13 +740,18 @@
                     }
                 },
                 list:{
-                    attachTo:'',
                     itemView:view,
-                    render:function (data) {
+                    render:function () {
                         var $el = Apply.View.prototype.render.call(this);
-                        var $attachTo = $el.find(this.attachTo);
+                        var $attachTo = $el;
+                        if(this.attachTo) {
+                            $attachTo = $el.find(this.attachTo);
+                        }
                         var ItemView = this.itemView;
-                        data = data || this.data || [];
+                        var data = this.data || [];
+                        if(data.list) {
+                            data = data.list;
+                        }
                         $.each(data, function (index, value) {
                             $attachTo.append(new ItemView({
                                 data:value

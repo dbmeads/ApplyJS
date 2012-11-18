@@ -38,4 +38,12 @@ describe('Apply.mixins.view.dataBinding', function () {
         expect(model.get('age')).toBe('40');
     });
 
+    it('should be able to bind to the outer element of a view as well', function() {
+        var MyView = Apply.View({source:'<div data="name"></div>'}, Apply.mixins.view.dataBinding);
+
+        var $el = new MyView({data:{name:'Dan'}}).render();
+
+        expect($el.text()).toBe('Dan');
+    });
+
 });
