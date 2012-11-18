@@ -43,60 +43,94 @@ describe('Apply.Model', function () {
         expect(new (Apply.Model({id:'uid'}))({uid:2}).getId()).toBe(2);
     });
 
-    it('should support a save method that will POST to a urlRoot if id is not defined', function () {
-        ajax.setResult();
-        var model = new (Apply.Model.mixin({urlRoot:'/users'}))({firstname:'Dave'});
+    describe('events', function () {
+        it('should support a change event that fires when any attribute changes', function () {
+            var model = new Apply.Model();
+            var check = jasmine.createSpy();
 
-        model.save();
+            model.on('change', function(name, key) {
+                expect(name).toBe('Dave');
+                expect(key).toBe('name');
+                check();
+            });
 
-        expect($.ajax).toHaveBeenCalledWith({url:'/users', type:'POST', data:'{"firstname":"Dave"}', contentType:'application/json'});
+            model.set({name: 'Dave'}, false);
+
+            expect(check).toHaveBeenCalled();
+        });
+
+        it('should support a change event that fires when any attribute changes', function () {
+            var model = new Apply.Model();
+            var check = jasmine.createSpy();
+
+            model.on('change:name', function(name) {
+                expect(name).toBe('Dave');
+                check();
+            });
+
+            model.set({name: 'Dave'}, false);
+
+            expect(check).toHaveBeenCalled();
+        });
     });
 
-    it('should support a save method that will PUT to urlRoot/{id} if id is defined', function () {
-        ajax.setResult();
-        var model = new (Apply.Model.mixin({urlRoot:'/users'}))({id:1, firstname:'Dave'});
+    describe('crud', function () {
+        it('should support a save method that will POST to a urlRoot if id is not defined', function () {
+            ajax.setResult();
+            var model = new (Apply.Model.mixin({urlRoot:'/users'}))({firstname:'Dave'});
 
-        model.save();
+            model.save();
 
-        expect($.ajax).toHaveBeenCalledWith({url:'/users/1', type:'PUT', data:'{"id":1,"firstname":"Dave"}', contentType:'application/json'});
+            expect($.ajax).toHaveBeenCalledWith({url:'/users', type:'POST', data:'{"firstname":"Dave"}', contentType:'application/json'});
+        });
+
+        it('should support a save method that will PUT to urlRoot/{id} if id is defined', function () {
+            ajax.setResult();
+            var model = new (Apply.Model.mixin({urlRoot:'/users'}))({id:1, firstname:'Dave'});
+
+            model.save();
+
+            expect($.ajax).toHaveBeenCalledWith({url:'/users/1', type:'PUT', data:'{"id":1,"firstname":"Dave"}', contentType:'application/json'});
+        });
+
+        it('should support a destroy method that will DELETE a urlRoot/{id}', function () {
+            ajax.setResult();
+            var model = new (Apply.Model.mixin({urlRoot:'/users'}))({id:1});
+
+            model.destroy();
+
+            expect($.ajax).toHaveBeenCalledWith({url:'/users/1', type:'DELETE'});
+        });
+
+        it('should support a fetch method that will GET a urlRoot/{id}', function () {
+            ajax.setResult();
+            var model = new (Apply.Model.mixin({urlRoot:'/users'}))({id:1});
+
+            model.fetch();
+
+            expect($.ajax).toHaveBeenCalledWith({url:'/users/1', type:'GET'});
+        });
+
+        it('should apply any fetched attributes to the model', function () {
+            ajax.setResult({id:1, firstname:'Dave'});
+            var model = new (Apply.Model.mixin({urlRoot:'/users'}))({id:1});
+
+            model.fetch();
+
+            expect(model.get('id')).toBe(1);
+            expect(model.get('firstname')).toBe('Dave');
+        });
+
+        it('should save models with the appropriate json', function () {
+            ajax.setResult();
+            var Student = Apply.Model({urlRoot:'/students', mappings:{'school':Apply.Model}});
+
+            new Student({name:'Sam', school:{name:'Prime Elementary'}}).save();
+
+            expect($.ajax).toHaveBeenCalledWith({url:jasmine.any(String), type:jasmine.any(String), contentType:jasmine.any(String), data:'{"name":"Sam","school":{"name":"Prime Elementary"}}'});
+        });
     });
 
-    it('should support a destroy method that will DELETE a urlRoot/{id}', function () {
-        ajax.setResult();
-        var model = new (Apply.Model.mixin({urlRoot:'/users'}))({id:1});
-
-        model.destroy();
-
-        expect($.ajax).toHaveBeenCalledWith({url:'/users/1', type:'DELETE'});
-    });
-
-    it('should support a fetch method that will GET a urlRoot/{id}', function () {
-        ajax.setResult();
-        var model = new (Apply.Model.mixin({urlRoot:'/users'}))({id:1});
-
-        model.fetch();
-
-        expect($.ajax).toHaveBeenCalledWith({url:'/users/1', type:'GET'});
-    });
-
-    it('should apply any fetched attributes to the model', function () {
-        ajax.setResult({id:1, firstname:'Dave'});
-        var model = new (Apply.Model.mixin({urlRoot:'/users'}))({id:1});
-
-        model.fetch();
-
-        expect(model.get('id')).toBe(1);
-        expect(model.get('firstname')).toBe('Dave');
-    });
-
-    it('should save models with the appropriate json', function () {
-        ajax.setResult();
-        var Student = Apply.Model({urlRoot:'/students', mappings:{'school':Apply.Model}});
-
-        new Student({name:'Sam', school:{name:'Prime Elementary'}}).save();
-
-        expect($.ajax).toHaveBeenCalledWith({url:jasmine.any(String), type:jasmine.any(String), contentType:jasmine.any(String), data:'{"name":"Sam","school":{"name":"Prime Elementary"}}'});
-    });
 
     describe('delegation', function () {
         it('should delegate "save" calls to the top level parent by default', function () {

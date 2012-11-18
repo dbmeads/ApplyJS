@@ -418,7 +418,7 @@
             for (var key in attributes) {
                 this.trigger('change:' + key, this.attributes[key], this);
             }
-            this.trigger('change', this);
+            this.trigger('change', this.attributes[key], key);
             return this;
         },
         get:function (key) {
@@ -677,13 +677,29 @@
                                 that.set($el, value);
                             });
                         }
+                        if ($el.is('input') || $el.is('textarea')) {
+                            $el.on('change', function(ev) {
+                                var value = $el.val();
+                                if(data.set) {
+                                    var attributes = {};
+                                    attributes[key] = value;
+                                    data.set(attributes);
+                                } else {
+                                    data[key] = value;
+                                }
+                            });
+                        }
                     });
                 },
                 set:function ($el, value) {
-                    if ($el.is('input')) {
-                        $el.val(value);
+                    if ($el.is('input') || $el.is('textarea')) {
+                        if($el.val() !== value) {
+                            $el.val(value);
+                        }
                     } else {
-                        $el.text(value);
+                        if($el.text() !== value) {
+                            $el.text(value);
+                        }
                     }
                 }
             },
