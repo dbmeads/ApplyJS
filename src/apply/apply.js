@@ -711,10 +711,10 @@
                 }
             },
             renderer:{
-                child:{
+                dynamic:{
                     attachTo:'',
                     render:function (view) {
-                        var $el = Apply.View.prototype.render.call(this);
+                        var $el = this.$el;
                         if (view) {
                             if (this.attachTo) {
                                 $el.find(this.attachTo).html(view.render());
@@ -728,12 +728,19 @@
                 children:{
                     children:{},
                     render:function (children) {
-                        var $el = Apply.View.prototype.render.call(this);
+                        var $el = this.$el;
                         for (var key in this.children) {
                             var $attachTo = $el.find(key).empty();
+                            if($attachTo.size() === 0 && $el.is(key)) {
+                                $attachTo = $el;
+                            }
                             var views = this.children[key];
-                            for (var i = 0; i < views.length; i++) {
-                                $attachTo.append(views[i].render());
+                            if(isArray(views)) {
+                                for (var i = 0; i < views.length; i++) {
+                                    $attachTo.append(views[i].render());
+                                }
+                            } else {
+                                $attachTo.append(views.render());
                             }
                         }
                         return $el;
@@ -742,7 +749,7 @@
                 list:{
                     itemView:view,
                     render:function () {
-                        var $el = Apply.View.prototype.render.call(this);
+                        var $el = this.$el;
                         var $attachTo = $el;
                         if(this.attachTo) {
                             $attachTo = $el.find(this.attachTo);

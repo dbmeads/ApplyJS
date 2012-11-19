@@ -1,5 +1,5 @@
 /*global Apply, describe, it, expect */
-describe('Apply.mixins.view.renderers.list', function() {
+describe('Apply.mixins.view.renderer.list', function() {
     'use strict';
 
     var ListView = Apply.View(Apply.mixins.view.renderer.list, {itemView: Apply.View(Apply.mixins.view.dataBinding, {source: '<span data="name"></span>'})});
