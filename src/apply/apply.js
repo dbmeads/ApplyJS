@@ -209,9 +209,6 @@
                 }, {context:this, start:1});
                 return args.pop();
             };
-        } else {
-            return function () {
-            };
         }
     };
 
@@ -236,10 +233,18 @@
         };
         constructor.cascade = function (funcName) {
             namespace(constructor, 'cascades.' + funcName, arguments);
-            constructor.prototype[funcName] = cascade.apply(this, [this.mixins].concat(slice.apply(arguments)));
+            var cascaded = cascade.apply(this, [this.mixins].concat(slice.apply(arguments)));
+            if(cascaded) {
+                constructor.prototype[funcName] = cascaded;
+            }
             return constructor;
         };
         constructor.instance = function () {
+            if(arguments.length === 1 && isString(arguments[0])) {
+                return instance.apply(this, arguments);
+            } else if(arguments.length === 0) {
+                return instance.call(this);
+            }
             return instance.apply(this, mixinArgs(constructor, arguments));
         };
         constructor.merge = function (object) {
@@ -281,7 +286,9 @@
         }
         constructor.mixins = mixins;
         mixinCascades(constructor, cascades);
-        constructor.prototype.construct.call(constructor, constructor);
+        if(constructor.prototype.construct) {
+            constructor.prototype.construct.call(constructor, constructor);
+        }
         if (ns) {
             namespace(ns, constructor);
         }
@@ -298,7 +305,11 @@
         if (isString(args[0])) {
             ns = args.shift();
         }
-        var instance = new (mixin.apply(this, args))();
+        var Constructor = this;
+        if(args.length > 0) {
+            Constructor = mixin.apply(this, args);
+        }
+        var instance = new Constructor();
         if (ns) {
             namespace(ns, instance);
         }

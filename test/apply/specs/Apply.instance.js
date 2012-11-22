@@ -20,4 +20,15 @@ describe('Apply.instance', function () {
         expect(objects.object2.prop1).toBe('prop1');
         expect(objects.object2.prop2).toBe('prop2');
     });
+
+    it('should simply create the object and not create a new mixin if there is nothing to mixin', function() {
+        var check = jasmine.createSpy();
+
+        Apply.mixin({construct: function() {
+            check();
+        }}).instance('objects.test');
+
+        expect(check.callCount).toBe(1);
+    });
+
 });
