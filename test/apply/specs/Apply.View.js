@@ -5,6 +5,8 @@ describe('Apply.View', function () {
     it('should create a div element by default', function () {
         var view = new Apply.View();
 
+        view.render();
+
         expect(view.$el).toBeDefined();
         expect(view.$el.is('div')).toBe(true);
     });

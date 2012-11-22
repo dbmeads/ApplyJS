@@ -561,14 +561,19 @@
         init:function (options) {
             options = options || {};
             this.data = options.data;
-            this.$el = $(this.rootHtml);
             if (this.events) {
                 bind(this.$el, this.events);
             }
         },
+        template:function() {
+          return '';
+        },
         render:function () {
             if (!this.template) {
                 throw 'Please wait for ' + this.resource + ' before rendering.';
+            }
+            if(!this.$el) {
+                this.$el = $(this.rootHtml);
             }
             return this.$el.html(this.template(this.data));
         },
@@ -579,8 +584,8 @@
         }
     }).construct(function () {
         var prototype = this.prototype;
-        delete prototype.template;
         if (prototype.resource) {
+            delete prototype.template;
             this.deferred = dependency(prototype.urlRoot + prototype.resource, function (source) {
                 peel(prototype, source);
             });
