@@ -1,45 +1,63 @@
 /*global Apply, describe, it, expect, window, collection, cascade, mixin */
-describe('Apply.cascade', function() {
+describe('Apply.cascade', function () {
     'use strict';
 
     Apply.toScope(window);
 
-    it('should cascade a function and add the most recent return as the last argument if available', function () {
-        var cascaded = cascade([{math:function () {
-            return collection.last(arguments) + 1;
-        }}, {math:function () {
-            return collection.last(arguments) * 2;
-        }}], 'math');
+    it('should cascade a function', function () {
+        var cascaded = cascade([
+            {math:function (options) {
+                options.number += 1;
+                return options;
+            }},
+            {math:function (options) {
+                options.number *= 2;
+                return options;
+            }}
+        ], 'math');
 
-        expect(cascaded(1)).toBe(4);
+        expect(cascaded({number:1}).number).toBe(4);
     });
 
-    it('should support reverse cascading', function() {
-        var cascaded = cascade([{math:function () {
-            return collection.last(arguments) + ' second ';
-        }}, {math:function () {
-            return collection.last(arguments) + ' first ';
-        }}], 'math', true);
+    it('should support reverse cascading', function () {
+        var cascaded = cascade([
+            {math:function (options) {
+                options.string += 'second';
+                return options;
+            }},
+            {math:function (options) {
+                options.string += 'first';
+                return options;
+            }}
+        ], 'math', true);
 
-        expect(cascaded('')).toBe(' first  second ');
+        expect(cascaded({string:''}).string).toBe('firstsecond');
     });
 
-    it('should support a cascade call on a mixin constructor that will cascade a function and add the most recent return as the last argument if available', function () {
-        var Mixin = mixin({math:function () {
-            return collection.last(arguments) + 1;
-        }}, {math:function () {
-            return collection.last(arguments) * 2;
+    it('should support a cascade call on a mixin constructor', function () {
+        var Mixin = mixin({math:function (options) {
+            options.number += 1;
+            return options;
+        }}, {math:function (options) {
+            options.number *= 2;
+            return options;
         }});
 
         Mixin.cascade('math');
 
-        expect(new Mixin().math(1)).toBe(4);
+        expect(new Mixin().math({number:1}).number).toBe(4);
     });
 
-    it('should automatically continue previously established cascades when a constructor has more mixins applied', function() {
-        var Mixin = mixin({build: function() { return collection.last(arguments) + ':1st';}}).cascade('build').mixin({build: function() {return collection.last(arguments) + ':2nd';}});
+    it('should automatically continue previously established cascades when a constructor has more mixins applied', function () {
+        var Mixin = mixin({build:function (options) {
+            options.string += ':1st';
+            return options;
+        }}).cascade('build').mixin({build:function (options) {
+            options.string += ':2nd';
+            return options;
+        }});
 
-        expect(new Mixin().build('')).toBe(':1st:2nd');
+        expect(new Mixin().build({string:''}).string).toBe(':1st:2nd');
     });
 
 });

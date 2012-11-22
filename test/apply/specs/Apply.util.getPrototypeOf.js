@@ -22,4 +22,8 @@ describe('Apply.util.getPrototype', function () {
         expect(Apply.util.getPrototypeOf(func)).toBe(func.prototype);
     });
 
+    it('should recognize that a primitive is not an object and return undefined', function() {
+       expect(Apply.util.getPrototypeOf(1)).toBeUndefined();
+    });
+
 });

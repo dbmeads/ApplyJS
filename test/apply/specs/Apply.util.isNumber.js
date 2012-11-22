@@ -6,7 +6,7 @@ describe('Apply.util.isNumber', function () {
         expect(Apply.util.isNumber({})).toBe(false);
     });
 
-    it('should be able to tell an string isn\'t a number', function () {
+    it('should be able to tell a string isn\'t a number', function () {
         expect(Apply.util.isNumber('')).toBe(false);
     });
 

@@ -20,7 +20,7 @@
     // ----------
 
     var getPrototypeOf = function (obj) {
-        if (obj) {
+        if (isObject(obj) || isFunction(obj)) {
             if (isFunction(obj)) {
                 return obj.prototype;
             }
@@ -51,6 +51,10 @@
         return typeof  obj === 'number';
     };
 
+    var isObject = function (obj) {
+        return typeof obj === 'object';
+    };
+
     var isString = function (obj) {
         return typeof obj === 'string';
     };
@@ -68,6 +72,7 @@
         isFunction:isFunction,
         isMixin:isMixin,
         isNumber:isNumber,
+        isObject:isObject,
         isString:isString
     };
 
@@ -195,20 +200,20 @@
     // -------------
 
     var cascade = Apply.cascade = function (objects, funcName, reverse) {
-        var cascade = [];
+        var cascades = [];
         loop(objects, function (object) {
             if (object[funcName]) {
-                cascade.push(object[funcName]);
+                cascades.push(object[funcName]);
             }
         }, {reverse:reverse});
-        if (cascade.length) {
+        if (cascades.length) {
             return function () {
+                var result;
                 var args = slice.apply(arguments);
-                args.push(cascade[0].apply(this, args));
-                loop(cascade, function (func) {
-                    last(args, func.apply(this, args));
-                }, {context:this, start:1});
-                return args.pop();
+                loop(cascades, function (cascade) {
+                    result = cascade.apply(this, args);
+                }, {context:this});
+                return result;
             };
         }
     };
@@ -235,15 +240,15 @@
         constructor.cascade = function (funcName) {
             namespace(constructor, 'cascades.' + funcName, arguments);
             var cascaded = cascade.apply(this, [this.mixins].concat(slice.apply(arguments)));
-            if(cascaded) {
+            if (cascaded) {
                 constructor.prototype[funcName] = cascaded;
             }
             return constructor;
         };
         constructor.singleton = function () {
-            if(arguments.length === 1 && isString(arguments[0])) {
+            if (arguments.length === 1 && isString(arguments[0])) {
                 return singleton.apply(this, arguments);
-            } else if(arguments.length === 0) {
+            } else if (arguments.length === 0) {
                 return singleton.call(this);
             }
             return singleton.apply(this, mixinArgs(constructor, arguments));
@@ -257,8 +262,8 @@
             return mixin.apply(this, mixinArgs(constructor, arguments));
         };
         constructor.callbacks = [];
-        constructor.construct = function(callback) {
-            if(callback) {
+        constructor.construct = function (callback) {
+            if (callback) {
                 constructor.callbacks.push(callback);
             }
             return constructor;
@@ -286,7 +291,7 @@
             mixin = args[i];
             if (isFunction(mixin)) {
                 extend(cascades, mixin['cascades']);
-                if(mixin.callbacks) {
+                if (mixin.callbacks) {
                     push.apply(constructor.callbacks, mixin.callbacks);
                 }
                 mixin = mixin.prototype;
@@ -295,8 +300,8 @@
             constructor.mixins.push(mixin);
         }
         mixinCascades(constructor, cascades);
-        loop(constructor.callbacks, function(callback) {
-           callback.call(constructor, constructor);
+        loop(constructor.callbacks, function (callback) {
+            callback.call(constructor, constructor);
         });
         if (ns) {
             namespace(ns, constructor);
@@ -315,7 +320,7 @@
             ns = args.shift();
         }
         var Constructor = this;
-        if(args.length > 0) {
+        if (args.length > 0) {
             Constructor = mixin.apply(this, args);
         }
         var singleton = new Constructor();
@@ -565,14 +570,14 @@
                 bind(this.$el, this.events);
             }
         },
-        template:function() {
-          return '';
+        template:function () {
+            return '';
         },
         render:function () {
             if (!this.template) {
                 throw 'Please wait for ' + this.resource + ' before rendering.';
             }
-            if(!this.$el) {
+            if (!this.$el) {
                 this.$el = $(this.rootHtml);
             }
             return this.$el.html(this.template(this.data));
@@ -583,16 +588,16 @@
             };
         }
     }).construct(function () {
-        var prototype = this.prototype;
-        if (prototype.resource) {
-            delete prototype.template;
-            this.deferred = dependency(prototype.urlRoot + prototype.resource, function (source) {
-                peel(prototype, source);
-            });
-        } else {
-            peel(prototype, prototype.source);
-        }
-    }).cascade('render');
+            var prototype = this.prototype;
+            if (prototype.resource) {
+                delete prototype.template;
+                this.deferred = dependency(prototype.urlRoot + prototype.resource, function (source) {
+                    peel(prototype, source);
+                });
+            } else {
+                peel(prototype, prototype.source);
+            }
+        }).cascade('render');
 
 
     // Apply.router
@@ -682,7 +687,7 @@
     // Apply.mixins
     // -------------
 
-    var renderDataElement = function(context, el, data, deflatedData) {
+    var renderDataElement = function (context, el, data, deflatedData) {
         var $el = $(el);
         var key = $el.attr('data');
         context.set($el, namespace(deflatedData, key));
@@ -692,9 +697,9 @@
             });
         }
         if ($el.is('input') || $el.is('textarea')) {
-            $el.on('change', function(ev) {
+            $el.on('change', function (ev) {
                 var value = $el.val();
-                if(data.set) {
+                if (data.set) {
                     var attributes = {};
                     attributes[key] = value;
                     data.set(attributes);
@@ -715,20 +720,21 @@
                     if (data.deflate) {
                         deflatedData = data.deflate();
                     }
-                    if(this.$el.attr('data')) {
+                    if (this.$el.attr('data')) {
                         renderDataElement(this, this.$el, data, deflatedData);
                     }
                     this.$el.find('[data]').each(function (index, el) {
                         renderDataElement(that, el, data, deflatedData);
                     });
+                    return this.$el;
                 },
                 set:function ($el, value) {
                     if ($el.is('input') || $el.is('textarea')) {
-                        if($el.val() !== value) {
+                        if ($el.val() !== value) {
                             $el.val(value);
                         }
                     } else {
-                        if($el.text() !== value) {
+                        if ($el.text() !== value) {
                             $el.text(value);
                         }
                     }
@@ -755,11 +761,11 @@
                         var $el = this.$el;
                         for (var key in this.children) {
                             var $attachTo = $el.find(key).empty();
-                            if($attachTo.size() === 0 && $el.is(key)) {
+                            if ($attachTo.size() === 0 && $el.is(key)) {
                                 $attachTo = $el;
                             }
                             var views = this.children[key];
-                            if(isArray(views)) {
+                            if (isArray(views)) {
                                 for (var i = 0; i < views.length; i++) {
                                     $attachTo.append(views[i].render());
                                 }
@@ -775,12 +781,12 @@
                     render:function () {
                         var $el = this.$el;
                         var $attachTo = $el;
-                        if(this.attachTo) {
+                        if (this.attachTo) {
                             $attachTo = $el.find(this.attachTo);
                         }
                         var ItemView = this.itemView;
                         var data = this.data || [];
-                        if(data.list) {
+                        if (data.list) {
                             data = data.list;
                         }
                         $.each(data, function (index, value) {
