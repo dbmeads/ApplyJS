@@ -20,10 +20,12 @@ describe('Apply.mixins.view.renderer.dynamic', function() {
         expect(view.$el.html()).toBe('<div class="dynamic"><span>hi</span></div>');
     });
 
-//    it('should not attempt to render an undefined view', function() {
-//        var view = View.singleton();
-//
-//        view.render();
-//    });
+    it('should not attempt to render an undefined view', function() {
+        var view = View.singleton();
+
+        view.render();
+
+        expect(view.$el.html()).toBe('');
+    });
 
 });
