@@ -10,6 +10,7 @@
     // -------
 
     var slice = Array.prototype.slice;
+    var push = Array.prototype.push;
     var proxy = $.proxy;
     var extend = $.extend;
     var when = $.when;
@@ -239,20 +240,28 @@
             }
             return constructor;
         };
-        constructor.instance = function () {
+        constructor.singleton = function () {
             if(arguments.length === 1 && isString(arguments[0])) {
-                return instance.apply(this, arguments);
+                return singleton.apply(this, arguments);
             } else if(arguments.length === 0) {
-                return instance.call(this);
+                return singleton.call(this);
             }
-            return instance.apply(this, mixinArgs(constructor, arguments));
+            return singleton.apply(this, mixinArgs(constructor, arguments));
         };
         constructor.merge = function (object) {
             extend(constructor.prototype, object);
             return constructor;
         };
+        constructor.mixins = [];
         constructor.mixin = function () {
             return mixin.apply(this, mixinArgs(constructor, arguments));
+        };
+        constructor.callbacks = [];
+        constructor.construct = function(callback) {
+            if(callback) {
+                constructor.callbacks.push(callback);
+            }
+            return constructor;
         };
         return constructor;
     };
@@ -265,8 +274,7 @@
     };
 
     var mixin = Apply.mixin = function () {
-        var mixins = [];
-        var cascades = {'init':['init'], 'construct':['construct']};
+        var cascades = {'init':['init']};
         var constructor = mixinConstructor();
         var args = slice.apply(arguments);
         var ns;
@@ -275,20 +283,21 @@
         }
         var mixin;
         for (var i = 0; i < args.length; i++) {
-            if (isFunction(args[i])) {
-                extend(cascades, args[i]['cascades']);
-                mixin = args[i].prototype;
-            } else {
-                mixin = args[i];
+            mixin = args[i];
+            if (isFunction(mixin)) {
+                extend(cascades, mixin['cascades']);
+                if(mixin.callbacks) {
+                    push.apply(constructor.callbacks, mixin.callbacks);
+                }
+                mixin = mixin.prototype;
             }
             extend(constructor.prototype, mixin);
-            mixins.push(mixin);
+            constructor.mixins.push(mixin);
         }
-        constructor.mixins = mixins;
         mixinCascades(constructor, cascades);
-        if(constructor.prototype.construct) {
-            constructor.prototype.construct.call(constructor, constructor);
-        }
+        loop(constructor.callbacks, function(callback) {
+           callback.call(constructor, constructor);
+        });
         if (ns) {
             namespace(ns, constructor);
         }
@@ -296,10 +305,10 @@
     };
 
 
-    // Apply.instance
+    // Apply.singleton
     // ---------------
 
-    var instance = Apply.instance = function () {
+    var singleton = Apply.singleton = function () {
         var ns;
         var args = slice.apply(arguments);
         if (isString(args[0])) {
@@ -309,11 +318,11 @@
         if(args.length > 0) {
             Constructor = mixin.apply(this, args);
         }
-        var instance = new Constructor();
+        var singleton = new Constructor();
         if (ns) {
-            namespace(ns, instance);
+            namespace(ns, singleton);
         }
-        return instance;
+        return singleton;
     };
 
 
@@ -549,17 +558,6 @@
     var view = Apply.View = mixin({
         urlRoot:'',
         rootHtml:div,
-        construct:function () {
-            var prototype = this.prototype;
-            delete prototype.template;
-            if (prototype.resource) {
-                dependency(prototype.urlRoot + prototype.resource, function (source) {
-                    peel(prototype, source);
-                });
-            } else {
-                peel(prototype, prototype.source);
-            }
-        },
         init:function (options) {
             options = options || {};
             this.data = options.data;
@@ -578,6 +576,16 @@
             return function () {
                 return source || '';
             };
+        }
+    }).construct(function () {
+        var prototype = this.prototype;
+        delete prototype.template;
+        if (prototype.resource) {
+            this.deferred = dependency(prototype.urlRoot + prototype.resource, function (source) {
+                peel(prototype, source);
+            });
+        } else {
+            peel(prototype, prototype.source);
         }
     }).cascade('render');
 
@@ -639,7 +647,7 @@
             clearInterval(this.iid);
             delete this.iid;
         }
-    }).instance();
+    }).singleton();
 
 
     // Apply.route

@@ -90,14 +90,10 @@ describe('Apply.mixin', function () {
         expect(Mixin.MyObject.prototype.prop2).toBe('prop2');
     });
 
-    it('should invoke any provided "construct" methods on any new constructor built with the mixin', function () {
-        var result;
+    it('should support a "construct" method on the constructor that will take a callback to be invoked on any additional constructors generated with this mixin', function () {
+        var Mixin = mixin({test: 1}).construct(function(constructor){ constructor.prototype.test = 2; });
 
-        var Mixin = mixin({construct:function () {
-            result = this;
-        }});
-
-        expect(result).toBe(Mixin);
+        expect(Mixin.mixin({prop2: 'prop'}).prototype.test).toBe(2);
     });
 
     it('should retain the list of original mixins on the constructor', function () {

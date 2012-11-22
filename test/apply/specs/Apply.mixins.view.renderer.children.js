@@ -6,9 +6,9 @@ describe('Apply.mixins.view.renderer.children', function () {
         var view = Apply.View(Apply.mixins.view.renderer.children, {
             source:'<div><div class="child1"></div><div class="child2"></div></div>',
             children:{
-                '.child1':Apply.View({source:'<span>child1</span>'}).instance(),
-                '.child2':Apply.View({source:'<span>child2</span>'}).instance() }
-        }).instance();
+                '.child1':Apply.View({source:'<span>child1</span>'}).singleton(),
+                '.child2':Apply.View({source:'<span>child2</span>'}).singleton() }
+        }).singleton();
 
         view.render();
 
@@ -19,8 +19,8 @@ describe('Apply.mixins.view.renderer.children', function () {
         var view = Apply.View(Apply.mixins.view.renderer.children, {
             source:'<div class="children"></div>',
             children:{
-                '.children':[Apply.View({source:'<span>child1</span>'}).instance(), Apply.View({source:'<span>child2</span>'}).instance()]}
-        }).instance();
+                '.children':[Apply.View({source:'<span>child1</span>'}).singleton(), Apply.View({source:'<span>child2</span>'}).singleton()]}
+        }).singleton();
 
         view.render();
 

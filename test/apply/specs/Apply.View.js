@@ -49,4 +49,13 @@ describe('Apply.View', function () {
        expect(new Apply.View({data: 'test'}).data).toBe('test');
     });
 
+    it('should retain any outer element attributes', function() {
+        var view = Apply.View({source: '<div class="cool" id="1">test</div>'}).singleton();
+
+        view.render();
+
+        expect(view.$el.is('.cool')).toBeTruthy();
+        expect(view.$el.is('#1')).toBeTruthy();
+    });
+
 });
