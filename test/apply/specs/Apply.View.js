@@ -71,6 +71,18 @@ describe('Apply.View', function () {
 
             expect(check).toHaveBeenCalled();
         });
+
+        it('should call back with the view set as the context', function() {
+            var check = jasmine.createSpy();
+            var view = Apply.View({pass: true, source:'<form><input type="submit"/></form>', events:{'submit':function () {
+                expect(this.pass).toBeTruthy();
+                check();
+            }}}).singleton();
+
+            view.render().submit();
+
+            expect(check).toHaveBeenCalled();
+        });
     });
 
 });

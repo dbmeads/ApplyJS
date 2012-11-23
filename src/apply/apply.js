@@ -576,17 +576,17 @@
 
     var div = '<div></div>';
 
-    var bind = function ($el, events) {
+    var bind = function ($el, events, context) {
         for (var key in events) {
             var event = key.split(' ').pop();
-            $el.on(event, key.replace(event, ''), proxy(events[key], this));
+            $el.on(event, key.replace(event, ''), proxy(events[key], context));
         }
     };
 
-    var setupRootEl = function() {
-        this.$el = $(this.rootHtml);
-        if (this.events) {
-            bind(this.$el, this.events);
+    var setupRootEl = function(context) {
+        context.$el = $(context.rootHtml);
+        if (context.events) {
+            bind(context.$el, context.events, context);
         }
     };
 
@@ -618,7 +618,7 @@
                 throw 'Please wait for ' + this.resource + ' before rendering.';
             }
             if (!this.$el) {
-                setupRootEl.call(this);
+                setupRootEl(this);
             }
             return this.$el.html(this.template(this.data));
         },
