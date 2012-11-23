@@ -583,6 +583,13 @@
         }
     };
 
+    var setupRootEl = function() {
+        this.$el = $(this.rootHtml);
+        if (this.events) {
+            bind(this.$el, this.events);
+        }
+    };
+
     var peel = function (prototype, source) {
         if (source) {
             var $el = $(source);
@@ -602,9 +609,6 @@
         init:function (options) {
             options = options || {};
             this.data = options.data;
-            if (this.events) {
-                bind(this.$el, this.events);
-            }
         },
         template:function () {
             return '';
@@ -614,7 +618,7 @@
                 throw 'Please wait for ' + this.resource + ' before rendering.';
             }
             if (!this.$el) {
-                this.$el = $(this.rootHtml);
+                setupRootEl.call(this);
             }
             return this.$el.html(this.template(this.data));
         },
