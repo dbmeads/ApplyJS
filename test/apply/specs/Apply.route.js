@@ -39,4 +39,20 @@ describe('Apply.route', function () {
         expect(check).toHaveBeenCalled();
     });
 
+    it('should be able to handle an empty route', function() {
+        var check = jasmine.createSpy('check');
+        window.router.current = undefined;
+        window.location.hash = '';
+
+        Apply.route({
+            '' : function() {
+                check();
+            }
+        });
+
+        Apply.router.check();
+
+        expect(check).toHaveBeenCalled();
+    });
+
 });

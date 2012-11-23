@@ -33,9 +33,18 @@ describe('Apply.namespace', function () {
 
     it('should be able to return data namespaced relative to an object', function() {
         var obj = {};
+
         Apply.namespace('Test.Namespace.object2', obj);
 
         expect(namespace(Test, 'Namespace.object2')).toBe(obj);
+    });
+
+    it('should be able to set an empty key if desired', function() {
+        var obj = {};
+
+        Apply.namespace(obj, '', 'test');
+
+        expect(obj['']).toBeDefined();
     });
 
 });

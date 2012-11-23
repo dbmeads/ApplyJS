@@ -179,7 +179,7 @@
             }
         }
         var namespace = args[0], object = args[1];
-        if (namespace) {
+        if (namespace !== undefined) {
             var parts = namespace.split('.');
             loop(parts, function (part, index) {
                 if (index === parts.length - 1) {
