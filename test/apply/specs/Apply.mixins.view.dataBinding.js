@@ -2,8 +2,10 @@
 describe('Apply.mixins.view.dataBinding', function () {
     'use strict';
 
+    var DataBindingView = Apply.View(Apply.mixins.view.dataBinding);
+
     it('should render text or value for any elements with the "data" attribute', function () {
-        var MyView = Apply.View({source:'<div><span data="name"></span><input data="age" /></div>'}, Apply.mixins.view.dataBinding);
+        var MyView = DataBindingView({source:'<div><span data="name"></span><input data="age" /></div>'});
 
         var view = new MyView({data:{name:'Frank', age:40}});
 
@@ -14,7 +16,7 @@ describe('Apply.mixins.view.dataBinding', function () {
     });
 
     it('should respond to model updates by re-rendering previously identified view elements', function () {
-        var MyView = Apply.View({source:'<div><span data="name"></span><input data="age" /></div>'}, Apply.mixins.view.dataBinding);
+        var MyView = DataBindingView({source:'<div><span data="name"></span><input data="age" /></div>'});
         var model = new Apply.Model({name:'Frank', age:40});
         var view = new MyView({data:model});
         var $el = view.render();
@@ -26,7 +28,7 @@ describe('Apply.mixins.view.dataBinding', function () {
     });
 
     it('should be capable of automatically updating a model when input fields and textareas change', function () {
-        var MyView = Apply.View({source:'<div><textarea data="name"></textarea><input data="age" /></div>'}, Apply.mixins.view.dataBinding);
+        var MyView = DataBindingView({source:'<div><textarea data="name"></textarea><input data="age" /></div>'});
         var model = new Apply.Model();
         var view = new MyView({data:model});
         var $el = view.render();
@@ -39,11 +41,19 @@ describe('Apply.mixins.view.dataBinding', function () {
     });
 
     it('should be able to bind to the outer element of a view as well', function() {
-        var MyView = Apply.View({source:'<div data="name"></div>'}, Apply.mixins.view.dataBinding);
+        var MyView = DataBindingView({source:'<div data="name"></div>'});
 
         var $el = new MyView({data:{name:'Dan'}}).render();
 
         expect($el.text()).toBe('Dan');
+    });
+
+    it('should provide a default model for data if data is undefined', function() {
+        var view = DataBindingView({source: '<form><input type="text" data="name"/></form>'}).singleton();
+
+        view.render().find('[data="name"]').val('Ted').change();
+
+        expect(view.data.get('name')).toBe('Ted');
     });
 
 });

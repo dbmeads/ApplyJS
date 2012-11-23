@@ -335,7 +335,7 @@
     // ------------
 
     var addLoggers = function () {
-        loop(arguments, function(level) {
+        loop(arguments, function (level) {
             this[level] = function (message) {
                 return this.log({level:level, message:message});
             };
@@ -583,7 +583,7 @@
         }
     };
 
-    var setupRootEl = function(context) {
+    var setupRootEl = function (context) {
         context.$el = $(context.rootHtml);
         if (context.events) {
             bind(context.$el, context.events, context);
@@ -755,7 +755,10 @@
             dataBinding:{
                 render:function () {
                     var that = this;
-                    var data = this.data || {};
+                    if (!this.data) {
+                        this.data = new Apply.Model();
+                    }
+                    var data = this.data;
                     var deflatedData = data;
                     if (data.deflate) {
                         deflatedData = data.deflate();
