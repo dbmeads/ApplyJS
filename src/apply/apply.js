@@ -51,8 +51,8 @@
         return typeof  obj === 'number';
     };
 
-    var isObject = function (obj) {
-        return typeof obj === 'object';
+    var isObject = function (obj, strict) {
+        return (!strict && isFunction(obj)) || typeof obj === 'object';
     };
 
     var isString = function (obj) {
@@ -246,12 +246,9 @@
             return constructor;
         };
         constructor.singleton = function () {
-            if (arguments.length === 1 && isString(arguments[0])) {
-                return singleton.apply(this, arguments);
-            } else if (arguments.length === 0) {
-                return singleton.call(this);
-            }
-            return singleton.apply(this, mixinArgs(constructor, arguments));
+            var args = slice.apply(arguments);
+            args.push(constructor);
+            return singleton.apply(this, args);
         };
         constructor.merge = function (object) {
             extend(constructor.prototype, object);
@@ -313,21 +310,33 @@
     // Apply.singleton
     // ---------------
 
+    var con = function(){};
+
     var singleton = Apply.singleton = function () {
-        var ns;
         var args = slice.apply(arguments);
+        var nsargs = [];
+        if(isObject(args[0], true)) {
+            nsargs.push(args.shift());
+        }
         if (isString(args[0])) {
-            ns = args.shift();
+            nsargs.push(args.shift());
         }
-        var Constructor = this;
-        if (args.length > 0) {
-            Constructor = mixin.apply(this, args);
+        var conargs = [];
+        if(isArray(args[0])) {
+            conargs = args.shift();
         }
-        var singleton = new Constructor();
-        if (ns) {
-            namespace(ns, singleton);
+        var instance = {};
+        if(isFunction(args[0])) {
+            con.prototype = args[0].prototype;
+            instance = new con();
+            instance.constructor = args[0];
+            args[0].apply(instance, conargs);
         }
-        return singleton;
+        if (nsargs.length > 0) {
+            nsargs.push(instance);
+            namespace.apply(this, nsargs);
+        }
+        return instance;
     };
 
 

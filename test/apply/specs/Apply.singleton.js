@@ -6,33 +6,34 @@ describe('Apply.singleton', function () {
         delete window.objects;
     });
 
-    it('should create the singleton assigned to the specified namespace that\'s an instance of a mixin generated out of the remaining arguments', function () {
-        Apply.singleton('objects.object', {prop:'prop'});
+    it('should accept a namespace, constructor argument array and constructor function', function () {
+        var check = jasmine.createSpy();
+
+        Apply.singleton('objects.object', ['test'], Apply.mixin({init: function(string) {
+            expect(string).toBe('test');
+            check();
+        }}));
 
         expect(objects.object).toBeDefined();
-        expect(objects.object.prop).toBeDefined();
+        expect(check).toHaveBeenCalled();
     });
 
     it('should return the instance created', function() {
-       expect(Apply.singleton('objects.object', {})).toBe(objects.object);
+       expect(Apply.singleton('objects.object', [], Apply.mixin({}))).toBe(objects.object);
     });
 
     it('should be available to any mixin constructor', function () {
-        Apply.mixin({prop1:'prop1'}).singleton('objects.object', {prop2:'prop2'});
+        Apply.mixin({prop1:'prop1'}).singleton('objects.object');
 
         expect(objects.object).toBeDefined();
         expect(objects.object.prop1).toBe('prop1');
-        expect(objects.object.prop2).toBe('prop2');
     });
 
-    it('should simply create the object and not create a new mixin if there is nothing to mixin', function() {
-        var check = jasmine.createSpy();
+    it('should support namespacing an existing object if one is passed', function() {
+        var ns = {};
+        Apply.singleton(ns, 'test', [], Apply.mixin({}));
 
-        Apply.mixin({}).construct(function() {
-            check();
-        }).singleton('objects.object');
-
-        expect(check.callCount).toBe(0);
+        expect(ns.test).toBeDefined();
     });
 
 });
