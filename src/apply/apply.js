@@ -482,6 +482,9 @@
             this.set(attributes);
         },
         set:function (attributes) {
+            if(attributes && isFunction(attributes.deflate)) {
+                attributes = attributes.deflate();
+            }
             extend(this.attributes, inflate(attributes, this.mappings, this));
             for (var key in attributes) {
                 this.trigger('change:' + key, this.attributes[key], this);

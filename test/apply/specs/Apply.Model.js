@@ -39,6 +39,13 @@ describe('Apply.Model', function () {
         expect(result.get('school').get('name')).toBe('Prime Elementary');
     });
 
+    it('should support model copying via the set method', function() {
+        var model1 = new Apply.Model({firstname: 'Patrick'});
+        var model2 = new Apply.Model().set(model1);
+
+        expect(model2.attributes).toEqual(model1.attributes);
+    });
+
     it('should support a getId method that will return whatever the id that the id property is mapped to', function () {
         expect(new (Apply.Model({id:'uid'}))({uid:2}).getId()).toBe(2);
     });
