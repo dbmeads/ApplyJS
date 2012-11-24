@@ -5,5 +5,6 @@ Current Priorities:
 - Make views proper promise objects
 - Super references
 - View delegation
+- Minified version
 
 Want documentation? https://github.com/dbmeads/ApplyJS/tree/master/test/apply/specs
