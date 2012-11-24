@@ -60,6 +60,12 @@ describe('Apply.View', function () {
         expect(view.$el.is('#1')).toBeTruthy();
     });
 
+    it('should respect a data object set on the prototype for now', function() {
+        var view = Apply.View({data: {name:'Greg'}}).singleton();
+
+        expect(view.data.name).toBe('Greg');
+    });
+
     describe('events', function () {
         it('should be able to bind supplied dom events and respond to them', function () {
             var check = jasmine.createSpy();

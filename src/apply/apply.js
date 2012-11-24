@@ -629,7 +629,9 @@
         rootHtml:div,
         init:function (options) {
             options = options || {};
-            this.data = options.data;
+            if(options.data) {
+                this.data = options.data;
+            }
         },
         template:function () {
             return '';
