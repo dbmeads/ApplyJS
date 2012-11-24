@@ -47,6 +47,15 @@ describe('Apply.Crud', function () {
     });
 
     describe('fetch', function () {
+//        it('should "GET" data and callback with "context", "response" and "options"', function() {
+//            ajaxSpy.setResult({name:'Tom'});
+//            var callback = jasmine.createSpy('callback');
+//            var obj = new TestCrud();
+//
+//            obj.fetch(callback);
+//
+//            expect(callback).toHaveBeenCalledWith()
+//        });
 
     });
 

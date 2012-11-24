@@ -9,10 +9,10 @@
     // On Loan
     // -------
 
-    var slice = Array.prototype.slice;
-    var push = Array.prototype.push;
-    var proxy = $.proxy;
     var extend = $.extend;
+    var proxy = $.proxy;
+    var push = Array.prototype.push;
+    var slice = Array.prototype.slice;
     var when = $.when;
 
 
@@ -39,7 +39,7 @@
     var isMixin = function (obj) {
         if (isFunction(obj)) {
             return obj.mixin !== undefined;
-        } else if(isObject(obj, true)) {
+        } else if (isObject(obj, true)) {
             return obj.constructor.mixin !== undefined;
         }
         return false;
@@ -55,13 +55,6 @@
 
     var isString = function (obj) {
         return typeof obj === 'string';
-    };
-
-    var ajax = function (url, type, options) {
-        return $.ajax(extend(options || {}, {
-            url:url,
-            type:type || 'GET'
-        }));
     };
 
     Apply.util = {
@@ -149,7 +142,7 @@
         if (resources[resource]) {
             resources[resource].then(callback);
         } else {
-            var deferred = outstanding.add(ajax(resource));
+            var deferred = outstanding.add($.ajax({url:resource}));
             if (endsWith(resource, '.js')) {
                 deferred.then(function (source) {
                     /*jslint evil: true */
@@ -308,23 +301,24 @@
     // Apply.singleton
     // ---------------
 
-    var con = function(){};
+    var con = function () {
+    };
 
     var singleton = Apply.singleton = function () {
         var args = slice.apply(arguments);
         var nsargs = [];
-        if(isObject(args[0], true)) {
+        if (isObject(args[0], true)) {
             nsargs.push(args.shift());
         }
         if (isString(args[0])) {
             nsargs.push(args.shift());
         }
         var conargs = [];
-        if(isArray(args[0])) {
+        if (isArray(args[0])) {
             conargs = args.shift();
         }
         var instance = {};
-        if(isFunction(args[0])) {
+        if (isFunction(args[0])) {
             con.prototype = args[0].prototype;
             instance = new con();
             instance.constructor = args[0];
@@ -420,17 +414,18 @@
 
     var crud = Apply.Crud = events({
         save:delegateOrHandle('save', function (options) {
-            return ajax(this.getUrl(), this.getId && this.getId() ? 'PUT' : 'POST', $
-                .extend(options, {
-                    data:this.toString(),
-                    contentType:this.contentType
-                }));
+            return $.ajax(extend({
+                contentType:this.contentType,
+                data:this.toString(),
+                type:this.getId && this.getId() ? 'PUT' : 'POST',
+                url:this.getUrl()
+            }, options));
         }),
         fetch:delegateOrHandle('fetch', function (options) {
-            return ajax(this.getUrl(), 'GET', options).then(proxy(this.inflate, this));
+            return $.ajax(extend({url:this.getUrl(), type:'GET'}, options)).then(proxy(this.inflate, this));
         }),
         destroy:delegateOrHandle('destroy', function (options) {
-            return ajax(this.getUrl(), 'DELETE', options);
+            return $.ajax(extend({url:this.getUrl(), type:'DELETE'}, options));
         }),
         toString:function () {
             return JSON.stringify(this.deflate ? this.deflate() : this);
@@ -482,7 +477,7 @@
             this.set(attributes);
         },
         set:function (attributes) {
-            if(attributes && isFunction(attributes.deflate)) {
+            if (attributes && isFunction(attributes.deflate)) {
                 attributes = attributes.deflate();
             }
             extend(this.attributes, inflate(attributes, this.mappings, this));
@@ -586,8 +581,8 @@
 
     var div = '<div></div>';
 
-    var preventDefault = function(callback) {
-        return function(event) {
+    var preventDefault = function (callback) {
+        return function (event) {
             event.preventDefault();
             return callback.apply(this, arguments);
         };
@@ -597,7 +592,7 @@
         for (var key in events) {
             var event = key.split(' ').pop();
             var callback = events[key];
-            if(event === 'submit') {
+            if (event === 'submit') {
                 callback = preventDefault(callback);
             }
             $el.on(event, key.replace(event, ''), proxy(callback, context));
@@ -629,7 +624,7 @@
         rootHtml:div,
         init:function (options) {
             options = options || {};
-            if(options.data) {
+            if (options.data) {
                 this.data = options.data;
             }
         },
