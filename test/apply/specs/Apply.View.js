@@ -1,4 +1,4 @@
-/*global $, Apply, spyOn, it, expect, ajax */
+/*global $, Apply, spyOn, it, expect, ajaxSpy */
 describe('Apply.View', function () {
     'use strict';
 
@@ -12,7 +12,7 @@ describe('Apply.View', function () {
     });
 
     it('should load and render a template if one is provided', function () {
-        ajax.setResult('<div><a href="javascript://">Link</a></div>');
+        ajaxSpy.setResult('<div><a href="javascript://">Link</a></div>');
         var MyView = Apply.View({resource:'Apply.View.tmpl'});
 
         expect(new MyView().render().html()).toBe('<a href="javascript://">Link</a>');
@@ -25,7 +25,7 @@ describe('Apply.View', function () {
     });
 
     it('should throw an exception if the resource does not have a single root element', function () {
-        ajax.setResult('<li></li><li></li>');
+        ajaxSpy.setResult('<li></li><li></li>');
 
         expect(function () {
             Apply.View({resource:'Apply.View2.tmpl'});
@@ -39,7 +39,7 @@ describe('Apply.View', function () {
     });
 
     it('should throw an exception if an attempt to render is made before a resource is loaded', function () {
-        ajax.neverReturn();
+        ajaxSpy.neverReturn();
 
         expect(function () {
             var MyView = Apply.View({resource:'test.tmpl'});

@@ -1,4 +1,4 @@
-/*global Apply, describe, it, expect, ajax, jasmine */
+/*global Apply, describe, it, expect, ajaxSpy, jasmine */
 describe('Apply.Crud', function () {
     'use strict';
 
@@ -10,7 +10,7 @@ describe('Apply.Crud', function () {
 
     describe('save', function () {
         it('should delegate to "toString()" for data, "getUrl()" for the url and "contentType" for the contentType needed', function () {
-            ajax.getOptions(function (options) {
+            ajaxSpy.getOptions(function (options) {
                 expect(options.data).toBe('something');
                 expect(options.url).toBe('testUrl');
                 expect(options.contentType).toBe('text/xml');
@@ -28,7 +28,7 @@ describe('Apply.Crud', function () {
         });
 
         it('should POST by default', function () {
-            ajax.getOptions(function (options) {
+            ajaxSpy.getOptions(function (options) {
                 expect(options.type).toBe("POST");
             });
 
@@ -36,7 +36,7 @@ describe('Apply.Crud', function () {
         });
 
         it('should PUT if the object has a "getId()" function and it returns an id', function () {
-            ajax.getOptions(function (options) {
+            ajaxSpy.getOptions(function (options) {
                 expect(options.type).toBe("PUT");
             });
 

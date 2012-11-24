@@ -14,7 +14,7 @@
         return deferred.promise();
     };
 
-    window.ajax = {
+    window.ajaxSpy = {
         setResult:function (result, filter) {
             spyOn($, 'ajax').andCallFake(function (options) {
                 return fake(options, filter, result);

@@ -1,4 +1,4 @@
-/*global Apply, describe, it, expect, ajax */
+/*global Apply, describe, it, expect, ajaxSpy */
 describe('Apply.List', function () {
     'use strict';
 
@@ -110,7 +110,7 @@ describe('Apply.List', function () {
     });
 
     it('should support fetching from a server', function () {
-        ajax.setResult([
+        ajaxSpy.setResult([
             {name:'Don'},
             {name:'Pam'}
         ]);
