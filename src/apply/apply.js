@@ -583,10 +583,21 @@
 
     var div = '<div></div>';
 
+    var preventDefault = function(callback) {
+        return function(event) {
+            event.preventDefault();
+            return callback.apply(this, arguments);
+        };
+    };
+
     var bind = function ($el, events, context) {
         for (var key in events) {
             var event = key.split(' ').pop();
-            $el.on(event, key.replace(event, ''), proxy(events[key], context));
+            var callback = events[key];
+            if(event === 'submit') {
+                callback = preventDefault(callback);
+            }
+            $el.on(event, key.replace(event, ''), proxy(callback, context));
         }
     };
 

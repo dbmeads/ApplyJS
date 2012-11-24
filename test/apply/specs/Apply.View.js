@@ -72,9 +72,9 @@ describe('Apply.View', function () {
             expect(check).toHaveBeenCalled();
         });
 
-        it('should call back with the view set as the context', function() {
+        it('should call back with the view set as the context', function () {
             var check = jasmine.createSpy();
-            var view = Apply.View({pass: true, source:'<form><input type="submit"/></form>', events:{'submit':function () {
+            var view = Apply.View({pass:true, source:'<form><input type="submit"/></form>', events:{'submit':function () {
                 expect(this.pass).toBeTruthy();
                 check();
             }}}).singleton();
@@ -82,6 +82,21 @@ describe('Apply.View', function () {
             view.render().submit();
 
             expect(check).toHaveBeenCalled();
+        });
+
+        it('should be nice and prevent default on "submit"', function () {
+            var event = {preventDefault:function () {
+                this.called = true;
+            }, called:false};
+            spyOn($.fn, 'on').andCallFake(function (a, b, callback) {
+                callback.call(this, event);
+            });
+            var view = Apply.View({events:{'submit':function () {
+            }}}).singleton();
+
+            view.render().submit();
+
+            expect(event.called).toBe(true);
         });
     });
 
