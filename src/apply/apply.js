@@ -39,10 +39,8 @@
     var isMixin = function (obj) {
         if (isFunction(obj)) {
             return obj.mixin !== undefined;
-        }
-        var prototype = getPrototypeOf(obj);
-        if (prototype.constructor) {
-            return prototype.constructor.mixin !== undefined;
+        } else if(isObject(obj, true)) {
+            return obj.constructor.mixin !== undefined;
         }
         return false;
     };
