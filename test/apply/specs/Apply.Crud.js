@@ -47,15 +47,22 @@ describe('Apply.Crud', function () {
     });
 
     describe('fetch', function () {
-//        it('should "GET" data and callback with "context", "response" and "options"', function() {
-//            ajaxSpy.setResult({name:'Tom'});
-//            var callback = jasmine.createSpy('callback');
-//            var obj = new TestCrud();
-//
-//            obj.fetch(callback);
-//
-//            expect(callback).toHaveBeenCalledWith()
-//        });
+        it('should "GET" data and callback with "context", "response" and "options"', function() {
+            var result = {name:'Tom'};
+            ajaxSpy.setResult(result);
+            var called = false;
+            var callback = jasmine.createSpy();
+            var obj = new TestCrud();
+
+            obj.fetch(callback).then(function(model, response, options) {
+                expect(model).toBe(obj);
+                expect(response).toBe(response);
+                called = true;
+            });
+
+            expect(called).toBe(true);
+            expect(callback).toHaveBeenCalled();
+        });
 
     });
 
