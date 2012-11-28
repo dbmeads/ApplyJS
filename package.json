@@ -1,4 +1,9 @@
 {
+    "name": "ApplyJS",
+    "description": "JavaScript framework.",
+    "version": "0.0.1",
+    "homepage": "http://www.applyjs.com",
+    "author": "David Meads",
     "engines":{
         "node":">= 0.6.0"
     },
