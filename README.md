@@ -17,6 +17,7 @@ https://github.com/dbmeads/ApplyJS/tree/master/test/apply/specs
 - Handling ajax error scenarios
 - Make views proper promise objects
 - Super references
+- Create dependency abstraction layer
 - View delegation
 - Minified version
 - Code Coverage
