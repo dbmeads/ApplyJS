@@ -1,19 +1,24 @@
-ApplyJS is in its earliest stages so don't expect any miracles yet.
+ApplyJS
+=======
 
-Feel free to add issues for any features you would like to see or bugs you find and I'll do my best to get them resolved in a timely manner.
+[![Build Status](https://secure.travis-ci.org/dbmeads/ApplyJS.png)](http://travis-ci.org/dbmeads/ApplyJS)
+
+
+## Issues / Bugs
 
 https://github.com/dbmeads/ApplyJS/issues
 
-Current Priorities:
+## Documentation
+
+https://github.com/dbmeads/ApplyJS/tree/master/test/apply/specs
+
+## Backlog
 
 - Handling ajax error scenarios
 - Make views proper promise objects
 - Super references
 - View delegation
 - Minified version
-- Travis CI
 - Code Coverage
 - Benchmarking (benchmark.js)
 - Example apps (TodoMVC)
-
-Want documentation? https://github.com/dbmeads/ApplyJS/tree/master/test/apply/specs
