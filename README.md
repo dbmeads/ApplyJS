@@ -19,7 +19,6 @@ https://github.com/dbmeads/ApplyJS/tree/master/test/apply/specs
 - Super references
 - View delegation
 - Minified version
-- Travis CI
 - Code Coverage
 - Benchmarking (benchmark.js)
 - Example apps (TodoMVC)
