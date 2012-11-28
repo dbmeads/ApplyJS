@@ -6,7 +6,6 @@
         "test":"grunt default --verbose"
     },
     "dependencies":{
-        "phantomjs":"~0.2.2"
     },
     "devDependencies":{
         "grunt":"~0.3.17"
