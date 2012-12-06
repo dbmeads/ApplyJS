@@ -14,6 +14,8 @@ https://github.com/dbmeads/ApplyJS/tree/master/test/apply/specs
 
 ## Backlog
 
+- isDefined
+- isPlainObject
 - Handling ajax error scenarios
 - Make views proper promise objects
 - Super references
