@@ -26,8 +26,4 @@ describe('Apply.util.isObject', function () {
         expect(Apply.util.isObject(0)).toBe(false);
     });
 
-    it('should support a strict flag that will force only the typeof check', function () {
-        expect(Apply.util.isObject(function() {}, true)).toBe(false);
-    });
-
 });

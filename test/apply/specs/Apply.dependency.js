@@ -1,54 +1,80 @@
-/*global $, Apply, spyOn, it, expect, jasmine, ajaxSpy */
-describe('Apply.dependency', function() {
-	'use strict';
-	
-	it('should be able to load a file from the internet', function() {
-		ajaxSpy.setResult('var x = 1;');
-		
-		Apply.dependency('test.atl', function(result) {
-			expect(result).toBe('var x = 1;');
-		});
-		
-		expect($.ajax).toHaveBeenCalled();
-	});
-	
-	it('should return a cached version if the resource was already requested', function() {
-		ajaxSpy.setResult('var x = 1;');
-		
-		Apply.dependency('test2.atl');
-		Apply.dependency('test2.atl', function(result) {
-			expect(result).toBe('var x = 1;');
-		});
-		
-		expect($.ajax.callCount).toBe(1);
-	});
-	
-	it('should work with deferred objects', function() {
-		ajaxSpy.setResult('var x = 1;');
-		
-		var check = jasmine.createSpy('check');
-		
-		$.when(Apply.dependency('test3.atl')).then(function(result) {
-			expect(result).toBe('var x = 1;');
-			check();
-		});
-		
-		$.when(Apply.dependency('test3.atl')).then(function(result) {
-			expect(result).toBe('var x = 1;');
-			check();
-		});
-		
-		expect(check.callCount).toBe(2);
-		expect($.ajax.callCount).toBe(1);
-	});
-	
-	it('should execute .js files by default', function() {
-		ajaxSpy.setResult('window.testVar = 2;');
-		
-		Apply.dependency('test.js');
-		
-		/*global testVar*/
-		expect(testVar).toBe(2);
-	});
-	
+/*global $, Apply, ajaxSpy, window */
+describe('Apply.dependency', function () {
+    'use strict';
+
+    var callback;
+
+    beforeEach(function () {
+        callback = jasmine.createSpy();
+    });
+
+    describe('general', function() {
+        var text = 'hello!';
+
+        beforeEach(function() {
+            ajaxSpy.setResult(text);
+        });
+
+        it('should be able to load a file from the internet', function () {
+            Apply.dependency('test.atl').done(callback);
+
+            expect($.ajax.callCount).toBe(1);
+            expect(callback.callCount).toBe(1);
+            expect(callback.mostRecentCall.args[0]).toBe(text);
+        });
+
+        it('should return a cached version if the resource was already requested', function () {
+            Apply.dependency('test2.atl');
+            Apply.dependency('test2.atl').done(callback);
+
+            expect($.ajax.callCount).toBe(1);
+            expect(callback.callCount).toBe(1);
+            expect(callback.mostRecentCall.args[0]).toBe(text);
+        });
+
+        it('should be able to apply the promise to a target object', function () {
+            var target = {};
+            Apply.dependency('test.atl', target);
+
+            target.done(callback);
+
+            expect(callback.callCount).toBe(1);
+            expect(callback.mostRecentCall.args[0]).toBe(text);
+        });
+
+        it('should properly resolve promise objects created after initial dependency call', function() {
+            var target = {};
+            Apply.dependency('test.atl');
+            Apply.dependency('test.atl', target);
+
+            target.done(callback);
+
+            expect(callback.callCount).toBe(1);
+            expect(callback.mostRecentCall.args[0]).toBe(text);
+        });
+
+        it('should not return previously applied promise object when dependency is called again', function() {
+            Apply.dependency('test.atl', {prop:1});
+
+            var result = Apply.dependency(('test.atl'));
+
+            expect(result.prop).not.toBeDefined();
+        });
+
+    });
+
+    describe('JavaScript files', function() {
+
+        beforeEach(function() {
+            ajaxSpy.setResult('window.x = 1;');
+        });
+
+        it('should execute .js files by default', function () {
+            Apply.dependency('test.js');
+
+            /*global testVar*/
+            expect(window.x).toBe(1);
+        });
+    });
+
 });

@@ -6,6 +6,16 @@ module.exports = function(grunt) {
 		lint : {
 			files : ['grunt.js', 'src/**/*.js', 'test/**/*.js']
 		},
+        copy: {
+            dist: {
+                files: {
+                    'apply.min.js':'src/apply/apply.js'
+                }
+            }
+        },
+        mindirect: {
+            dist: ['apply.min.js']
+        },
 		watch : {
 			files : [ '<config:jasmine.specs>'],
 			tasks : 'jasmine'
@@ -40,9 +50,11 @@ module.exports = function(grunt) {
 		}
 	});
 
+    grunt.loadNpmTasks('grunt-contrib-copy');
+    grunt.loadNpmTasks('grunt-mindirect');
 	grunt.loadNpmTasks('grunt-jasmine-runner');
 
 	// Default task.
-	grunt.registerTask('default', 'lint jasmine');
+	grunt.registerTask('default', 'lint jasmine copy mindirect');
 
 };

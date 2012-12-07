@@ -2,6 +2,12 @@
 describe('Apply.View', function () {
     'use strict';
 
+    var called;
+
+    beforeEach(function() {
+        called = false;
+    });
+
     it('should create a div element by default', function () {
         var view = new Apply.View();
 
@@ -9,13 +15,6 @@ describe('Apply.View', function () {
 
         expect(view.$el).toBeDefined();
         expect(view.$el.is('div')).toBe(true);
-    });
-
-    it('should load and render a template if one is provided', function () {
-        ajaxSpy.setResult('<div><a href="javascript://">Link</a></div>');
-        var MyView = Apply.View({resource:'Apply.View.tmpl'});
-
-        expect(new MyView().render().html()).toBe('<a href="javascript://">Link</a>');
     });
 
     it('should work with the source property if provided', function () {
@@ -66,28 +65,47 @@ describe('Apply.View', function () {
         expect(view.data.name).toBe('Greg');
     });
 
+    describe('resources', function() {
+        it('should load and compile to a template if provided', function () {
+            ajaxSpy.setResult('<div><a href="javascript://">Link</a></div>');
+            var MyView = Apply.View({resource:'Apply.View.tmpl'});
+
+            expect(new MyView().render().html()).toBe('<a href="javascript://">Link</a>');
+        });
+
+        it('should add deferred behaviour to the view constructor', function() {
+            ajaxSpy.setResult('<div></div>');
+            var MyView = Apply.View({resource:'deferred.view.tmpl'});
+
+            MyView.then(function(response) {
+                expect(response).toBe('<div></div>');
+                called = true;
+            });
+
+            expect(called).toBe(true);
+        });
+    });
+
     describe('events', function () {
         it('should be able to bind supplied dom events and respond to them', function () {
-            var check = jasmine.createSpy();
             var view = Apply.View({source:'<form><input type="submit"/></form>', events:{'submit':function () {
-                check();
+                called = true;
             }}}).singleton();
 
             view.render().submit();
 
-            expect(check).toHaveBeenCalled();
+            expect(called).toBe(true);
         });
 
         it('should call back with the view set as the context', function () {
-            var check = jasmine.createSpy();
             var view = Apply.View({pass:true, source:'<form><input type="submit"/></form>', events:{'submit':function () {
                 expect(this.pass).toBeTruthy();
-                check();
+                called = true;
             }}}).singleton();
 
             view.render().submit();
 
-            expect(check).toHaveBeenCalled();
+            expect(called).toBe(true);
         });
 
         it('should be nice and prevent default on "submit"', function () {

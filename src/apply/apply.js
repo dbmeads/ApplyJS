@@ -1,6 +1,10 @@
-/*global window, document, jQuery, Zepto, setInterval, clearInterval */
+/*
+ * Copyright 2012 David Meads
+ * Released under the MIT license
+ */
 
-(function ($) {
+/*global window, document, jQuery, setInterval, clearInterval */
+(function ($, root) {
     'use strict';
 
     var Apply = {};
@@ -32,6 +36,22 @@
         return getPrototypeOf(obj) === Array.prototype;
     };
 
+    var isDefined = function() {
+        if(arguments[0] !== undefined) {
+            var parts = arguments[0].split('.');
+            var obj = arguments[1] || root;
+
+            for(var i = 0; i < parts.length; i++) {
+                if(!obj[parts[i]]) {
+                    return false;
+                }
+                obj = obj[parts[i]];
+            }
+            return true;
+        }
+        return false;
+    };
+
     var isFunction = function (obj) {
         return typeof obj === 'function';
     };
@@ -39,7 +59,7 @@
     var isMixin = function (obj) {
         if (isFunction(obj)) {
             return obj.mixin !== undefined;
-        } else if (isObject(obj, true)) {
+        } else if (isPlainObject(obj)) {
             return obj.constructor.mixin !== undefined;
         }
         return false;
@@ -49,8 +69,12 @@
         return typeof  obj === 'number';
     };
 
-    var isObject = function (obj, strict) {
-        return (!strict && isFunction(obj)) || typeof obj === 'object';
+    var isObject = function (obj) {
+        return isFunction(obj) || typeof obj === 'object';
+    };
+
+    var isPlainObject = function(obj) {
+        return !isArray(obj) && typeof obj === 'object';
     };
 
     var isString = function (obj) {
@@ -60,10 +84,12 @@
     Apply.util = {
         getPrototypeOf:getPrototypeOf,
         isArray:isArray,
+        isDefined:isDefined,
         isFunction:isFunction,
         isMixin:isMixin,
         isNumber:isNumber,
         isObject:isObject,
+        isPlainObject:isPlainObject,
         isString:isString
     };
 
@@ -138,10 +164,8 @@
         }
     };
 
-    var dependency = Apply.dependency = function (resource, callback) {
-        if (resources[resource]) {
-            resources[resource].then(callback);
-        } else {
+    var dependency = Apply.dependency = function (resource, promise) {
+        if(!resources[resource]) {
             var deferred = outstanding.add($.ajax({url:resource}));
             if (endsWith(resource, '.js')) {
                 deferred.then(function (source) {
@@ -149,9 +173,9 @@
                     return eval(source);
                 });
             }
-            resources[resource] = deferred.then(callback);
+            resources[resource] = deferred;
         }
-        return resources[resource].promise();
+        return resources[resource].promise(promise);
     };
 
     dependency.wait = proxy(outstanding.wait, outstanding);
@@ -162,7 +186,7 @@
 
     var namespace = Apply.namespace = function () {
         var args = slice.apply(arguments);
-        var obj = window;
+        var obj = root;
         if (!isString(args[0])) {
             obj = args.shift();
             if (!obj) {
@@ -307,7 +331,7 @@
     var singleton = Apply.singleton = function () {
         var args = slice.apply(arguments);
         var nsargs = [];
-        if (isObject(args[0], true)) {
+        if (isPlainObject(args[0])) {
             nsargs.push(args.shift());
         }
         if (isString(args[0])) {
@@ -680,7 +704,8 @@
             var prototype = this.prototype;
             if (prototype.resource) {
                 delete prototype.template;
-                this.deferred = dependency(prototype.urlRoot + prototype.resource, function (source) {
+                dependency(prototype.urlRoot + prototype.resource).promise(this);
+                this.done(function (source) {
                     peel(prototype, source);
                 });
             } else {
@@ -708,8 +733,8 @@
             }
         },
         check:function () {
-            if (window.location.hash !== this.current) {
-                var route = this.current = window.location.hash;
+            if (root.location.hash !== this.current) {
+                var route = this.current = root.location.hash;
                 var parts = route.replace(/^#?\/?/, '').split('/');
                 var args = [];
                 var fragments = this.routes;
@@ -894,6 +919,6 @@
     };
 
 
-    window.Apply = Apply;
+    root.Apply = Apply;
 
-})(jQuery || Zepto);
+})(jQuery, window);
