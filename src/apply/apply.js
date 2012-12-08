@@ -136,10 +136,10 @@
         }
     };
 
-    Apply.collection = {
+    extend(Apply, {
         last:last,
         loop:loop
-    };
+    });
 
 
     // Apply.string
