@@ -81,7 +81,7 @@
         return typeof obj === 'string';
     };
 
-    Apply.util = {
+    extend(Apply, {
         getPrototypeOf:getPrototypeOf,
         isArray:isArray,
         isDefined:isDefined,
@@ -91,7 +91,7 @@
         isObject:isObject,
         isPlainObject:isPlainObject,
         isString:isString
-    };
+    });
 
 
     // Apply.collection

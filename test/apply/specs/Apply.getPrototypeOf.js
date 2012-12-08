@@ -1,9 +1,9 @@
 /*global Apply, describe, it, expect */
-describe('Apply.util.getPrototype', function () {
+describe('Apply.getPrototype', function () {
     'use strict';
 
     it('should handle undefined parameters', function () {
-        expect(Apply.util.getPrototypeOf()).toBe(undefined);
+        expect(Apply.getPrototypeOf()).toBe(undefined);
     });
 
     it('should be able to return an objects prototype', function () {
@@ -12,18 +12,18 @@ describe('Apply.util.getPrototype', function () {
 
         var obj = new Constructor();
 
-        expect(Apply.util.getPrototypeOf(obj)).toBe(Constructor.prototype);
+        expect(Apply.getPrototypeOf(obj)).toBe(Constructor.prototype);
     });
 
     it('should be able to detect a function and return it\'s prototype', function () {
         var func = function () {
         };
 
-        expect(Apply.util.getPrototypeOf(func)).toBe(func.prototype);
+        expect(Apply.getPrototypeOf(func)).toBe(func.prototype);
     });
 
     it('should recognize that a primitive is not an object and return undefined', function() {
-       expect(Apply.util.getPrototypeOf(1)).toBeUndefined();
+       expect(Apply.getPrototypeOf(1)).toBeUndefined();
     });
 
 });
