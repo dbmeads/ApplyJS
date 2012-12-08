@@ -36,13 +36,13 @@
         return getPrototypeOf(obj) === Array.prototype;
     };
 
-    var isDefined = function() {
-        if(arguments[0] !== undefined) {
+    var isDefined = function () {
+        if (arguments[0] !== undefined) {
             var parts = arguments[0].split('.');
             var obj = arguments[1] || root;
 
-            for(var i = 0; i < parts.length; i++) {
-                if(!obj[parts[i]]) {
+            for (var i = 0; i < parts.length; i++) {
+                if (!obj[parts[i]]) {
                     return false;
                 }
                 obj = obj[parts[i]];
@@ -54,6 +54,22 @@
 
     var isFunction = function (obj) {
         return typeof obj === 'function';
+    };
+
+    var isInstanceOf = function (constructor, instance) {
+        if (isFunction(constructor)) {
+            if (getPrototypeOf(instance) === constructor.prototype) {
+                return true;
+            } else if (isDefined('constructor.mixins', instance)) {
+                var mixins = instance.constructor.mixins;
+                for (var i = 0; i < mixins.length; i++) {
+                    if (mixins[i] === constructor.prototype) {
+                        return true;
+                    }
+                }
+            }
+        }
+        return false;
     };
 
     var isMixin = function (obj) {
@@ -73,7 +89,7 @@
         return isFunction(obj) || typeof obj === 'object';
     };
 
-    var isPlainObject = function(obj) {
+    var isPlainObject = function (obj) {
         return !isArray(obj) && typeof obj === 'object';
     };
 
@@ -86,6 +102,7 @@
         isArray:isArray,
         isDefined:isDefined,
         isFunction:isFunction,
+        isInstanceOf:isInstanceOf,
         isMixin:isMixin,
         isNumber:isNumber,
         isObject:isObject,
@@ -165,7 +182,7 @@
     };
 
     var dependency = Apply.dependency = function (resource, promise) {
-        if(!resources[resource]) {
+        if (!resources[resource]) {
             var deferred = outstanding.add($.ajax({url:resource}));
             if (endsWith(resource, '.js')) {
                 deferred.then(function (source) {
@@ -279,6 +296,9 @@
                 constructor.callbacks.push(callback);
             }
             return constructor;
+        };
+        constructor.prototype.isInstanceOf = function (constructor) {
+            return isInstanceOf(constructor, this);
         };
         return constructor;
     };
@@ -440,10 +460,10 @@
         var deferred = $.Deferred();
         var options = {};
         for (var i = 1; i < arguments.length; i++) {
-            if(arguments[i]) {
+            if (arguments[i]) {
                 if (isFunction(arguments[i])) {
                     deferred.then(arguments[i]);
-                } else if(arguments[i].success) {
+                } else if (arguments[i].success) {
                     deferred.then(arguments[i].success);
                     delete arguments[i].success;
                 }
