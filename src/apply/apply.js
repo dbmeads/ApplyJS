@@ -195,6 +195,14 @@
         return resources[resource].promise(promise);
     };
 
+    Apply.dependencies = function() {
+        var deferreds = [];
+        loop(arguments, function(resource) {
+            deferreds.push(dependency(resource));
+        });
+        return when(deferreds);
+    };
+
     dependency.wait = proxy(outstanding.wait, outstanding);
 
 
