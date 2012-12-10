@@ -14,7 +14,7 @@ https://github.com/dbmeads/ApplyJS/tree/master/test/apply/specs
 
 ## Backlog
 
-- AMD support
+- AMD / CJS support
 - Handling ajax error scenarios
 - Super references
 - Create dependency abstraction layer
