@@ -3,7 +3,7 @@
  * Released under the MIT license
  */
 
-/*global document, jQuery, setInterval, clearInterval, define */
+/*global jQuery, setInterval, clearInterval, define */
 (function (root) {
     'use strict';
 
@@ -813,9 +813,7 @@
         // -----------
 
         apply.ready = function (callback) {
-            $(document).ready(function () {
-                dependency.wait(callback);
-            });
+            dependency.wait(callback);
         };
 
 
@@ -959,8 +957,8 @@
     }
 
 
-    // AMD Support
-    // -----------
+    // AMD / CommonJS Support
+    // ----------------------
 
     if (typeof define === 'function' && define.amd) {
         define("applyjs", ['jquery'], function (jquery) {
@@ -968,7 +966,7 @@
             return apply;
         });
     } else if (typeof require === 'function') {
-        exports.apply = apply || init(require('jquery'), root);
+        exports = apply = apply || init(require('jquery'), exports);
     } else if (!apply) {
         throw 'ApplyJS was unable to locate jQuery.';
     }
