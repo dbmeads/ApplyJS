@@ -1,9 +1,9 @@
 {
-    "name": "apply",
+    "name": "applyjs",
     "description": "ApplyJS - Modular. Declaritive. Fun.",
     "version": "0.0.2",
     "url": "http://www.applyjs.com",
-    "author": "David Meads",
+    "author": "David Meads <dbmeads@gmail.com>",
     "repository":{
         "type":"git",
         "url":"git://github.com/dbmeads/ApplyJS.git"

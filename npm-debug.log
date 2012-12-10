@@ -1,0 +1,195 @@
+0 info it worked if it ends with ok
+1 verbose cli [ 'node', '/usr/local/bin/npm', 'publish' ]
+2 info using npm@1.1.65
+3 info using node@v0.8.14
+4 verbose publish [ '.' ]
+5 verbose read json /code/ApplyJS/package.json
+6 verbose cache add [ '.', null ]
+7 silly cache add name=undefined spec="." args=[".",null]
+8 verbose parsed url { pathname: '.', path: '.', href: '.' }
+9 silly lockFile 3a52ce78- .
+10 verbose lock . /Users/davidmeads/.npm/3a52ce78-.lock
+11 verbose read json package.json
+12 verbose tar pack [ '/var/folders/j1/jg_b43l177z9y1b6vs72qb_h0000gn/T/npm-2651/1355104471300-0.8881768370047212/tmp.tgz',
+12 verbose tar pack   '.' ]
+13 verbose tarball /var/folders/j1/jg_b43l177z9y1b6vs72qb_h0000gn/T/npm-2651/1355104471300-0.8881768370047212/tmp.tgz
+14 verbose folder .
+15 info prepublish apply@0.0.2
+16 silly lockFile e286d015-71300-0-8881768370047212-tmp-tgz /var/folders/j1/jg_b43l177z9y1b6vs72qb_h0000gn/T/npm-2651/1355104471300-0.8881768370047212/tmp.tgz
+17 verbose lock /var/folders/j1/jg_b43l177z9y1b6vs72qb_h0000gn/T/npm-2651/1355104471300-0.8881768370047212/tmp.tgz /Users/davidmeads/.npm/e286d015-71300-0-8881768370047212-tmp-tgz.lock
+18 silly lockFile e286d015-71300-0-8881768370047212-tmp-tgz /var/folders/j1/jg_b43l177z9y1b6vs72qb_h0000gn/T/npm-2651/1355104471300-0.8881768370047212/tmp.tgz
+19 verbose tar unpack /var/folders/j1/jg_b43l177z9y1b6vs72qb_h0000gn/T/npm-2651/1355104471300-0.8881768370047212/tmp.tgz
+20 silly lockFile 8704b9f7-71300-0-8881768370047212-package /var/folders/j1/jg_b43l177z9y1b6vs72qb_h0000gn/T/npm-2651/1355104471300-0.8881768370047212/package
+21 verbose lock /var/folders/j1/jg_b43l177z9y1b6vs72qb_h0000gn/T/npm-2651/1355104471300-0.8881768370047212/package /Users/davidmeads/.npm/8704b9f7-71300-0-8881768370047212-package.lock
+22 silly gunzTarPerm modes [ '755', '644' ]
+23 silly gunzTarPerm extractEntry package.json
+24 silly gunzTarPerm extractEntry .npmignore
+25 silly gunzTarPerm extractEntry README.md
+26 silly gunzTarPerm extractEntry apply.min.js
+27 silly gunzTarPerm extractEntry grunt.js
+28 silly gunzTarPerm extractEntry .travis.yml
+29 silly gunzTarPerm extractEntry src/apply/apply.js
+30 silly gunzTarPerm extractEntry test/apply/specs/Apply.cascade.js
+31 silly gunzTarPerm extractEntry test/apply/specs/Apply.isMixin.js
+32 silly gunzTarPerm extractEntry test/apply/specs/Apply.isNumber.js
+33 silly gunzTarPerm extractEntry test/apply/specs/Apply.isObject.js
+34 silly gunzTarPerm extractEntry test/apply/specs/Apply.isPlainObject.js
+35 silly gunzTarPerm extractEntry test/apply/specs/Apply.isInstanceOf.js
+36 silly gunzTarPerm extractEntry test/apply/specs/Apply.List.js
+37 silly gunzTarPerm extractEntry test/apply/specs/Apply.logger.js
+38 silly gunzTarPerm extractEntry test/apply/specs/Apply.mixin.js
+39 silly gunzTarPerm extractEntry test/apply/specs/Apply.mixins.view.dataBinding.js
+40 silly gunzTarPerm extractEntry test/apply/specs/Apply.mixins.view.renderer.children.js
+41 silly gunzTarPerm extractEntry test/apply/specs/Apply.isFunction.js
+42 silly gunzTarPerm extractEntry test/apply/specs/Apply.mixins.view.renderer.dynamic.js
+43 silly gunzTarPerm extractEntry test/apply/specs/Apply.isDefined.js
+44 silly gunzTarPerm extractEntry test/apply/specs/Apply.mixins.view.renderer.list.js
+45 silly gunzTarPerm extractEntry test/apply/specs/Apply.isArray.js
+46 silly gunzTarPerm extractEntry test/apply/specs/Apply.Model.js
+47 silly gunzTarPerm extractEntry test/apply/specs/Apply.getPrototypeOf.js
+48 silly gunzTarPerm extractEntry test/apply/specs/Apply.namespace.js
+49 silly gunzTarPerm extractEntry test/apply/specs/Apply.Events.js
+50 silly gunzTarPerm extractEntry test/apply/specs/Apply.route.js
+51 silly gunzTarPerm extractEntry test/apply/specs/Apply.dependency.js
+52 silly gunzTarPerm extractEntry test/apply/specs/Apply.singleton.js
+53 silly gunzTarPerm extractEntry test/apply/specs/Apply.dependencies.js
+54 silly gunzTarPerm extractEntry test/apply/specs/Apply.string.isNumeric.js
+55 silly gunzTarPerm extractEntry test/apply/specs/Apply.Crud.js
+56 silly gunzTarPerm extractEntry test/apply/specs/Apply.View.js
+57 silly gunzTarPerm extractEntry test/apply/specs/Apply.isString.js
+58 silly gunzTarPerm extractEntry test/helpers/ajax.js
+59 silly gunzTarPerm extractEntry lib/jquery/1.8.2/jquery.js
+60 silly gunzTarPerm extractEntry LICENSE-MIT
+61 verbose read json /var/folders/j1/jg_b43l177z9y1b6vs72qb_h0000gn/T/npm-2651/1355104471300-0.8881768370047212/package/package.json
+62 silly lockFile 8704b9f7-71300-0-8881768370047212-package /var/folders/j1/jg_b43l177z9y1b6vs72qb_h0000gn/T/npm-2651/1355104471300-0.8881768370047212/package
+63 verbose from cache /var/folders/j1/jg_b43l177z9y1b6vs72qb_h0000gn/T/npm-2651/1355104471300-0.8881768370047212/package/package.json
+64 verbose tar pack [ '/Users/davidmeads/.npm/apply/0.0.2/package.tgz',
+64 verbose tar pack   '/var/folders/j1/jg_b43l177z9y1b6vs72qb_h0000gn/T/npm-2651/1355104471300-0.8881768370047212/package' ]
+65 verbose tarball /Users/davidmeads/.npm/apply/0.0.2/package.tgz
+66 verbose folder /var/folders/j1/jg_b43l177z9y1b6vs72qb_h0000gn/T/npm-2651/1355104471300-0.8881768370047212/package
+67 silly lockFile b898e98e-eads-npm-apply-0-0-2-package-tgz /Users/davidmeads/.npm/apply/0.0.2/package.tgz
+68 verbose lock /Users/davidmeads/.npm/apply/0.0.2/package.tgz /Users/davidmeads/.npm/b898e98e-eads-npm-apply-0-0-2-package-tgz.lock
+69 silly lockFile b898e98e-eads-npm-apply-0-0-2-package-tgz /Users/davidmeads/.npm/apply/0.0.2/package.tgz
+70 silly lockFile 71b429c6-vidmeads-npm-apply-0-0-2-package /Users/davidmeads/.npm/apply/0.0.2/package
+71 verbose lock /Users/davidmeads/.npm/apply/0.0.2/package /Users/davidmeads/.npm/71b429c6-vidmeads-npm-apply-0-0-2-package.lock
+72 silly lockFile 71b429c6-vidmeads-npm-apply-0-0-2-package /Users/davidmeads/.npm/apply/0.0.2/package
+73 verbose tar unpack /Users/davidmeads/.npm/apply/0.0.2/package.tgz
+74 silly lockFile 71b429c6-vidmeads-npm-apply-0-0-2-package /Users/davidmeads/.npm/apply/0.0.2/package
+75 verbose lock /Users/davidmeads/.npm/apply/0.0.2/package /Users/davidmeads/.npm/71b429c6-vidmeads-npm-apply-0-0-2-package.lock
+76 silly gunzTarPerm modes [ '755', '644' ]
+77 silly gunzTarPerm extractEntry package.json
+78 silly gunzTarPerm extractEntry .npmignore
+79 silly gunzTarPerm extractEntry README.md
+80 silly gunzTarPerm extractEntry apply.min.js
+81 silly gunzTarPerm extractEntry grunt.js
+82 silly gunzTarPerm extractEntry .travis.yml
+83 silly gunzTarPerm extractEntry lib/jquery/1.8.2/jquery.js
+84 silly gunzTarPerm extractEntry LICENSE-MIT
+85 silly gunzTarPerm extractEntry src/apply/apply.js
+86 silly gunzTarPerm extractEntry test/apply/specs/Apply.cascade.js
+87 silly gunzTarPerm extractEntry test/apply/specs/Apply.isMixin.js
+88 silly gunzTarPerm extractEntry test/apply/specs/Apply.isNumber.js
+89 silly gunzTarPerm extractEntry test/apply/specs/Apply.isObject.js
+90 silly gunzTarPerm extractEntry test/apply/specs/Apply.isPlainObject.js
+91 silly gunzTarPerm extractEntry test/apply/specs/Apply.isInstanceOf.js
+92 silly gunzTarPerm extractEntry test/apply/specs/Apply.List.js
+93 silly gunzTarPerm extractEntry test/apply/specs/Apply.logger.js
+94 silly gunzTarPerm extractEntry test/apply/specs/Apply.mixin.js
+95 silly gunzTarPerm extractEntry test/apply/specs/Apply.mixins.view.dataBinding.js
+96 silly gunzTarPerm extractEntry test/apply/specs/Apply.mixins.view.renderer.children.js
+97 silly gunzTarPerm extractEntry test/apply/specs/Apply.isFunction.js
+98 silly gunzTarPerm extractEntry test/apply/specs/Apply.mixins.view.renderer.dynamic.js
+99 silly gunzTarPerm extractEntry test/apply/specs/Apply.isDefined.js
+100 silly gunzTarPerm extractEntry test/apply/specs/Apply.mixins.view.renderer.list.js
+101 silly gunzTarPerm extractEntry test/apply/specs/Apply.isArray.js
+102 silly gunzTarPerm extractEntry test/apply/specs/Apply.Model.js
+103 silly gunzTarPerm extractEntry test/apply/specs/Apply.getPrototypeOf.js
+104 silly gunzTarPerm extractEntry test/apply/specs/Apply.namespace.js
+105 silly gunzTarPerm extractEntry test/apply/specs/Apply.Events.js
+106 silly gunzTarPerm extractEntry test/apply/specs/Apply.route.js
+107 silly gunzTarPerm extractEntry test/apply/specs/Apply.dependency.js
+108 silly gunzTarPerm extractEntry test/apply/specs/Apply.singleton.js
+109 silly gunzTarPerm extractEntry test/apply/specs/Apply.dependencies.js
+110 silly gunzTarPerm extractEntry test/apply/specs/Apply.string.isNumeric.js
+111 silly gunzTarPerm extractEntry test/apply/specs/Apply.Crud.js
+112 silly gunzTarPerm extractEntry test/apply/specs/Apply.View.js
+113 silly gunzTarPerm extractEntry test/apply/specs/Apply.isString.js
+114 silly gunzTarPerm extractEntry test/helpers/ajax.js
+115 verbose read json /Users/davidmeads/.npm/apply/0.0.2/package/package.json
+116 silly lockFile 71b429c6-vidmeads-npm-apply-0-0-2-package /Users/davidmeads/.npm/apply/0.0.2/package
+117 silly shasum updated bytes 40960
+118 silly shasum updated bytes 40960
+119 silly shasum updated bytes 18047
+120 info shasum 3183300cdb82d5be70d528d687289af0ec9ce88d
+120 info shasum /Users/davidmeads/.npm/apply/0.0.2/package.tgz
+121 verbose from cache /Users/davidmeads/.npm/apply/0.0.2/package/package.json
+122 verbose chmod /Users/davidmeads/.npm/apply/0.0.2/package.tgz 644
+123 verbose chown /Users/davidmeads/.npm/apply/0.0.2/package.tgz [ 501, 20 ]
+124 silly lockFile 3a52ce78- .
+125 silly publish { name: 'apply',
+125 silly publish   description: 'ApplyJS - Modular. Declaritive. Fun.',
+125 silly publish   version: '0.0.2',
+125 silly publish   url: 'http://www.applyjs.com',
+125 silly publish   author: { name: 'David Meads', email: 'dbmeads@gmail.com' },
+125 silly publish   repository: { type: 'git', url: 'git://github.com/dbmeads/ApplyJS.git' },
+125 silly publish   bugs: { url: 'https://github.com/dbmeads/ApplyJS/issues' },
+125 silly publish   engines: { node: '*' },
+125 silly publish   scripts: { test: 'grunt default --verbose' },
+125 silly publish   dependencies: { jquery: '1.8.3' },
+125 silly publish   devDependencies:
+125 silly publish    { 'grunt-contrib-copy': '0.3.2',
+125 silly publish      'grunt-mindirect': '0.1.3',
+125 silly publish      'grunt-jasmine-runner': 'latest',
+125 silly publish      grunt: '~0.3.17' },
+125 silly publish   readme: 'ApplyJS\n=======\n\n[![Build Status](https://secure.travis-ci.org/dbmeads/ApplyJS.png)](http://travis-ci.org/dbmeads/ApplyJS)\n\n\n## Issues / Bugs\n\nhttps://github.com/dbmeads/ApplyJS/issues\n\n## Documentation\n\nhttps://github.com/dbmeads/ApplyJS/tree/master/test/apply/specs\n\n## Backlog\n\n- AMD support\n- Handling ajax error scenarios\n- Super references\n- Create dependency abstraction layer\n- View delegation\n- Code Coverage\n- Benchmarking (benchmark.js)\n- Example apps (TodoMVC)\n',
+125 silly publish   readmeFilename: 'README.md',
+125 silly publish   _id: 'apply@0.0.2',
+125 silly publish   dist: { shasum: '3183300cdb82d5be70d528d687289af0ec9ce88d' } }
+126 verbose url raw apply
+127 verbose url resolving [ 'https://registry.npmjs.org/', './apply' ]
+128 verbose url resolved https://registry.npmjs.org/apply
+129 info trying registry request attempt 1 at 20:54:32
+130 http PUT https://registry.npmjs.org/apply
+131 http 409 https://registry.npmjs.org/apply
+132 verbose url raw apply
+133 verbose url resolving [ 'https://registry.npmjs.org/', './apply' ]
+134 verbose url resolved https://registry.npmjs.org/apply
+135 info trying registry request attempt 1 at 20:54:32
+136 http GET https://registry.npmjs.org/apply
+137 http 200 https://registry.npmjs.org/apply
+138 verbose url raw apply/0.0.2/-tag/latest
+139 verbose url resolving [ 'https://registry.npmjs.org/', './apply/0.0.2/-tag/latest' ]
+140 verbose url resolved https://registry.npmjs.org/apply/0.0.2/-tag/latest
+141 info trying registry request attempt 1 at 20:54:32
+142 http PUT https://registry.npmjs.org/apply/0.0.2/-tag/latest
+143 http 403 https://registry.npmjs.org/apply/0.0.2/-tag/latest
+144 error publish Error sending version data
+145 error Error: forbidden user: dbmeads not authorized to modify apply
+145 error Changed: description "Better version of Function.prototype.apply" -> "ApplyJS - Modular. Declaritive. Fun."
+145 error Changed: dist-tags.latest "0.0.0" -> "0.0.2"
+145 error Added: versions.0.0.2
+145 error Changed: time.modified "2012-05-04T09:40:34.611Z" -> "2012-12-10T01:53:44.091Z"
+145 error Added: time.0.0.2
+145 error Changed: author.name "Daniel Brockman" -> "David Meads"
+145 error Changed: author.email "@dbrock" -> "dbmeads@gmail.com"
+145 error Added: repository: apply/0.0.2/-tag/latest
+145 error     at RegClient.<anonymous> (/usr/local/lib/node_modules/npm/node_modules/npm-registry-client/lib/request.js:259:14)
+145 error     at Request.init.self.callback (/usr/local/lib/node_modules/npm/node_modules/request/main.js:120:22)
+145 error     at Request.EventEmitter.emit (events.js:99:17)
+145 error     at Request.<anonymous> (/usr/local/lib/node_modules/npm/node_modules/request/main.js:648:16)
+145 error     at Request.EventEmitter.emit (events.js:126:20)
+145 error     at IncomingMessage.Request.start.self.req.self.httpModule.request.buffer (/usr/local/lib/node_modules/npm/node_modules/request/main.js:610:14)
+145 error     at IncomingMessage.EventEmitter.emit (events.js:126:20)
+145 error     at IncomingMessage._emitEnd (http.js:366:10)
+145 error     at HTTPParser.parserOnMessageComplete [as onMessageComplete] (http.js:149:23)
+145 error     at CleartextStream.socketOnData [as ondata] (http.js:1367:20)
+146 error If you need help, you may report this log at:
+146 error     <http://github.com/isaacs/npm/issues>
+146 error or email it to:
+146 error     <npm-@googlegroups.com>
+147 error System Darwin 11.4.0
+148 error command "node" "/usr/local/bin/npm" "publish"
+149 error cwd /code/ApplyJS
+150 error node -v v0.8.14
+151 error npm -v 1.1.65
+152 verbose exit [ 1, true ]
