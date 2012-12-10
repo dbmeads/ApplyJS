@@ -1,29 +1,29 @@
-/*global Apply, describe, it, expect */
-describe('Apply.isObject', function () {
+/*global apply, describe, it, expect */
+describe('apply.isObject', function () {
     'use strict';
 
     it('should be able to tell an object is an object', function () {
-        expect(Apply.isObject({})).toBe(true);
+        expect(apply.isObject({})).toBe(true);
     });
 
     it('should be able to tell a string isn\'t an object', function () {
-        expect(Apply.isObject('')).toBe(false);
+        expect(apply.isObject('')).toBe(false);
     });
 
     it('should be able to tell an array is an object', function () {
-        expect(Apply.isObject([])).toBe(true);
+        expect(apply.isObject([])).toBe(true);
     });
 
     it('should be able to tell a function is an object', function () {
-        expect(Apply.isObject(function() {})).toBe(true);
+        expect(apply.isObject(function() {})).toBe(true);
     });
 
     it('should be able to tell undefined isn\'t an object', function () {
-        expect(Apply.isObject(undefined)).toBe(false);
+        expect(apply.isObject(undefined)).toBe(false);
     });
 
     it('should be able to tell a number isn\'t an object', function () {
-        expect(Apply.isObject(0)).toBe(false);
+        expect(apply.isObject(0)).toBe(false);
     });
 
 });

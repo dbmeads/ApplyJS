@@ -1,8 +1,8 @@
-/*global window, Apply, mixin, it, expect, Mixin, collection */
-describe('Apply.mixin', function () {
+/*global window, apply, mixin, it, expect, Mixin, collection */
+describe('apply.mixin', function () {
     'use strict';
 
-    Apply.toScope(window);
+    apply.toScope(window);
 
     it('should be able to provide an extended constructor', function () {
         var result = mixin({prop1:'test'});

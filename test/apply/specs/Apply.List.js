@@ -1,9 +1,9 @@
-/*global Apply, describe, it, expect, ajaxSpy */
-describe('Apply.List', function () {
+/*global apply, describe, it, expect, ajaxSpy */
+describe('apply.List', function () {
     'use strict';
 
     it('should recognize the size of a list passed into the constructor', function () {
-        var list = new Apply.List([
+        var list = new apply.List([
             {name:'Frank'},
             {name:'Pete'}
         ]);
@@ -11,8 +11,8 @@ describe('Apply.List', function () {
         expect(list.size()).toBe(2);
     });
 
-    it('should support a get method that returns an Apply.Model from the list by default', function () {
-        var list = new Apply.List([
+    it('should support a get method that returns an apply.Model from the list by default', function () {
+        var list = new apply.List([
             {name:'Frank'},
             {name:'Pete'}
         ]);
@@ -22,13 +22,13 @@ describe('Apply.List', function () {
     });
 
     it('should not add a model or fail if nothing is passed to the constructor', function () {
-        var list = new Apply.List();
+        var list = new apply.List();
 
         expect(list.size()).toBe(0);
     });
 
     it('should support an add method that allows the addition of additional objects to the list', function () {
-        var list = new Apply.List([
+        var list = new apply.List([
             {name:'Frank'}
         ]);
 
@@ -44,7 +44,7 @@ describe('Apply.List', function () {
     });
 
     it('should support the addition of a single object through the add method', function () {
-        var list = new Apply.List([
+        var list = new apply.List([
             {name:'Frank'}
         ]);
 
@@ -56,8 +56,8 @@ describe('Apply.List', function () {
     });
 
     it('should support mapping to other models', function () {
-        var MyModel = Apply.Model({prop:'prop'});
-        var MyList = Apply.List({mapping:MyModel});
+        var MyModel = apply.Model({prop:'prop'});
+        var MyList = apply.List({mapping:MyModel});
 
         var object = new MyList([
             {name:'Frank'}
@@ -68,23 +68,23 @@ describe('Apply.List', function () {
     });
 
     it('should support the addition of models', function () {
-        var MyModel = Apply.Model();
-        var MyList = Apply.List({mapping:MyModel});
+        var MyModel = apply.Model();
+        var MyList = apply.List({mapping:MyModel});
         var object = new MyModel();
 
         expect(new MyList(object).get(0)).toBe(object);
     });
 
     it('should reject the addition of models and other mixins that do not match the mapping', function () {
-        var DifferentModel = Apply.Model();
+        var DifferentModel = apply.Model();
 
         expect(function () {
-            new Apply.List(new DifferentModel());
+            new apply.List(new DifferentModel());
         }).toThrow(new Error('Attempted to add an incompatible model to a list.'));
     });
 
     it('should support the removal of a model from a list', function () {
-        var list = new Apply.List([
+        var list = new apply.List([
             {name:'Todd'},
             {name:'Jim'}
         ]);
@@ -97,7 +97,7 @@ describe('Apply.List', function () {
     });
 
     it('should support the removal of an array of models', function () {
-        var list = new Apply.List([
+        var list = new apply.List([
             {name:'Todd'},
             {name:'Jim'},
             {name:'frank'}
@@ -114,7 +114,7 @@ describe('Apply.List', function () {
             {name:'Don'},
             {name:'Pam'}
         ]);
-        var list = new (Apply.List({urlRoot:'/animals'}))();
+        var list = new (apply.List({urlRoot:'/animals'}))();
 
         list.fetch(function (list) {
             expect(list.size()).toBe(2);
@@ -124,7 +124,7 @@ describe('Apply.List', function () {
     });
 
     it('should have a getUrl function that returns urlRoot by default', function () {
-        expect(new (Apply.List({urlRoot:'test'}))().getUrl()).toBe('test');
+        expect(new (apply.List({urlRoot:'test'}))().getUrl()).toBe('test');
     });
 
     it('should be able to deflate back into the base javascript objects', function () {
@@ -133,12 +133,12 @@ describe('Apply.List', function () {
             {name:'Dan'}
         ];
 
-        expect(new Apply.List(data).deflate()).toEqual(data);
+        expect(new apply.List(data).deflate()).toEqual(data);
     });
 
     describe('events', function () {
         it('should support "on" and "trigger"', function () {
-            var list = new Apply.List();
+            var list = new apply.List();
             var callback = jasmine.createSpy();
 
             list.on('test', callback);
@@ -148,7 +148,7 @@ describe('Apply.List', function () {
         });
 
         it('should trigger an "add" event when a model is added', function () {
-            var list = new Apply.List();
+            var list = new apply.List();
             var callback = jasmine.createSpy();
 
             list.on('add', callback);
@@ -158,7 +158,7 @@ describe('Apply.List', function () {
         });
 
         it('should trigger a "remove" event when a model is removed', function () {
-            var list = new Apply.List({name:'Tedd'});
+            var list = new apply.List({name:'Tedd'});
             var model = list.get(0);
             var callback = jasmine.createSpy();
 

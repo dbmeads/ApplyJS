@@ -1,8 +1,8 @@
-/*global Apply, describe, it, expect */
-describe('Apply.mixins.view.dataBinding', function () {
+/*global apply, describe, it, expect */
+describe('apply.mixins.view.dataBinding', function () {
     'use strict';
 
-    var DataBindingView = Apply.View(Apply.mixins.view.dataBinding);
+    var DataBindingView = apply.View(apply.mixins.view.dataBinding);
 
     it('should render text or value for any elements with the "data" attribute', function () {
         var MyView = DataBindingView({source:'<div><span data="name"></span><input data="age" /></div>'});
@@ -17,7 +17,7 @@ describe('Apply.mixins.view.dataBinding', function () {
 
     it('should respond to model updates by re-rendering previously identified view elements', function () {
         var MyView = DataBindingView({source:'<div><span data="name"></span><input data="age" /></div>'});
-        var model = new Apply.Model({name:'Frank', age:40});
+        var model = new apply.Model({name:'Frank', age:40});
         var view = new MyView({data:model});
         var $el = view.render();
 
@@ -29,7 +29,7 @@ describe('Apply.mixins.view.dataBinding', function () {
 
     it('should be capable of automatically updating a model when input fields and textareas change', function () {
         var MyView = DataBindingView({source:'<div><textarea data="name"></textarea><input data="age" /></div>'});
-        var model = new Apply.Model();
+        var model = new apply.Model();
         var view = new MyView({data:model});
         var $el = view.render();
 

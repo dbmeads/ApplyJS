@@ -1,8 +1,8 @@
-/*global Apply, describe, it, expect, window, collection, cascade, mixin */
-describe('Apply.cascade', function () {
+/*global apply, describe, it, expect, window, collection, cascade, mixin */
+describe('apply.cascade', function () {
     'use strict';
 
-    Apply.toScope(window);
+    apply.toScope(window);
 
     it('should cascade a function', function () {
         var cascaded = cascade([

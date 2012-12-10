@@ -1,5 +1,5 @@
-/*global $, Apply, ajaxSpy, window */
-describe('Apply.dependencies', function () {
+/*global $, apply, ajaxSpy, window */
+describe('apply.dependencies', function () {
     'use strict';
 
     var callback;
@@ -11,7 +11,7 @@ describe('Apply.dependencies', function () {
     it('should grab a list of dependencies', function() {
         ajaxSpy.setResult('');
 
-        Apply.dependencies('test1.html', 'test2.html', 'test3.html');
+        apply.dependencies('test1.html', 'test2.html', 'test3.html');
 
         expect($.ajax.callCount).toBe(3);
         expect($.ajax.calls[0].args[0].url).toBe('test1.html');

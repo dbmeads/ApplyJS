@@ -1,9 +1,9 @@
-/*global Apply, describe, it, expect, jasmine */
-describe('Apply.Events', function () {
+/*global apply, describe, it, expect, jasmine */
+describe('apply.Events', function () {
     'use strict';
 
     it('should support an \'on\' method that allows callbacks to be registered', function () {
-        var events = new Apply.Events();
+        var events = new apply.Events();
         var callback = function () {
         };
 
@@ -13,7 +13,7 @@ describe('Apply.Events', function () {
     });
 
     it('should support the triggering of events / callbacks that were previously registered', function () {
-        var events = new Apply.Events();
+        var events = new apply.Events();
         var callbacks = [jasmine.createSpy(), jasmine.createSpy()];
 
         events.on('test', callbacks[0]);
@@ -27,7 +27,7 @@ describe('Apply.Events', function () {
 
     describe('trigger', function () {
         it('should support arguments that will be passed on to callbacks', function () {
-            var events = new Apply.Events();
+            var events = new apply.Events();
             var callback = jasmine.createSpy();
 
             events.on('test', callback);

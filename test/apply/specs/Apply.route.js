@@ -1,24 +1,24 @@
-/*global Apply, window, it, expect, jasmine */
-describe('Apply.route', function () {
+/*global apply, window, it, expect, jasmine */
+describe('apply.route', function () {
     'use strict';
 
 
     beforeEach(function() {
-        Apply.router.autostart = false;
-        Apply.router.current = '';
+        apply.router.autostart = false;
+        apply.router.current = '';
     });
 
     it('should recognize new routes when called and respond to hash fragment changes', function () {
         var check = jasmine.createSpy('check');
         window.location.hash = '#home';
 
-        Apply.route({
+        apply.route({
             'home':function () {
                 check();
             }
         });
 
-        Apply.router.check();
+        apply.router.check();
 
         expect(check).toHaveBeenCalled();
     });
@@ -27,14 +27,14 @@ describe('Apply.route', function () {
         var check = jasmine.createSpy('check');
         window.location.hash = '#/users/1';
 
-        Apply.route({
+        apply.route({
             '/users/*' : function(id) {
                 expect(id).toBe(1);
                 check();
             }
         });
 
-        Apply.router.check();
+        apply.router.check();
 
         expect(check).toHaveBeenCalled();
     });
@@ -44,13 +44,13 @@ describe('Apply.route', function () {
         window.router.current = undefined;
         window.location.hash = '';
 
-        Apply.route({
+        apply.route({
             '' : function() {
                 check();
             }
         });
 
-        Apply.router.check();
+        apply.router.check();
 
         expect(check).toHaveBeenCalled();
     });

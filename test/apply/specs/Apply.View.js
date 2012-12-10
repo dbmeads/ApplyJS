@@ -1,5 +1,5 @@
-/*global $, Apply, spyOn, it, expect, ajaxSpy */
-describe('Apply.View', function () {
+/*global $, apply, spyOn, it, expect, ajaxSpy */
+describe('apply.View', function () {
     'use strict';
 
     var called;
@@ -9,7 +9,7 @@ describe('Apply.View', function () {
     });
 
     it('should create a div element by default', function () {
-        var view = new Apply.View();
+        var view = new apply.View();
 
         view.render();
 
@@ -18,7 +18,7 @@ describe('Apply.View', function () {
     });
 
     it('should work with the source property if provided', function () {
-        var MyView = Apply.View({source:'<div><a href="javascript://">Link</a></div>'});
+        var MyView = apply.View({source:'<div><a href="javascript://">Link</a></div>'});
 
         expect(new MyView().render().html()).toBe('<a href="javascript://">Link</a>');
     });
@@ -27,13 +27,13 @@ describe('Apply.View', function () {
         ajaxSpy.setResult('<li></li><li></li>');
 
         expect(function () {
-            Apply.View({resource:'Apply.View2.tmpl'});
-        }).toThrow(new Error('Apply.View2.tmpl must have a single root element.'));
+            apply.View({resource:'apply.View2.tmpl'});
+        }).toThrow(new Error('apply.View2.tmpl must have a single root element.'));
     });
 
     it('should throw an exception if the source does not have a single root element', function () {
         expect(function () {
-            Apply.View({source:'<li></li><li></li>'});
+            apply.View({source:'<li></li><li></li>'});
         }).toThrow(new Error('All view source must have a single root element.'));
     });
 
@@ -41,17 +41,17 @@ describe('Apply.View', function () {
         ajaxSpy.neverReturn();
 
         expect(function () {
-            var MyView = Apply.View({resource:'test.tmpl'});
+            var MyView = apply.View({resource:'test.tmpl'});
             new MyView().render();
         }).toThrow(new Error('Please wait for test.tmpl before rendering.'));
     });
 
     it('should store passed in data via an options object', function () {
-        expect(new Apply.View({data:'test'}).data).toBe('test');
+        expect(new apply.View({data:'test'}).data).toBe('test');
     });
 
     it('should retain any outer element attributes', function () {
-        var view = Apply.View({source:'<div class="cool" id="1">test</div>'}).singleton();
+        var view = apply.View({source:'<div class="cool" id="1">test</div>'}).singleton();
 
         view.render();
 
@@ -60,7 +60,7 @@ describe('Apply.View', function () {
     });
 
     it('should respect a data object set on the prototype for now', function() {
-        var view = Apply.View({data: {name:'Greg'}}).singleton();
+        var view = apply.View({data: {name:'Greg'}}).singleton();
 
         expect(view.data.name).toBe('Greg');
     });
@@ -68,14 +68,14 @@ describe('Apply.View', function () {
     describe('resources', function() {
         it('should load and compile to a template if provided', function () {
             ajaxSpy.setResult('<div><a href="javascript://">Link</a></div>');
-            var MyView = Apply.View({resource:'Apply.View.tmpl'});
+            var MyView = apply.View({resource:'apply.View.tmpl'});
 
             expect(new MyView().render().html()).toBe('<a href="javascript://">Link</a>');
         });
 
         it('should add deferred behaviour to the view constructor', function() {
             ajaxSpy.setResult('<div></div>');
-            var MyView = Apply.View({resource:'deferred.view.tmpl'});
+            var MyView = apply.View({resource:'deferred.view.tmpl'});
 
             MyView.then(function(response) {
                 expect(response).toBe('<div></div>');
@@ -88,7 +88,7 @@ describe('Apply.View', function () {
 
     describe('events', function () {
         it('should be able to bind supplied dom events and respond to them', function () {
-            var view = Apply.View({source:'<form><input type="submit"/></form>', events:{'submit':function () {
+            var view = apply.View({source:'<form><input type="submit"/></form>', events:{'submit':function () {
                 called = true;
             }}}).singleton();
 
@@ -98,7 +98,7 @@ describe('Apply.View', function () {
         });
 
         it('should call back with the view set as the context', function () {
-            var view = Apply.View({pass:true, source:'<form><input type="submit"/></form>', events:{'submit':function () {
+            var view = apply.View({pass:true, source:'<form><input type="submit"/></form>', events:{'submit':function () {
                 expect(this.pass).toBeTruthy();
                 called = true;
             }}}).singleton();
@@ -115,7 +115,7 @@ describe('Apply.View', function () {
             spyOn($.fn, 'on').andCallFake(function (a, b, callback) {
                 callback.call(this, event);
             });
-            var view = Apply.View({events:{'submit':function () {
+            var view = apply.View({events:{'submit':function () {
             }}}).singleton();
 
             view.render().submit();

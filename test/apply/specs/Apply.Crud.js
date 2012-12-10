@@ -1,8 +1,8 @@
-/*global Apply, describe, it, expect, ajaxSpy, jasmine */
-describe('Apply.Crud', function () {
+/*global apply, describe, it, expect, ajaxSpy, jasmine */
+describe('apply.Crud', function () {
     'use strict';
 
-    var TestCrud = Apply.Crud({
+    var TestCrud = apply.Crud({
         getUrl:function () {
             return 'testUrl';
         }
@@ -16,7 +16,7 @@ describe('Apply.Crud', function () {
                 expect(options.contentType).toBe('text/xml');
             });
 
-            new (Apply.Crud({
+            new (apply.Crud({
                 toString:function () {
                     return 'something';
                 },

@@ -1,11 +1,11 @@
-/*global Apply, describe, it, expect, spyOn */
-describe('Apply.logger', function () {
+/*global apply, describe, it, expect, spyOn */
+describe('apply.logger', function () {
     'use strict';
 
     var messages;
 
     beforeEach(function () {
-        Apply.logger = new Apply.Logger();
+        apply.logger = new apply.Logger();
 
         messages = [];
 
@@ -15,52 +15,52 @@ describe('Apply.logger', function () {
     });
 
     it('should support a "debug" level and log to console by default', function () {
-        Apply.logger.debug('test');
+        apply.logger.debug('test');
 
         expect(console.log).toHaveBeenCalledWith('test');
     });
 
     it('should also support "error", "warning" and "info" level logging by default', function () {
-        Apply.logger.error('test');
-        Apply.logger.warning('test');
-        Apply.logger.info('test');
+        apply.logger.error('test');
+        apply.logger.warning('test');
+        apply.logger.info('test');
 
         expect(console.log.callCount).toBe(3);
     });
 
     it('should support a config method that allows desired logging levels to be set', function () {
-        Apply.logger.config({debug:false, error:true, info:false});
+        apply.logger.config({debug:false, error:true, info:false});
 
-        Apply.logger.debug('test');
+        apply.logger.debug('test');
 
         expect(console.log).not.toHaveBeenCalled();
 
-        Apply.logger.error('test');
+        apply.logger.error('test');
 
         expect(console.log).toHaveBeenCalled();
 
-        Apply.logger.info('test');
+        apply.logger.info('test');
 
         expect(console.log.callCount).toBe(1);
     });
 
     it('should automatically add any loggers provided in config that are not already present', function () {
-        Apply.logger.config({myLevel:true, myOtherLevel:false});
+        apply.logger.config({myLevel:true, myOtherLevel:false});
 
-        Apply.logger.myLevel('test');
-        Apply.logger.myOtherLevel('test');
+        apply.logger.myLevel('test');
+        apply.logger.myOtherLevel('test');
 
         expect(console.log.callCount).toBe(1);
     });
 
     it('should support function chaining for levels', function () {
-        Apply.logger.debug('test').info('test').error('test').warning('test');
+        apply.logger.debug('test').info('test').error('test').warning('test');
 
         expect(console.log.callCount).toBe(4);
     });
 
-    it('should expose the Apply.Logger constructor so that we can mixin features and create additional loggers if desired', function () {
-        var myLogger = Apply.Logger({test:'prop'}).singleton();
+    it('should expose the apply.Logger constructor so that we can mixin features and create additional loggers if desired', function () {
+        var myLogger = apply.Logger({test:'prop'}).singleton();
 
         myLogger.debug('test');
 
@@ -70,16 +70,16 @@ describe('Apply.logger', function () {
     describe('log', function () {
 
         beforeEach(function () {
-            Apply.logger = Apply.Logger({log:function (options) {
+            apply.logger = apply.Logger({log:function (options) {
                 options.message = '{{' + options.message + '}}';
             }}).singleton();
         });
 
 
         it('should delegate all logging to a reverse cascading "log" method that takes the "level" and "message" in an options object so that the logging can be easily enhanced', function () {
-            Apply.logger.config({myLevel:true});
+            apply.logger.config({myLevel:true});
 
-            Apply.logger.debug('1').error('2').info('3').warning('4').myLevel('5');
+            apply.logger.debug('1').error('2').info('3').warning('4').myLevel('5');
 
             expect(messages.length).toBe(5);
             expect(messages[0]).toBe('{{1}}');

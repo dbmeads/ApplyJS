@@ -1,21 +1,21 @@
-/*global $, Apply, window, spyOn, it, expect, jasmine, ajaxSpy */
-describe('Apply.Model', function () {
+/*global $, apply, window, spyOn, it, expect, jasmine, ajaxSpy */
+describe('apply.Model', function () {
     'use strict';
 
     it('should be able to construct a model that has attributes set on it', function () {
-        var model = new Apply.Model({name:'Dave'});
+        var model = new apply.Model({name:'Dave'});
 
         expect(model.attributes.name).toBe('Dave');
     });
 
-    it('should be able to create a 2nd mixed in constructor from Apply.Model by calling Apply.Model.mixin()', function () {
-        var NewModel = Apply.Model.mixin({prop1:'Model'});
+    it('should be able to create a 2nd mixed in constructor from apply.Model by calling apply.Model.mixin()', function () {
+        var NewModel = apply.Model.mixin({prop1:'Model'});
 
         expect(NewModel.prototype.prop1).toBe('Model');
     });
 
     it('should support setting of attributes after a model is created without touching other attributes', function () {
-        var model = new Apply.Model({firstname:'Dave'});
+        var model = new apply.Model({firstname:'Dave'});
 
         model.set({lastname:'Meads'});
 
@@ -24,35 +24,35 @@ describe('Apply.Model', function () {
     });
 
     it('should support the return of attributes via a get method', function () {
-        var model = new Apply.Model({firstname:'Dave'});
+        var model = new apply.Model({firstname:'Dave'});
 
         expect(model.get('firstname')).toBe('Dave');
     });
 
     it('should be able to handle nested models via mappings', function () {
-        var Student = Apply.Model({mappings:{'school':Apply.Model}});
+        var Student = apply.Model({mappings:{'school':apply.Model}});
 
         var result = new Student({name:'Sam', school:{name:'Prime Elementary'}});
 
         expect(result.get('name')).toBe('Sam');
-        expect(result.get('school').constructor).toBe(Apply.Model);
+        expect(result.get('school').constructor).toBe(apply.Model);
         expect(result.get('school').get('name')).toBe('Prime Elementary');
     });
 
     it('should support model copying via the set method', function() {
-        var model1 = new Apply.Model({firstname: 'Patrick'});
-        var model2 = new Apply.Model().set(model1);
+        var model1 = new apply.Model({firstname: 'Patrick'});
+        var model2 = new apply.Model().set(model1);
 
         expect(model2.attributes).toEqual(model1.attributes);
     });
 
     it('should support a getId method that will return whatever the id that the id property is mapped to', function () {
-        expect(new (Apply.Model({id:'uid'}))({uid:2}).getId()).toBe(2);
+        expect(new (apply.Model({id:'uid'}))({uid:2}).getId()).toBe(2);
     });
 
     describe('events', function () {
         it('should support a change event that fires when any attribute changes', function () {
-            var model = new Apply.Model();
+            var model = new apply.Model();
             var check = jasmine.createSpy();
 
             model.on('change', function(name, key) {
@@ -67,7 +67,7 @@ describe('Apply.Model', function () {
         });
 
         it('should support a change event that fires when any attribute changes', function () {
-            var model = new Apply.Model();
+            var model = new apply.Model();
             var check = jasmine.createSpy();
 
             model.on('change:name', function(name) {
@@ -84,7 +84,7 @@ describe('Apply.Model', function () {
     describe('crud', function () {
         it('should support a save method that will POST to a urlRoot if id is not defined', function () {
             ajaxSpy.setResult();
-            var model = new (Apply.Model.mixin({urlRoot:'/users'}))({firstname:'Dave'});
+            var model = new (apply.Model.mixin({urlRoot:'/users'}))({firstname:'Dave'});
 
             model.save();
 
@@ -93,7 +93,7 @@ describe('Apply.Model', function () {
 
         it('should support a save method that will PUT to urlRoot/{id} if id is defined', function () {
             ajaxSpy.setResult();
-            var model = new (Apply.Model.mixin({urlRoot:'/users'}))({id:1, firstname:'Dave'});
+            var model = new (apply.Model.mixin({urlRoot:'/users'}))({id:1, firstname:'Dave'});
 
             model.save();
 
@@ -102,7 +102,7 @@ describe('Apply.Model', function () {
 
         it('should support a destroy method that will DELETE a urlRoot/{id}', function () {
             ajaxSpy.setResult();
-            var model = new (Apply.Model.mixin({urlRoot:'/users'}))({id:1});
+            var model = new (apply.Model.mixin({urlRoot:'/users'}))({id:1});
 
             model.destroy();
 
@@ -111,7 +111,7 @@ describe('Apply.Model', function () {
 
         it('should support a fetch method that will GET a urlRoot/{id}', function () {
             ajaxSpy.setResult();
-            var model = new (Apply.Model.mixin({urlRoot:'/users'}))({id:1});
+            var model = new (apply.Model.mixin({urlRoot:'/users'}))({id:1});
 
             model.fetch();
 
@@ -120,7 +120,7 @@ describe('Apply.Model', function () {
 
         it('should apply any fetched attributes to the model', function () {
             ajaxSpy.setResult({id:1, firstname:'Dave'});
-            var model = new (Apply.Model.mixin({urlRoot:'/users'}))({id:1});
+            var model = new (apply.Model.mixin({urlRoot:'/users'}))({id:1});
 
             model.fetch();
 
@@ -130,7 +130,7 @@ describe('Apply.Model', function () {
 
         it('should save models with the appropriate json', function () {
             ajaxSpy.setResult();
-            var Student = Apply.Model({urlRoot:'/students', mappings:{'school':Apply.Model}});
+            var Student = apply.Model({urlRoot:'/students', mappings:{'school':apply.Model}});
 
             new Student({name:'Sam', school:{name:'Prime Elementary'}}).save();
 
@@ -142,7 +142,7 @@ describe('Apply.Model', function () {
     describe('delegation', function () {
         it('should delegate "save" calls to the top level parent by default', function () {
             ajaxSpy.setResult();
-            var Student = Apply.Model({urlRoot:'/students', mappings:{'school':Apply.Model}});
+            var Student = apply.Model({urlRoot:'/students', mappings:{'school':apply.Model}});
 
             new Student({name:'Sam', school:{name:'Prime Elementary'}}).get('school').save();
 
@@ -151,7 +151,7 @@ describe('Apply.Model', function () {
 
         it('should delegate "fetch" calls to the top level parent by default', function () {
             ajaxSpy.setResult();
-            var Student = Apply.Model({urlRoot:'/students', mappings:{'school':Apply.Model}});
+            var Student = apply.Model({urlRoot:'/students', mappings:{'school':apply.Model}});
 
             new Student({id:1, name:'Sam', school:{name:'Prime Elementary'}}).get('school').fetch();
 
@@ -160,7 +160,7 @@ describe('Apply.Model', function () {
 
         it('should delegate "destroy" calls to the top level parent by default', function () {
             ajaxSpy.setResult();
-            var Student = Apply.Model({urlRoot:'/students', mappings:{'school':Apply.Model}});
+            var Student = apply.Model({urlRoot:'/students', mappings:{'school':apply.Model}});
 
             new Student({id:1, name:'Sam', school:{name:'Prime Elementary'}}).get('school').destroy();
 
