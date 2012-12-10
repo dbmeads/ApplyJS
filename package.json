@@ -1,9 +1,16 @@
 {
-    "name": "ApplyJS",
-    "description": "JavaScript framework.",
-    "version": "0.0.1",
-    "homepage": "http://www.applyjs.com",
+    "name": "apply",
+    "description": "ApplyJS - Modular. Declaritive. Fun.",
+    "version": "0.0.2",
+    "url": "http://www.applyjs.com",
     "author": "David Meads",
+    "repository":{
+        "type":"git",
+        "url":"git://github.com/dbmeads/ApplyJS.git"
+    },
+    "bugs": {
+        "url": "https://github.com/dbmeads/ApplyJS/issues"
+    },
     "engines":{
         "node":"*"
     },
@@ -11,6 +18,7 @@
         "test":"grunt default --verbose"
     },
     "dependencies":{
+        "jquery":"1.8.3"
     },
     "devDependencies":{
         "grunt-contrib-copy" : "0.3.2",

@@ -949,4 +949,4 @@
 
     root.Apply = Apply;
 
-})(jQuery, window);
+})(jQuery, this);

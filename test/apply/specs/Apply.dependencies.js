@@ -18,4 +18,5 @@ describe('Apply.dependencies', function () {
         expect($.ajax.calls[1].args[0].url).toBe('test2.html');
         expect($.ajax.calls[2].args[0].url).toBe('test3.html');
     });
+
 });
