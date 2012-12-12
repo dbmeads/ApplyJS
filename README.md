@@ -10,7 +10,7 @@ https://github.com/dbmeads/ApplyJS/issues
 
 ## Documentation
 
-https://github.com/dbmeads/ApplyJS/tree/master/test/apply/specs
+https://github.com/dbmeads/ApplyJS/tree/master/test/specs
 
 ## Backlog
 
