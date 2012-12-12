@@ -73,11 +73,11 @@
             return false;
         };
 
-        var isMixin = function (obj) {
+        var isGenerated = function (obj) {
             if (isFunction(obj)) {
-                return obj.mixin !== undefined;
+                return obj.generate !== undefined;
             } else if (isPlainObject(obj)) {
-                return obj.constructor.mixin !== undefined;
+                return obj.constructor.generate !== undefined;
             }
             return false;
         };
@@ -104,7 +104,7 @@
             isDefined:isDefined,
             isFunction:isFunction,
             isInstanceOf:isInstanceOf,
-            isMixin:isMixin,
+            isGenerated:isGenerated,
             isNumber:isNumber,
             isObject:isObject,
             isPlainObject:isPlainObject,
@@ -260,19 +260,19 @@
         };
 
 
-        // apply.mixin
+        // apply.generate
         // -----------
 
-        var mixinArgs = function (constructor, oldArguments) {
+        var generateArgs = function (constructor, oldArguments) {
             var args = slice.apply(oldArguments);
             return isString(args[0]) ? [ args.shift(), constructor ].concat(args)
                 : [ constructor ].concat(args);
         };
 
-        var mixinConstructor = function () {
+        var Constructor = function () {
             var constructor = function () {
                 if (!this || this.constructor !== constructor) {
-                    return mixin.apply(this || {}, mixinArgs(constructor, arguments));
+                    return generate.apply(this || {}, generateArgs(constructor, arguments));
                 }
                 if (this.init) {
                     this.init.apply(this, arguments);
@@ -296,8 +296,8 @@
                 return constructor;
             };
             constructor.mixins = [];
-            constructor.mixin = function () {
-                return mixin.apply(this, mixinArgs(constructor, arguments));
+            constructor.generate = function () {
+                return generate.apply(this, generateArgs(constructor, arguments));
             };
             constructor.callbacks = [];
             constructor.construct = function (callback) {
@@ -312,16 +312,16 @@
             return constructor;
         };
 
-        var mixinCascades = function (constructor, cascades) {
+        var applyCascades = function (constructor, cascades) {
             constructor.cascades = cascades;
             for (var key in cascades) {
                 constructor.cascade.apply(constructor, cascades[key]);
             }
         };
 
-        var mixin = apply.mixin = function () {
+        var generate = apply.generate = function () {
             var cascades = {'init':['init']};
-            var constructor = mixinConstructor();
+            var constructor = Constructor();
             var args = slice.apply(arguments);
             var ns;
             if (isString(args[0])) {
@@ -340,7 +340,7 @@
                 extend(constructor.prototype, mixin);
                 constructor.mixins.push(mixin);
             }
-            mixinCascades(constructor, cascades);
+            applyCascades(constructor, cascades);
             loop(constructor.callbacks, function (callback) {
                 callback.call(constructor, constructor);
             });
@@ -396,7 +396,7 @@
             }, {context:this});
         };
 
-        var Logger = apply.Logger = mixin({
+        var Logger = apply.Logger = generate({
             init:function () {
                 this.levels = {};
                 this.config({debug:true, info:true, warning:true, error:true});
@@ -424,7 +424,7 @@
         // apply.Events
         // ------------
 
-        var events = apply.Events = mixin({
+        var events = apply.Events = generate({
             init:function () {
                 if (!this.events) {
                     this.events = {};
@@ -627,7 +627,7 @@
                 } else if (list) {
                     if (getPrototypeOf(list) === getPrototypeOf(this.mapping)) {
                         addAndTrigger(this, list);
-                    } else if (isMixin(list)) {
+                    } else if (isGenerated(list)) {
                         throw 'Attempted to add an incompatible model to a list.';
                     } else {
                         addAndTrigger(this, new this.mapping(list));
@@ -703,7 +703,7 @@
             }
         };
 
-        var view = apply.View = mixin({
+        var view = apply.View = generate({
             urlRoot:'',
             rootHtml:div,
             init:function (options) {
@@ -746,7 +746,7 @@
         // apply.router
         // -----------
 
-        var router = apply.router = mixin({
+        var router = apply.router = generate({
             autostart:true,
             init:function () {
                 this.routes = {};

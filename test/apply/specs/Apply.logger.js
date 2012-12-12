@@ -59,7 +59,7 @@ describe('apply.logger', function () {
         expect(console.log.callCount).toBe(4);
     });
 
-    it('should expose the apply.Logger constructor so that we can mixin features and create additional loggers if desired', function () {
+    it('should expose the apply.Logger constructor so that we can generate features and create additional loggers if desired', function () {
         var myLogger = apply.Logger({test:'prop'}).singleton();
 
         myLogger.debug('test');

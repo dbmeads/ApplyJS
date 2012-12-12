@@ -1,4 +1,4 @@
-/*global apply, describe, it, expect, window, collection, cascade, mixin */
+/*global apply, describe, it, expect, window, collection, cascade, generate */
 describe('apply.cascade', function () {
     'use strict';
 
@@ -34,8 +34,8 @@ describe('apply.cascade', function () {
         expect(cascaded({string:''}).string).toBe('firstsecond');
     });
 
-    it('should support a cascade call on a mixin constructor', function () {
-        var Mixin = mixin({math:function (options) {
+    it('should support a cascade call on a generated constructor', function () {
+        var Generated = generate({math:function (options) {
             options.number += 1;
             return options;
         }}, {math:function (options) {
@@ -43,21 +43,21 @@ describe('apply.cascade', function () {
             return options;
         }});
 
-        Mixin.cascade('math');
+        Generated.cascade('math');
 
-        expect(new Mixin().math({number:1}).number).toBe(4);
+        expect(new Generated().math({number:1}).number).toBe(4);
     });
 
     it('should automatically continue previously established cascades when a constructor has more mixins applied', function () {
-        var Mixin = mixin({build:function (options) {
+        var Generated = generate({build:function (options) {
             options.string += ':1st';
             return options;
-        }}).cascade('build').mixin({build:function (options) {
+        }}).cascade('build').generate({build:function (options) {
             options.string += ':2nd';
             return options;
         }});
 
-        expect(new Mixin().build({string:''}).string).toBe(':1st:2nd');
+        expect(new Generated().build({string:''}).string).toBe(':1st:2nd');
     });
 
 });

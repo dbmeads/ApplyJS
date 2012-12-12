@@ -8,8 +8,8 @@ describe('apply.Model', function () {
         expect(model.attributes.name).toBe('Dave');
     });
 
-    it('should be able to create a 2nd mixed in constructor from apply.Model by calling apply.Model.mixin()', function () {
-        var NewModel = apply.Model.mixin({prop1:'Model'});
+    it('should be able to create a 2nd mixed in constructor from apply.Model by calling apply.Model.generate()', function () {
+        var NewModel = apply.Model.generate({prop1:'Model'});
 
         expect(NewModel.prototype.prop1).toBe('Model');
     });
@@ -84,7 +84,7 @@ describe('apply.Model', function () {
     describe('crud', function () {
         it('should support a save method that will POST to a urlRoot if id is not defined', function () {
             ajaxSpy.setResult();
-            var model = new (apply.Model.mixin({urlRoot:'/users'}))({firstname:'Dave'});
+            var model = new (apply.Model.generate({urlRoot:'/users'}))({firstname:'Dave'});
 
             model.save();
 
@@ -93,7 +93,7 @@ describe('apply.Model', function () {
 
         it('should support a save method that will PUT to urlRoot/{id} if id is defined', function () {
             ajaxSpy.setResult();
-            var model = new (apply.Model.mixin({urlRoot:'/users'}))({id:1, firstname:'Dave'});
+            var model = new (apply.Model.generate({urlRoot:'/users'}))({id:1, firstname:'Dave'});
 
             model.save();
 
@@ -102,7 +102,7 @@ describe('apply.Model', function () {
 
         it('should support a destroy method that will DELETE a urlRoot/{id}', function () {
             ajaxSpy.setResult();
-            var model = new (apply.Model.mixin({urlRoot:'/users'}))({id:1});
+            var model = new (apply.Model.generate({urlRoot:'/users'}))({id:1});
 
             model.destroy();
 
@@ -111,7 +111,7 @@ describe('apply.Model', function () {
 
         it('should support a fetch method that will GET a urlRoot/{id}', function () {
             ajaxSpy.setResult();
-            var model = new (apply.Model.mixin({urlRoot:'/users'}))({id:1});
+            var model = new (apply.Model.generate({urlRoot:'/users'}))({id:1});
 
             model.fetch();
 
@@ -120,7 +120,7 @@ describe('apply.Model', function () {
 
         it('should apply any fetched attributes to the model', function () {
             ajaxSpy.setResult({id:1, firstname:'Dave'});
-            var model = new (apply.Model.mixin({urlRoot:'/users'}))({id:1});
+            var model = new (apply.Model.generate({urlRoot:'/users'}))({id:1});
 
             model.fetch();
 
