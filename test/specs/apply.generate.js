@@ -90,8 +90,8 @@ describe('apply.generate', function () {
         expect(Mixin.MyObject.prototype.prop2).toBe('prop2');
     });
 
-    it('should support a "construct" method on the constructor that will take a callback to be invoked on any additional constructors generated with this generate', function () {
-        var Generated = generate({test: 1}).construct(function(constructor){ constructor.prototype.test = 2; });
+    it('should support the registration of code generators to be invoked when descendants of a constructor have been created', function () {
+        var Generated = generate({test: 1}).generator(function(descendant){ descendant.prototype.test = 2; });
 
         expect(Generated.generate({prop2: 'prop'}).prototype.test).toBe(2);
     });
@@ -106,6 +106,17 @@ describe('apply.generate', function () {
 
         expect(Generated.mixins[0]).toBe(mixins[0]);
         expect(Generated.mixins[1]).toBe(mixins[1]);
+    });
+
+    it('should be able to regenerate a constructor\'s prototype if generate is called without any mixins', function() {
+        var mixin1 = {prop1:'mixin1',prop2:'mixin1'}, mixin2 = {prop2:'mixin2'};
+        var Constructor = apply.generate(mixin1, mixin2);
+        Constructor.prototype = {};
+
+        Constructor.generate();
+
+        expect(Constructor.prototype.prop1).toBe('mixin1');
+        expect(Constructor.prototype.prop2).toBe('mixin2');
     });
 
 });

@@ -8,15 +8,15 @@ describe('apply.isInstanceOf', function() {
         mixin = apply.generate({});
     });
 
-    it('should be able to take any generate Constructor and determine if an object contains it', function() {
+    it('should be able to take any generated constructor and determine if an object contains it', function() {
         expect(apply.isInstanceOf(mixin, mixin({}).singleton())).toBe(true);
     });
 
-    it('should recognize that a seperate generate instance is not an instance of it', function() {
+    it('should recognize that a seperate generated instance is not an instance of it', function() {
         expect(apply.isInstanceOf(mixin, apply.generate({}).singleton())).toBe(false);
     });
 
-    it('should recognize that a plain object isn\'t an instance of a generate', function() {
+    it('should recognize that a plain object isn\'t an instance of a generated constructor', function() {
         expect(apply.isInstanceOf(mixin, {})).toBe(false);
     });
 
@@ -24,12 +24,12 @@ describe('apply.isInstanceOf', function() {
         expect(apply.isInstanceOf(mixin, mixin.singleton())).toBe(true);
     });
 
-    it('should be able to be called on a generate instance directly', function() {
+    it('should be able to be called on a generated instance directly', function() {
         expect(mixin.singleton().isInstanceOf(mixin)).toBe(true);
     });
 
-    xit('should be able to handle more complex generate configurations', function() {
-        expect(mixin.isInstanceOf(apply.generate(mixin({})).singleton())).toBe(true);
+    xit('should be able to handle more complex generated constructors / objects', function() {
+        expect(apply.generate(mixin({})).singleton().isInstanceOf(mixin)).toBe(true);
     });
 
 });

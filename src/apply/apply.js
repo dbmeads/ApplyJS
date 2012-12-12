@@ -4,7 +4,7 @@
  */
 
 /*global jQuery, setInterval, clearInterval, define */
-(function (root) {
+(function (root, undefined) {
     'use strict';
 
     function init($, root) {
@@ -64,7 +64,7 @@
                 } else if (isDefined('constructor.mixins', instance)) {
                     var mixins = instance.constructor.mixins;
                     for (var i = 0; i < mixins.length; i++) {
-                        if (mixins[i] === constructor.prototype) {
+                        if (mixins[i] === constructor) {
                             return true;
                         }
                     }
@@ -263,93 +263,146 @@
         // apply.generate
         // -----------
 
-        var generateArgs = function (constructor, oldArguments) {
-            var args = slice.apply(oldArguments);
-            return isString(args[0]) ? [ args.shift(), constructor ].concat(args)
-                : [ constructor ].concat(args);
-        };
+        var buildConstructor = (function () {
 
-        var Constructor = function () {
-            var constructor = function () {
-                if (!this || this.constructor !== constructor) {
-                    return generate.apply(this || {}, generateArgs(constructor, arguments));
-                }
-                if (this.init) {
-                    this.init.apply(this, arguments);
-                }
-            };
-            constructor.cascade = function (funcName) {
-                namespace(constructor, 'cascades.' + funcName, arguments);
-                var cascaded = cascade.apply(this, [this.mixins].concat(slice.apply(arguments)));
-                if (cascaded) {
-                    constructor.prototype[funcName] = cascaded;
-                }
-                return constructor;
-            };
-            constructor.singleton = function () {
-                var args = slice.apply(arguments);
-                args.push(constructor);
-                return singleton.apply(this, args);
-            };
-            constructor.merge = function (object) {
-                extend(constructor.prototype, object);
-                return constructor;
-            };
-            constructor.mixins = [];
-            constructor.generate = function () {
-                return generate.apply(this, generateArgs(constructor, arguments));
-            };
-            constructor.callbacks = [];
-            constructor.construct = function (callback) {
-                if (callback) {
-                    constructor.callbacks.push(callback);
-                }
-                return constructor;
-            };
-            constructor.prototype.isInstanceOf = function (constructor) {
-                return isInstanceOf(constructor, this);
-            };
-            return constructor;
-        };
-
-        var applyCascades = function (constructor, cascades) {
-            constructor.cascades = cascades;
-            for (var key in cascades) {
-                constructor.cascade.apply(constructor, cascades[key]);
+            function prepArgs(constructor, oldArguments) {
+                var args = slice.apply(oldArguments);
+                return isString(args[0]) ? [ args.shift(), constructor ].concat(args)
+                    : [ constructor ].concat(args);
             }
-        };
+
+            function create() {
+                var constructor = function () {
+                    if (!this || this.constructor !== constructor) {
+                        return generate.apply(this || {}, prepArgs(constructor, arguments));
+                    }
+                    if (this.init) {
+                        this.init.apply(this, arguments);
+                    }
+                };
+                return constructor;
+            }
+
+            function decorateConstructor(constructor, mixins) {
+                constructor.objects = [];
+                constructor.mixins = mixins;
+                constructor.generators = [];
+                constructor.cascades = {'init':['init']};
+                constructor.cascade = function (funcName) {
+                    namespace(constructor, 'cascades.' + funcName, arguments);
+                    var cascaded = cascade.apply(this, [this.objects].concat(slice.apply(arguments)));
+                    if (cascaded) {
+                        constructor.prototype[funcName] = cascaded;
+                    }
+                    return constructor;
+                };
+                constructor.singleton = function () {
+                    var args = slice.apply(arguments);
+                    args.push(constructor);
+                    return singleton.apply(this, args);
+                };
+                constructor.merge = function (object) {
+                    extend(constructor.prototype, object);
+                    return constructor;
+                };
+                constructor.generate = function () {
+                    if (arguments.length === 0) {
+                        return buildConstructor(constructor.mixins, constructor);
+                    }
+                    return generate.apply(this, prepArgs(constructor, arguments));
+                };
+                constructor.generator = function (generator) {
+                    if (generator) {
+                        constructor.generators.push(generator);
+                    }
+                    return constructor;
+                };
+                loop(mixins, function (mixin) {
+                    if (isFunction(mixin)) {
+                        constructor.objects.push(mixin.prototype);
+                        extend(constructor.cascades, mixin['cascades']);
+                        if (mixin.generators) {
+                            push.apply(constructor.generators, mixin.generators);
+                        }
+                    } else {
+                        constructor.objects.push(mixin);
+                    }
+                });
+            }
+
+            function generateCascades(constructor) {
+                var cascades = constructor.cascades;
+                for (var key in cascades) {
+                    constructor.cascade.apply(constructor, cascades[key]);
+                }
+            }
+
+            function generateIsInstanceOf(constructor) {
+                constructor.prototype.isInstanceOf = function (constructor) {
+                    return isInstanceOf(constructor, this);
+                };
+            }
+
+            function decoratePrototype(constructor) {
+                extend.apply(undefined, [constructor.prototype].concat(constructor.objects));
+                generateCascades(constructor);
+                generateIsInstanceOf(constructor);
+            }
+
+            function invokeGenerators(constructor) {
+                loop(constructor.generators, function (generator) {
+                    generator.call(constructor, constructor);
+                });
+            }
+
+            return function (mixins, constructor) {
+                if (!constructor) {
+                    constructor = create();
+                }
+                decorateConstructor(constructor, mixins);
+                decoratePrototype(constructor);
+                invokeGenerators(constructor);
+                return constructor;
+            };
+        })();
 
         var generate = apply.generate = function () {
-            var cascades = {'init':['init']};
-            var constructor = Constructor();
-            var args = slice.apply(arguments);
-            var ns;
+            var args = slice.apply(arguments), ns;
             if (isString(args[0])) {
                 ns = args.shift();
             }
-            var mixin;
-            for (var i = 0; i < args.length; i++) {
-                mixin = args[i];
-                if (isFunction(mixin)) {
-                    extend(cascades, mixin['cascades']);
-                    if (mixin.callbacks) {
-                        push.apply(constructor.callbacks, mixin.callbacks);
-                    }
-                    mixin = mixin.prototype;
-                }
-                extend(constructor.prototype, mixin);
-                constructor.mixins.push(mixin);
-            }
-            applyCascades(constructor, cascades);
-            loop(constructor.callbacks, function (callback) {
-                callback.call(constructor, constructor);
-            });
+            var constructor = buildConstructor(args);
             if (ns) {
                 namespace(ns, constructor);
             }
             return constructor;
         };
 
+
+        // apply.degenerate
+        // ----------------
+
+        function cleanConstructor(constructor) {
+            constructor.prototype = {};
+        }
+
+        apply.degenerate = function () {
+            var args = slice.apply(arguments), constructor;
+            if (args.length > 1) {
+                constructor = args.shift();
+                if (isGenerated(constructor)) {
+                    cleanConstructor(constructor);
+                    for(var i = 0; i < args.length; i++) {
+                        var indexOf = constructor.mixins.indexOf(args[i]);
+                        if (indexOf >= 0) {
+                            constructor.mixins.splice(indexOf, 1);
+                        }
+                    }
+                    constructor.generate();
+                }
+            }
+            return constructor;
+        };
 
         // apply.singleton
         // ---------------
@@ -729,7 +782,7 @@
                     return source || '';
                 };
             }
-        }).construct(function () {
+        }).generator(function () {
                 var prototype = this.prototype;
                 if (prototype.resource) {
                     delete prototype.template;
@@ -948,7 +1001,6 @@
         return apply;
 
     }
-
 
     var apply;
 

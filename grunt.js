@@ -46,7 +46,9 @@ module.exports = function(grunt) {
 				expect : false,
 				it : false,
                 xit : false,
-				spyOn : false
+				spyOn : false,
+
+                apply : false
 			}
 		}
 	});
