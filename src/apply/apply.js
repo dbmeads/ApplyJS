@@ -756,6 +756,38 @@
             }
         };
 
+        var dataBinding = {
+            render:function () {
+                var that = this;
+                if (!this.data) {
+                    this.data = new apply.Model();
+                }
+                var data = this.data;
+                var deflatedData = data;
+                if (data.deflate) {
+                    deflatedData = data.deflate();
+                }
+                if (this.$el.attr('data')) {
+                    renderDataElement(this, this.$el, data, deflatedData);
+                }
+                this.$el.find('[data]').each(function (index, el) {
+                    renderDataElement(that, el, data, deflatedData);
+                });
+                return this.$el;
+            },
+            set:function ($el, value) {
+                if ($el.is('input') || $el.is('textarea')) {
+                    if ($el.val() !== value) {
+                        $el.val(value);
+                    }
+                } else {
+                    if ($el.text() !== value) {
+                        $el.text(value);
+                    }
+                }
+            }
+        };
+
         var view = apply.View = generate({
             urlRoot:'',
             rootHtml:div,
@@ -782,7 +814,7 @@
                     return source || '';
                 };
             }
-        }).generator(function () {
+        }, dataBinding).generator(function () {
                 var prototype = this.prototype;
                 if (prototype.resource) {
                     delete prototype.template;
@@ -906,37 +938,7 @@
 
         apply.mixins = {
             view:{
-                dataBinding:{
-                    render:function () {
-                        var that = this;
-                        if (!this.data) {
-                            this.data = new apply.Model();
-                        }
-                        var data = this.data;
-                        var deflatedData = data;
-                        if (data.deflate) {
-                            deflatedData = data.deflate();
-                        }
-                        if (this.$el.attr('data')) {
-                            renderDataElement(this, this.$el, data, deflatedData);
-                        }
-                        this.$el.find('[data]').each(function (index, el) {
-                            renderDataElement(that, el, data, deflatedData);
-                        });
-                        return this.$el;
-                    },
-                    set:function ($el, value) {
-                        if ($el.is('input') || $el.is('textarea')) {
-                            if ($el.val() !== value) {
-                                $el.val(value);
-                            }
-                        } else {
-                            if ($el.text() !== value) {
-                                $el.text(value);
-                            }
-                        }
-                    }
-                },
+                dataBinding:dataBinding,
                 renderer:{
                     dynamic:{
                         attachTo:'',
