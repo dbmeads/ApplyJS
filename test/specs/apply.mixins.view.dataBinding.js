@@ -2,7 +2,7 @@
 describe('apply.mixins.view.dataBinding', function () {
     'use strict';
 
-    var DataBindingView = apply.View(apply.mixins.view.dataBinding);
+    var DataBindingView = apply.View;
 
     it('should render text or value for any elements with the "data" attribute', function () {
         var MyView = DataBindingView({source:'<div><span data="name"></span><input data="age" /></div>'});
