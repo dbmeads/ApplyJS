@@ -831,8 +831,7 @@
         // apply.router
         // -----------
 
-        var router = apply.router = generate({
-            autostart:true,
+        apply.Router = generate({
             init:function () {
                 this.routes = {};
                 this.current = undefined;
@@ -846,6 +845,17 @@
                     console.log(e);
                 }
             },
+            route:function (routes) {
+                this.compile(routes);
+                if (!this.iid && this.autostart) {
+                    this.start();
+                }
+                return this;
+            }
+        });
+
+        apply.Router.Web = apply.Router({
+            autostart:true,
             check:function () {
                 if (root.location.hash !== this.current) {
                     var route = this.current = root.location.hash;
@@ -868,13 +878,6 @@
                     }
                 }
             },
-            route:function (routes) {
-                this.compile(routes);
-                if (!this.iid && this.autostart) {
-                    this.start();
-                }
-                return this;
-            },
             start:function (options) {
                 options = options || {};
                 var callback = proxy(this.check, this);
@@ -885,7 +888,9 @@
                 clearInterval(this.iid);
                 delete this.iid;
             }
-        }).singleton();
+        });
+
+        var router = apply.router = root.document ? apply.Router.Web.singleton() : apply.Router.singleton();
 
 
         // apply.route
@@ -1015,7 +1020,7 @@
     // ----------------------
 
     if (typeof define === 'function' && define.amd) {
-        define("applyjs", ['jquery'], function (jquery) {
+        define("applyjs", ['.'], function (jquery) {
             apply = apply || init(jquery, root);
             return apply;
         });

@@ -1,7 +1,6 @@
 /*global apply, window, it, expect, jasmine */
-describe('apply.route', function () {
+describe('apply.Router.Web', function () {
     'use strict';
-
 
     beforeEach(function() {
         apply.router.autostart = false;

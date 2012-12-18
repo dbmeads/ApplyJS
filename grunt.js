@@ -9,7 +9,7 @@ module.exports = function(grunt) {
         copy: {
             dist: {
                 files: {
-                    'apply.min.js':'src/apply/apply.js'
+                    'apply.min.js':'src/apply.js'
                 }
             }
         },
@@ -21,7 +21,7 @@ module.exports = function(grunt) {
 			tasks : 'jasmine'
 		},
 		jasmine : {
-			src : ['lib/**/*.js', 'test/helpers/**/*.js', 'src/**/*.js'],
+			src : ['lib/**/*.js', 'test/helpers/**/*.js', 'src/apply.js', 'src/apply.dom.js'],
 			specs : ['test/**/*.js']
 		},
 		jshint : {
