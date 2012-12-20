@@ -4,12 +4,10 @@
  * Released under the MIT license
  */
 
-(function (root, undefined) {
+(function (root, $, undefined) {
     'use strict';
 
-    function init($, root) {
-        var apply = {};
-
+    var apply = root.apply = function ($, apply) {
 
         // On Loan
         // -------
@@ -715,29 +713,10 @@
         apply.toScope = function (scope) {
             extend(scope, apply);
         };
+    };
 
-        return apply;
+    if ($) {
+        apply($, apply);
     }
 
-    var apply;
-
-    if (root.jQuery) {
-        apply = root.apply = init(root.jQuery, root);
-    }
-
-
-    // AMD / CommonJS Support
-    // ----------------------
-
-    if (typeof root.define === 'function' && root.define.amd) {
-        root.define('apply', ['jquery'], function (jquery) {
-            apply = apply || init(jquery, root);
-            return apply;
-        });
-    } else if (typeof require === 'function') {
-        exports = apply = apply || init(require('jquery'), exports);
-    } else if (!apply) {
-        throw 'ApplyJS was unable to locate jQuery.';
-    }
-
-})(this);
+})(this, this.jQuery);

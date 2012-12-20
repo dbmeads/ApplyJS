@@ -28,7 +28,7 @@ module.exports = function(grunt) {
 			tasks : 'jasmine'
 		},
 		jasmine : {
-			src : ['lib/**/*.js', 'test/helpers/**/*.js', 'src/apply.js', 'src/apply.web.js'],
+			src : ['lib/**/*.js', 'test/helpers/**/*.js', 'src/apply.amd.js', 'src/apply.js', 'src/apply.web.js'],
 			specs : ['test/**/*.js']
 		},
 		jshint : {
