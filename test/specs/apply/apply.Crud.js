@@ -40,7 +40,7 @@ describe('apply.Crud', function () {
                 expect(options.type).toBe("PUT");
             });
 
-            new (TestCrud.generate({ getId:function () {
+            new (TestCrud.compose({ getId:function () {
                 return '1';
             }}))().save();
         });

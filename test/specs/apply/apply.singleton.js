@@ -9,7 +9,7 @@ describe('apply.singleton', function () {
     it('should accept a namespace, constructor argument array and constructor function', function () {
         var check = jasmine.createSpy();
 
-        apply.singleton('objects.object', ['test'], apply.generate({init: function(string) {
+        apply.singleton('objects.object', ['test'], apply.compose({init: function(string) {
             expect(string).toBe('test');
             check();
         }}));
@@ -19,11 +19,11 @@ describe('apply.singleton', function () {
     });
 
     it('should return the instance created', function() {
-       expect(apply.singleton('objects.object', [], apply.generate({}))).toBe(objects.object);
+       expect(apply.singleton('objects.object', [], apply.compose({}))).toBe(objects.object);
     });
 
-    it('should be available to any generate constructor', function () {
-        apply.generate({prop1:'prop1'}).singleton('objects.object');
+    it('should be available to any composed constructor', function () {
+        apply.compose({prop1:'prop1'}).singleton('objects.object');
 
         expect(objects.object).toBeDefined();
         expect(objects.object.prop1).toBe('prop1');
@@ -31,7 +31,7 @@ describe('apply.singleton', function () {
 
     it('should support namespacing an existing object if one is passed', function() {
         var ns = {};
-        apply.singleton(ns, 'test', [], apply.generate({}));
+        apply.singleton(ns, 'test', [], apply.compose({}));
 
         expect(ns.test).toBeDefined();
     });

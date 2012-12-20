@@ -14,7 +14,7 @@ https://github.com/dbmeads/ApplyJS/tree/master/test/specs
 
 ## Backlog
 
-- AMD / CJS support
+- Clean approach for extending ApplyJS
 - Handling ajax error scenarios
 - Super references
 - Create dependency abstraction layer

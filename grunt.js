@@ -3,13 +3,20 @@ module.exports = function(grunt) {
 
 	// Project configuration.
 	grunt.initConfig({
+        pkg: grunt.file.readJSON('package.json'),
 		lint : {
 			files : ['grunt.js', 'src/**/*.js', 'test/**/*.js']
 		},
+        concat: {
+            dist: {
+                src: ['src/apply.js', 'src/apply.web.js'],
+                dest: 'apply.js'
+            }
+        },
         copy: {
             dist: {
                 files: {
-                    'apply.min.js':'src/apply.js'
+                    'apply.min.js':'apply.js'
                 }
             }
         },
@@ -21,7 +28,7 @@ module.exports = function(grunt) {
 			tasks : 'jasmine'
 		},
 		jasmine : {
-			src : ['lib/**/*.js', 'test/helpers/**/*.js', 'src/apply.js', 'src/apply.dom.js'],
+			src : ['lib/**/*.js', 'test/helpers/**/*.js', 'src/apply.js', 'src/apply.web.js'],
 			specs : ['test/**/*.js']
 		},
 		jshint : {
@@ -48,6 +55,7 @@ module.exports = function(grunt) {
                 xit : false,
 				spyOn : false,
 
+                // apply.js
                 apply : false
 			}
 		}
@@ -58,6 +66,6 @@ module.exports = function(grunt) {
 	grunt.loadNpmTasks('grunt-jasmine-runner');
 
 	// Default task.
-	grunt.registerTask('default', 'lint jasmine copy mindirect');
+	grunt.registerTask('default', 'lint jasmine concat copy mindirect');
 
 };
