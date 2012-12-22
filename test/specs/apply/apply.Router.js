@@ -1,4 +1,4 @@
 /*global */
-describe('apply.Router', function() {
-   'use strict';
+describe('apply.Router', function () {
+	'use strict';
 });

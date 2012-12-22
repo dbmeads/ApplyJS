@@ -1,29 +1,34 @@
-describe('require', function() {
-    'use strict';
+describe('require', function () {
+	'use strict';
 
-    var called;
+	var callback;
 
-    beforeEach(function() {
-        called = false;
-    });
+	define('required', function () {
+		return 'hi';
+	});
 
-    it('should be defined as a function', function() {
-        expect(typeof require === 'function').toBe(true);
-    });
+	beforeEach(function () {
+		callback = jasmine.createSpy();
+	});
 
-    xit('should accept dependencies as it\'s first argument and a callback that will receive them as the second.', function() {
-        require(['jquery'], function($) {
-            expect($.fn).toBeDefined();
-            called = true;
-        });
+	it('should be defined as a function', function () {
+		expect(typeof require === 'function').toBe(true);
+	});
 
-        expect(called).toBe(true);
-    });
+	it('should accept dependencies as it\'s first argument and a callback that will receive them as the second.', function () {
+		require(['required'], callback);
 
-    xit('should call a callback at a later time if a dependency is not immediately available', function() {
-        require(['dep1'], function() {
+		expect(callback).toHaveBeenCalledWith('hi');
+	});
 
-        });
-    });
+	it('should call a callback at a later time if a dependency is not immediately available', function () {
+		require(['dep1'], callback);
+
+		define('dep1', function () {
+			return 'hi again';
+		});
+
+		expect(callback).toHaveBeenCalledWith('hi again');
+	});
 
 });
