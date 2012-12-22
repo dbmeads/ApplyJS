@@ -28,7 +28,7 @@ module.exports = function(grunt) {
 			tasks : 'jasmine'
 		},
 		jasmine : {
-			src : ['lib/**/*.js', 'test/helpers/**/*.js', 'src/apply.amd.js', 'src/apply.js', 'src/apply.web.js'],
+			src : ['src/apply.amd.js', 'lib/**/*.js', 'test/helpers/**/*.js', 'src/apply.js', 'src/apply.web.js'],
 			specs : ['test/**/*.js']
 		},
 		jshint : {
@@ -54,6 +54,11 @@ module.exports = function(grunt) {
 				it : false,
                 xit : false,
 				spyOn : false,
+
+                // amd
+                define: false,
+                require: false,
+
 
                 // apply.js
                 apply : false

@@ -1050,16 +1050,4 @@
         init(root.jQuery, root.apply, root);
     }
 
-
-    // AMD / CommonJS Support
-    // ----------------------
-
-    if (typeof root.define === 'function' && root.define.amd) {
-        root.define('apply/web', ['jquery','apply'], function (jquery, apply) {
-            return init(jquery, apply, root);
-        });
-    } else if (typeof require === 'function') {
-        exports = init(require('jquery'), require('./apply.js'), exports);
-    }
-
 })(this);

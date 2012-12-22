@@ -1,4 +1,4 @@
-describe('apply.require', function() {
+describe('require', function() {
     'use strict';
 
     var called;
@@ -7,12 +7,12 @@ describe('apply.require', function() {
         called = false;
     });
 
-    xit('should provide a require function', function() {
-        expect(typeof apply.require === 'function').toBe(true);
+    it('should be defined as a function', function() {
+        expect(typeof require === 'function').toBe(true);
     });
 
     xit('should accept dependencies as it\'s first argument and a callback that will receive them as the second.', function() {
-        apply.require(['jquery'], function($) {
+        require(['jquery'], function($) {
             expect($.fn).toBeDefined();
             called = true;
         });
@@ -21,7 +21,7 @@ describe('apply.require', function() {
     });
 
     xit('should call a callback at a later time if a dependency is not immediately available', function() {
-        apply.require(['dep1'], function() {
+        require(['dep1'], function() {
 
         });
     });
