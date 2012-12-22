@@ -1,43 +1,48 @@
 /*
- * Module: apply.amd
+ * Module: amd
  * Copyright 2012 David Meads
  * Released under the MIT license
  */
-
 (function (root, undefined) {
 	'use strict';
 
-	var modules = {};
-	var waiting = {};
+	var modules = {},
+		waiting = {};
 
-	var require = root.require = function (dependencies, factory) {
-		resolveDependencies(factory, dependencies);
-	};
+	if (typeof root.define === 'function' && root.define.amd && typeof root.require === 'function') {
 
-	var define = root.define = function () {
-		var dependencies, factory, module;
-		for (var i = 0; i < arguments.length; i++) {
-			var arg = arguments[i],
-				type = typeof arg;
-			if (type === 'function') {
-				factory = arg;
-			} else if (type === 'string') {
-				module = arg;
-			} else if (type === 'object' && arg.length) {
-				dependencies = arg;
+	} else {
+		root.define = function () {
+			var dependencies, factory, module;
+			for (var i = 0; i < arguments.length; i++) {
+				var arg = arguments[i],
+					type = typeof arg;
+				if (type === 'function') {
+					factory = arg;
+				} else if (type === 'string') {
+					module = arg;
+				} else if (type === 'object' && arg.length) {
+					dependencies = arg;
+				}
 			}
-		}
-		resolveDependencies(factory, dependencies, module);
-	};
+			resolveDependencies(factory, dependencies, module);
+		};
 
-	define.amd = {};
+		root.define.amd = {
+			jQuery: true
+		};
+
+		root.require = function (dependencies, factory) {
+			resolveDependencies(factory, dependencies);
+		};
+	}
 
 	function resolveDependencies(factory, dependencies, module) {
 		var resolved = [];
 		if (dependencies) {
 			for (var i = 0; i < dependencies.length; i++) {
 				var dependency = dependencies[i];
-				if (modules[dependencies]) {
+				if (modules[dependency]) {
 					resolved.push(modules[dependency].call(root));
 				} else {
 					addToWaiting(factory, dependency, {
@@ -118,5 +123,4 @@
 			}
 		}
 	}
-
 })(this);

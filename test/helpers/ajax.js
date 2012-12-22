@@ -1,5 +1,4 @@
-/*global $, window */
-(function () {
+(function (root, $, undefined) {
 	'use strict';
 
 	var fake = function (options, filter, result) {
@@ -14,7 +13,7 @@
 		return deferred.promise();
 	};
 
-	window.ajaxSpy = {
+	root.ajaxSpy = {
 		setResult: function (result, filter) {
 			spyOn($, 'ajax').andCallFake(function (options) {
 				return fake(options, filter, result);
@@ -33,4 +32,4 @@
 			});
 		}
 	};
-})();
+})(this, this.jQuery);

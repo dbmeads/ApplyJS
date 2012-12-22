@@ -17,7 +17,7 @@ module.exports = function (grunt) {
 		},
 		concat: {
 			dist: {
-				src: ['src/apply.js', 'src/apply.web.js'],
+				src: ['src/amd.js', 'src/apply.js', 'src/apply.web.js'],
 				dest: 'apply.js'
 			}
 		},
@@ -36,7 +36,7 @@ module.exports = function (grunt) {
 			tasks: 'jasmine'
 		},
 		jasmine: {
-			src: ['src/apply.amd.js', 'lib/**/*.js', 'test/helpers/**/*.js', 'src/apply.js', 'src/apply.web.js'],
+			src: ['src/amd.js', 'lib/**/*.js', 'test/helpers/**/*.js', 'src/apply.js', 'src/apply.web.js'],
 			specs: ['test/**/*.js']
 		},
 		jshint: {

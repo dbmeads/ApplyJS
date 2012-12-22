@@ -3,11 +3,14 @@
  * Copyright 2012 David Meads
  * Released under the MIT license
  */
-
-(function (root, $, undefined) {
+(function (root, undefined) {
 	'use strict';
 
-	var apply = root.apply = function ($, apply) {
+	var apply;
+
+	function init($) {
+
+		apply = root.apply = {};
 
 		// On Loan
 		// -------
@@ -720,10 +723,11 @@
 		apply.toScope = function (scope) {
 			extend(scope, apply);
 		};
-	};
 
-	if ($) {
-		apply($, apply);
+		return apply;
 	}
 
-})(this, this.jQuery);
+	root.define('apply', ['jquery'], function ($) {
+		return apply || init($);
+	});
+})(this);
