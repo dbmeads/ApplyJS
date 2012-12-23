@@ -8,17 +8,36 @@
 
 	var apply;
 
-	function init($) {
+	function init() {
 
 		apply = root.apply = {};
 
+
 		// On Loan
 		// -------
-		var extend = $.extend;
-		var proxy = $.proxy;
 		var push = Array.prototype.push;
 		var slice = Array.prototype.slice;
 
+
+		// apply.extend
+		// ------------
+		var extend = apply.extend = function (dest) {
+			for (var i = 1; i < arguments.length; i++) {
+				for (var key in arguments[i]) {
+					dest[key] = arguments[i][key];
+				}
+			}
+			return dest;
+		};
+
+
+		// apply.proxy
+		// -----------
+		var proxy = apply.proxy = function (func, context) {
+			return function () {
+				return func.apply(context, arguments);
+			};
+		};
 
 		// Utils
 		// ----------
@@ -108,7 +127,6 @@
 			isPlainObject: isPlainObject,
 			isString: isString
 		});
-
 
 		// apply.collection
 		// ----------------
@@ -647,7 +665,7 @@
 		return apply;
 	}
 
-	root.define('apply', ['jquery'], function ($) {
-		return apply || init($);
+	root.define('apply', function () {
+		return apply || init();
 	});
 })(this);

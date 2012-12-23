@@ -1,7 +1,7 @@
 {
 	"name": "applyjs",
 	"description": "ApplyJS - Modular. Declaritive. Fun.",
-	"version": "0.0.5",
+	"version": "0.0.6",
 	"url": "http://www.applyjs.com",
 	"author": "David Meads <dbmeads@gmail.com>",
 	"main": "./dist/node/apply.node.js",
@@ -19,9 +19,7 @@
 	"scripts": {
 		"test": "grunt default --verbose"
 	},
-	"dependencies": {
-		"jquery": "1.8.3"
-	},
+	"dependencies": {},
 	"devDependencies": {
 		"grunt-beautify": "0.1.1",
 		"grunt-contrib-copy": "0.3.2",
