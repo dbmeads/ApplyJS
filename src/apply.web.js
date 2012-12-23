@@ -14,8 +14,9 @@
 
 			// On Loan
 			// -------
-			var proxy = apply.abstraction.proxy;
-			var when = apply.abstraction.when;
+			var extend = $.extend;
+			var proxy = $.proxy;
+			var when = $.when;
 
 
 			// apply.dependency
@@ -68,6 +69,82 @@
 			apply.ready = function (callback) {
 				dependency.wait(callback);
 			};
+
+
+			// apply.Crud
+			// ----------
+			var delegateOrHandle = function (method, callback) {
+				return function () {
+					if (this.parent && this.parent[method]) {
+						return this.parent[method].apply(this.parent, arguments);
+					}
+					return callback.apply(this, arguments);
+				};
+			};
+
+			var wrapAjax = function (context) {
+				var deferred = $.Deferred();
+				var options = {};
+				for (var i = 1; i < arguments.length; i++) {
+					if (arguments[i]) {
+						if (apply.isFunction(arguments[i])) {
+							deferred.then(arguments[i]);
+						} else if (arguments[i].success) {
+							deferred.then(arguments[i].success);
+							delete arguments[i].success;
+						}
+						extend(options, arguments[i]);
+					}
+				}
+				when($.ajax(options)).then(function (response) {
+					handleResponse(context, response, options);
+					deferred.resolve(context, response, options);
+				});
+				return deferred.promise();
+			};
+
+			var handleResponse = function (context, response, options) {
+				if (options.type === 'GET') {
+					if (apply.isFunction(context.inflate)) {
+						context.inflate(context.parse(response));
+					} else {
+						extend(context, response);
+					}
+				}
+			};
+
+			var crud = apply.Crud = apply.Events({
+				save: delegateOrHandle('save', function (options) {
+					return wrapAjax(this, {
+						contentType: this.contentType,
+						data: this.toString(),
+						type: this.getId && this.getId() ? 'PUT' : 'POST',
+						url: this.getUrl()
+					}, options);
+				}),
+				fetch: delegateOrHandle('fetch', function (options) {
+					return wrapAjax(this, {
+						url: this.getUrl(),
+						type: 'GET'
+					}, options);
+				}),
+				destroy: delegateOrHandle('destroy', function (options) {
+					return wrapAjax(this, {
+						url: this.getUrl(),
+						type: 'DELETE'
+					}, options);
+				}),
+				toString: function () {
+					return JSON.stringify(this.deflate ? this.deflate() : this);
+				},
+				parse: function (response) {
+					return response;
+				},
+				contentType: 'application/json'
+			});
+
+			apply.List = apply.List(crud);
+			apply.Model = apply.Model(crud);
 
 
 			// apply.View

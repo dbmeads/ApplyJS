@@ -18,13 +18,6 @@
 		var proxy = $.proxy;
 		var push = Array.prototype.push;
 		var slice = Array.prototype.slice;
-		var when = $.when;
-
-		apply.abstraction = {
-			extend: extend,
-			proxy: proxy,
-			when: when
-		};
 
 
 		// Utils
@@ -475,79 +468,6 @@
 		});
 
 
-		// apply.Crud
-		// ----------
-		var delegateOrHandle = function (method, callback) {
-			return function () {
-				if (this.parent && this.parent[method]) {
-					return this.parent[method].apply(this.parent, arguments);
-				}
-				return callback.apply(this, arguments);
-			};
-		};
-
-		var wrapAjax = function (context) {
-			var deferred = $.Deferred();
-			var options = {};
-			for (var i = 1; i < arguments.length; i++) {
-				if (arguments[i]) {
-					if (isFunction(arguments[i])) {
-						deferred.then(arguments[i]);
-					} else if (arguments[i].success) {
-						deferred.then(arguments[i].success);
-						delete arguments[i].success;
-					}
-					extend(options, arguments[i]);
-				}
-			}
-			when($.ajax(options)).then(function (response) {
-				handleResponse(context, response, options);
-				deferred.resolve(context, response, options);
-			});
-			return deferred.promise();
-		};
-
-		var handleResponse = function (context, response, options) {
-			if (options.type === 'GET') {
-				if (isFunction(context.inflate)) {
-					context.inflate(context.parse(response));
-				} else {
-					extend(context, response);
-				}
-			}
-		};
-
-		var crud = apply.Crud = events({
-			save: delegateOrHandle('save', function (options) {
-				return wrapAjax(this, {
-					contentType: this.contentType,
-					data: this.toString(),
-					type: this.getId && this.getId() ? 'PUT' : 'POST',
-					url: this.getUrl()
-				}, options);
-			}),
-			fetch: delegateOrHandle('fetch', function (options) {
-				return wrapAjax(this, {
-					url: this.getUrl(),
-					type: 'GET'
-				}, options);
-			}),
-			destroy: delegateOrHandle('destroy', function (options) {
-				return wrapAjax(this, {
-					url: this.getUrl(),
-					type: 'DELETE'
-				}, options);
-			}),
-			toString: function () {
-				return JSON.stringify(this.deflate ? this.deflate() : this);
-			},
-			parse: function (response) {
-				return response;
-			},
-			contentType: 'application/json'
-		});
-
-
 		// apply.Model
 		// -----------
 		var inflate = function (object, mappings, parent) {
@@ -579,7 +499,7 @@
 			return object;
 		};
 
-		var model = apply.Model = crud({
+		var model = apply.Model = events({
 			id: 'id',
 			urlRoot: '',
 			init: function (attributes) {
@@ -631,7 +551,7 @@
 			}
 		};
 
-		var list = apply.List = crud({
+		var list = apply.List = events({
 			urlRoot: '',
 			mapping: apply.Model,
 			init: function (list) {
