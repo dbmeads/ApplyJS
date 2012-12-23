@@ -48,6 +48,7 @@
 		});
 
 		it('should be able to resolve dependencies at a later time once they\'re defined.', function () {
+			root.xhr.spy();
 			define(['unresolved'], callback);
 
 			define('unresolved', factory);
