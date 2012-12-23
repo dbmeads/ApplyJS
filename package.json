@@ -4,7 +4,7 @@
 	"version": "0.0.5",
 	"url": "http://www.applyjs.com",
 	"author": "David Meads <dbmeads@gmail.com>",
-	"main": "./src/apply",
+	"main": "./dist/node/apply.node.js",
 	"license": "MIT",
 	"repository": {
 		"type": "git",

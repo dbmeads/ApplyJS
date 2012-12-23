@@ -16,27 +16,32 @@ module.exports = function (grunt) {
 			files: ['grunt.js', 'src/**/*.js', 'test/**/*.js']
 		},
 		concat: {
-			dist: {
-				src: ['src/amd.js', 'src/apply.js', 'src/apply.web.js'],
+			web: {
+				src: ['src/loaders/amd.js', 'src/apply.js', 'src/apply.web.js'],
 				dest: 'apply.js'
+			},
+			node: {
+				src: ['src/loaders/node.js', 'src/apply.js'],
+				dest: 'dist/node/apply.node.js'
 			}
 		},
 		copy: {
-			dist: {
+			web: {
 				files: {
 					'apply.min.js': 'apply.js'
 				}
 			}
 		},
 		mindirect: {
-			dist: ['apply.min.js']
+			web: ['apply.min.js'],
+			node: ['dist/node/apply.node.min.js']
 		},
 		watch: {
 			files: ['<config:jasmine.specs>'],
 			tasks: 'jasmine'
 		},
 		jasmine: {
-			src: ['src/amd.js', 'lib/**/*.js', 'test/helpers/**/*.js', 'src/apply.js', 'src/apply.web.js'],
+			src: ['src/loaders/amd.js', 'lib/**/*.js', 'test/helpers/**/*.js', 'src/apply.js', 'src/apply.web.js'],
 			specs: ['test/**/*.js']
 		},
 		jshint: {
