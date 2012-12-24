@@ -22,11 +22,13 @@
 				dependencies = arg;
 			}
 		}
+		if (module) {
+			console.log('resolving: ' + module);
+		}
 		resolveDependencies(factory, dependencies, module);
 	};
 
 	function resolveDependencies(factory, dependencies, module) {
-		console.log('resolved: ' + module);
 		var resolved = [];
 		if (dependencies) {
 			for (var i = 0; i < dependencies.length; i++) {
@@ -92,7 +94,7 @@
 			};
 			resolveWaiting(module);
 		} catch (error) {
-            console.log(error);
+			console.log(error);
 		}
 	}
 })(this);
