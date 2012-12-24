@@ -810,7 +810,7 @@
 		return apply;
 	}
 
-	define('apply/logger', ['apply/construct'], function () {
+	define('apply/logger', ['apply/construct'], function (apply) {
 		return module(apply);
 	});
 
@@ -825,7 +825,7 @@
 
 	var defined;
 
-	function module() {
+	function module(apply) {
 		if (!defined) {
 			defined = true;
 

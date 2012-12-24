@@ -1,4 +1,4 @@
-(function (root, undefined) {
+(function (root, apply) {
 	'use strict';
 
 	describe('apply.proxy', function () {
@@ -13,4 +13,4 @@
 			expect(obj.prop).toBe('prop');
 		});
 	});
-})(this);
+})(this, this.apply);

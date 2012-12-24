@@ -58,7 +58,7 @@
 		return apply;
 	}
 
-	define('apply/logger', ['apply/construct'], function () {
+	define('apply/logger', ['apply/construct'], function (apply) {
 		return module(apply);
 	});
 

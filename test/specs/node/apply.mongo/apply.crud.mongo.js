@@ -1,4 +1,4 @@
-(function (root) {
+(function (root, apply) {
 	'use strict';
 
 	describe('apply.crud.mongo', function () {
@@ -70,4 +70,4 @@
 			});
 		});
 	});
-})(this);
+})(this, this.apply);

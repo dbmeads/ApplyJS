@@ -1,4 +1,4 @@
-(function (root) {
+(function (root, apply) {
 	'use strict';
 
 	describe('apply.Router.Web', function () {
@@ -20,4 +20,4 @@
 		});
 
 	});
-})(this);
+})(this, this.apply);

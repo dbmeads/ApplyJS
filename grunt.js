@@ -63,15 +63,16 @@ module.exports = function (grunt) {
 			globals: {
 				jasmine: false,
 				describe: false,
+				afterEach: false,
 				beforeEach: false,
 				expect: false,
 				it: false,
 				xit: false,
 				spyOn: false,
 
+				// Special globals
 				define: false,
-
-				apply: false
+				require: false
 			}
 		}
 	});

@@ -1,4 +1,4 @@
-(function (root) {
+(function (root, apply) {
 	'use strict';
 
 	describe('apply.composer', function () {
@@ -13,4 +13,4 @@
 			expect(Constructor2.prop).toBe('prop');
 		});
 	});
-})(this);
+})(this, this.apply);

@@ -1,13 +1,15 @@
-/*global apply, describe, it, expect */
-describe('apply.string.isNumeric', function () {
+(function (root, apply) {
 	'use strict';
 
-	it('should recognize an integer as numeric', function () {
-		expect(apply.string.isNumeric('10231213')).toBe(true);
-	});
+	describe('apply.string.isNumeric', function () {
 
-	it('should not recognize a string as numeric', function () {
-		expect(apply.string.isNumeric('test')).toBe(false);
-	});
+		it('should recognize an integer as numeric', function () {
+			expect(apply.string.isNumeric('10231213')).toBe(true);
+		});
 
-});
+		it('should not recognize a string as numeric', function () {
+			expect(apply.string.isNumeric('test')).toBe(false);
+		});
+
+	});
+})(this, this.apply);

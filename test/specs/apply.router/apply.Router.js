@@ -1,4 +1,4 @@
-(function (root) {
+(function (root, apply) {
 	'use strict';
 
 	describe('apply.Router', function () {
@@ -63,4 +63,4 @@
 			});
 		});
 	});
-})(this);
+})(this, this.apply);

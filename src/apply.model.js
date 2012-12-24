@@ -8,7 +8,7 @@
 
 	var defined;
 
-	function module() {
+	function module(apply) {
 		if (!defined) {
 			defined = true;
 

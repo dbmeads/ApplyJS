@@ -1,4 +1,4 @@
-(function (root, undefined) {
+(function (root, apply) {
 	'use strict';
 
 	describe('apply.extend', function () {
@@ -32,4 +32,4 @@
 			expect(apply.extend(obj, obj1)).toBe(obj);
 		});
 	});
-})(this);
+})(this, this.apply);

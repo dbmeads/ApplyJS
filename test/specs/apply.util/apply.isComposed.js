@@ -1,13 +1,15 @@
-/*global apply, describe, it, expect */
-describe('apply.isComposed', function () {
+(function (root, apply) {
 	'use strict';
 
-	it('should be able to detect a composed instance', function () {
-		expect(apply.isComposed(apply.compose())).toBe(true);
-	});
+	describe('apply.isComposed', function () {
 
-	it('should not recognize just any object as a composed object', function () {
-		expect(apply.isComposed({})).toBe(false);
-	});
+		it('should be able to detect a composed instance', function () {
+			expect(apply.isComposed(apply.compose())).toBe(true);
+		});
 
-});
+		it('should not recognize just any object as a composed object', function () {
+			expect(apply.isComposed({})).toBe(false);
+		});
+
+	});
+})(this, this.apply);
