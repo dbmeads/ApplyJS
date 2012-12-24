@@ -22,7 +22,6 @@ Directory Structure:
 Define Call:
 
 // myModule.js
-// -----------
 
 define('myModule', [__dirname+'/subdirectory/myOtherModule'], function(myOtherModule) {
     // do something
