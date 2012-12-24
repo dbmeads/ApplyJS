@@ -179,7 +179,7 @@
 		// apply.namespace
 		// ---------------
 		var namespace = apply.namespace = function () {
-			var args = slice.apply(arguments);
+			var args = slice.call(arguments);
 			var obj = root;
 			if (!isString(args[0])) {
 				obj = args.shift();
@@ -220,7 +220,7 @@
 			if (cascades.length) {
 				return function () {
 					var result;
-					var args = slice.apply(arguments);
+					var args = slice.call(arguments);
 					loop(cascades, function (cascade) {
 						result = cascade.apply(this, args);
 					}, {
@@ -237,7 +237,7 @@
 		var buildConstructor = (function () {
 
 			function prepArgs(constructor, oldArguments) {
-				var args = slice.apply(oldArguments);
+				var args = slice.call(oldArguments);
 				return isString(args[0]) ? [args.shift(), constructor].concat(args) : [constructor].concat(args);
 			}
 
@@ -262,14 +262,14 @@
 				};
 				constructor.cascade = function (funcName) {
 					namespace(constructor, 'cascades.' + funcName, arguments);
-					var cascaded = cascade.apply(this, [this.objects].concat(slice.apply(arguments)));
+					var cascaded = cascade.apply(this, [this.objects].concat(slice.call(arguments)));
 					if (cascaded) {
 						constructor.prototype[funcName] = cascaded;
 					}
 					return constructor;
 				};
 				constructor.singleton = function () {
-					var args = slice.apply(arguments);
+					var args = slice.call(arguments);
 					args.push(constructor);
 					return singleton.apply(this, args);
 				};
@@ -339,7 +339,7 @@
 		})();
 
 		var compose = apply.compose = function () {
-			var args = slice.apply(arguments),
+			var args = slice.call(arguments),
 				ns;
 			if (isString(args[0])) {
 				ns = args.shift();
@@ -360,7 +360,7 @@
 		}
 
 		apply.decompose = function () {
-			var args = slice.apply(arguments),
+			var args = slice.call(arguments),
 				constructor;
 			if (args.length > 1) {
 				constructor = args.shift();
@@ -383,7 +383,7 @@
 		var con = function () {};
 
 		var singleton = apply.singleton = function () {
-			var args = slice.apply(arguments);
+			var args = slice.call(arguments);
 			var nsargs = [];
 			if (isPlainObject(args[0])) {
 				nsargs.push(args.shift());
@@ -476,7 +476,7 @@
 			trigger: function (event) {
 				var callbacks = this.events[event];
 				if (callbacks) {
-					var args = slice.apply(arguments);
+					var args = slice.call(arguments);
 					args.shift();
 					for (var i = 0; i < callbacks.length; i++) {
 						callbacks[i].apply(this, args);
@@ -630,7 +630,23 @@
 				this.routes = {};
 				this.current = undefined;
 			},
-			navigate: function (route) {
+			add: function (routes) {
+				if (isString(routes)) {
+					routes = {};
+					if (arguments.length === 2 && isFunction(arguments[1])) {
+						routes[arguments[0]] = arguments[1];
+					}
+				}
+				try {
+					for (var key in routes) {
+						namespace(this.routes, key.replace(/^\//, '').replace(/\//g, '.'), routes[key]);
+					}
+				} catch (e) {
+					console.log(e);
+				}
+				return this;
+			},
+			route: function (route) {
 				var parts = route.replace(/^#?\/?/, '').split('/');
 				var args = [];
 				var fragments = this.routes;
@@ -646,33 +662,12 @@
 					}
 				}
 				if (apply.isFunction(fragments)) {
-					fragments.apply(this, args);
+					fragments.apply(this, args.concat(slice.call(arguments, 1)));
 				}
-			},
-			route: function (routes) {
-				if (isString(routes)) {
-					routes = {};
-					if (arguments.length === 2 && isFunction(arguments[1])) {
-						routes[arguments[0]] = arguments[1];
-					}
-				}
-				try {
-					for (var key in routes) {
-						namespace(this.routes, key.replace(/^\//, '').replace(/\//g, '.'), routes[key]);
-					}
-				} catch (e) {
-					console.log(e);
-				}
-				return this;
 			}
 		});
 
 		var router = apply.router = apply.Router.singleton();
-
-
-		// apply.route
-		// -----------
-		apply.route = proxy(router.route, router);
 
 
 		// apply.toScope

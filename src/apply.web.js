@@ -357,7 +357,7 @@
 				check: function () {
 					if (root.location.hash !== this.current) {
 						var route = this.current = root.location.hash;
-						this.navigate(route);
+						this.route(route);
 					}
 				},
 				start: function (options) {
@@ -373,11 +373,6 @@
 			});
 
 			var router = apply.router = new apply.Router.Web();
-
-
-			// apply.route
-			// -----------
-			apply.route = proxy(router.route, router);
 		}
 
 		return apply;
