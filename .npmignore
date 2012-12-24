@@ -6,7 +6,10 @@ _SpecRunner.html
 .project
 .settings
 .idea
+.travis.yml
+.npmignore
 npm-debug.log
+grunt.js
 test
 src
 lib

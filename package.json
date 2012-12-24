@@ -1,9 +1,9 @@
 {
 	"name": "applyjs",
 	"description": "ApplyJS - Modular. Declaritive. Fun.",
-	"version": "0.0.7",
+	"version": "0.0.8",
 	"url": "http://www.applyjs.com",
-	"author": "David Meads <dbmeads@gmail.com>",
+	"author": "David Meads <david.meads@applyjs.com>",
 	"main": "./dist/node/apply.node.js",
 	"license": "MIT",
 	"repository": {
