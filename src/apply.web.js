@@ -345,6 +345,9 @@
 			// apply.Router.Web
 			// ----------------
 			apply.Router.Web = apply.Router({
+				init: function () {
+					this.current = undefined;
+				},
 				check: function () {
 					if (root.location.hash !== this.current) {
 						var route = this.current = root.location.hash;

@@ -1,21 +1,23 @@
-/*global apply, window, it, expect, jasmine */
-describe('apply.Router.Web', function () {
+(function (root) {
 	'use strict';
 
-	var callback;
+	describe('apply.Router.Web', function () {
 
-	beforeEach(function () {
-		window.router.current = undefined;
-		callback = jasmine.createSpy();
+		var callback;
+
+		beforeEach(function () {
+			apply.router.current = undefined;
+			callback = jasmine.createSpy();
+		});
+
+		it('should recognize new routes when called and respond to hash fragment changes', function () {
+			apply.router.add('home', callback);
+			root.location.hash = '#home';
+
+			apply.router.check();
+
+			expect(callback).toHaveBeenCalled();
+		});
+
 	});
-
-	it('should recognize new routes when called and respond to hash fragment changes', function () {
-		apply.router.add('home', callback);
-		window.location.hash = '#home';
-
-		apply.router.check();
-
-		expect(callback).toHaveBeenCalled();
-	});
-
-});
+})(this);

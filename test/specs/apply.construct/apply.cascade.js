@@ -1,11 +1,12 @@
-/*global apply, describe, it, expect, window, collection, cascade, compose */
+(function () {
+
+})(this);
+
 describe('apply.cascade', function () {
 	'use strict';
 
-	apply.toScope(window);
-
-	it('should cascade a function', function () {
-		var cascaded = cascade([{
+	it('should apply.cascade a function', function () {
+		var cascaded = apply.cascade([{
 			math: function (options) {
 				options.number += 1;
 				return options;
@@ -24,7 +25,7 @@ describe('apply.cascade', function () {
 	});
 
 	it('should support reverse cascading', function () {
-		var cascaded = cascade([{
+		var cascaded = apply.cascade([{
 			math: function (options) {
 				options.string += 'second';
 				return options;
@@ -42,8 +43,8 @@ describe('apply.cascade', function () {
 		}).string).toBe('firstsecond');
 	});
 
-	it('should support a cascade call on a composed constructor', function () {
-		var Constructor = compose({
+	it('should support a apply.cascade call on a composed constructor', function () {
+		var Constructor = apply.compose({
 			math: function (options) {
 				options.number += 1;
 				return options;
@@ -62,8 +63,8 @@ describe('apply.cascade', function () {
 		}).number).toBe(4);
 	});
 
-	it('should automatically continue previously established cascades when a constructor has more mixins applied', function () {
-		var Constructor = compose({
+	it('should automatically continue previously established apply.cascades when a constructor has more mixins applied', function () {
+		var Constructor = apply.compose({
 			build: function (options) {
 				options.string += ':1st';
 				return options;

@@ -43,7 +43,7 @@
 			for (var i = 0; i < dependencies.length; i++) {
 				var dependency = dependencies[i];
 				if (modules[dependency]) {
-					resolved.push(modules[dependency].call(root));
+					resolved.push(modules[dependency].factory.apply(root, modules[dependency].resolved));
 				} else {
 					addToWaiting(factory, dependency, {
 						factory: factory,
@@ -73,13 +73,16 @@
 		}
 	}
 
-	function handleResolved(factory, resolvedDependencies, module) {
+	function handleResolved(factory, resolved, module) {
 		if (factory.unresolved) {
 			delete factory.unresolved;
 		}
-		factory.apply(root, resolvedDependencies);
+		factory.apply(root, resolved);
 		if (module) {
-			modules[module] = factory;
+			modules[module] = {
+				factory: factory,
+				resolved: resolved
+			};
 			resolveWaiting(module);
 		}
 	}
@@ -116,8 +119,11 @@
 			if (url.indexOf('.js') >= 0) { /*jslint evil: true */
 				eval(response);
 			} else {
-				modules[module] = function () {
-					return response;
+				modules[module] = {
+					factory: function () {
+						return response;
+					},
+					resolved: []
 				};
 				resolveWaiting(module);
 			}

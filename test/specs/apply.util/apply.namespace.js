@@ -32,7 +32,7 @@ describe('apply.namespace', function () {
 		var obj = {};
 		apply.namespace('Test.Namespace.object', obj);
 
-		expect(namespace('Test.Namespace.object')).toBe(obj);
+		expect(apply.namespace('Test.Namespace.object')).toBe(obj);
 	});
 
 	it('should be able to return data namespaced relative to an object', function () {
@@ -40,7 +40,7 @@ describe('apply.namespace', function () {
 
 		apply.namespace('Test.Namespace.object2', obj);
 
-		expect(namespace(Test, 'Namespace.object2')).toBe(obj);
+		expect(apply.namespace(Test, 'Namespace.object2')).toBe(obj);
 	});
 
 	it('should be able to set an empty key if desired', function () {
