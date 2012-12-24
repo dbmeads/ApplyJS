@@ -92,7 +92,7 @@
 			};
 			resolveWaiting(module);
 		} catch (error) {
-
+            console.log(error);
 		}
 	}
 })(this);
