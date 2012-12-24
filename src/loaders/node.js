@@ -3,7 +3,7 @@
  * Copyright 2012 David Meads
  * Released under the MIT license
  */
-(function (root, undefined) {
+(function (root) {
 	'use strict';
 
 	var modules = {},

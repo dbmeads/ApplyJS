@@ -3,7 +3,7 @@
  * Copyright 2012 David Meads
  * Released under the MIT license
  */
-(function (root, undefined) {
+(function (root) {
 	'use strict';
 
 	var modules = {},
@@ -103,7 +103,7 @@
  * Copyright 2012 David Meads
  * Released under the MIT license
  */
-(function (root, undefined) {
+(function (root) {
 	'use strict';
 
 	var apply;
@@ -584,6 +584,18 @@
 				}
 			}
 		});
+
+
+		// apply.delegateToParent
+		// ----------------------
+		apply.delegateToParent = function (method, callback) {
+			return function () {
+				if (this.parent && this.parent[method]) {
+					return this.parent[method].apply(this.parent, arguments);
+				}
+				return callback.apply(this, arguments);
+			};
+		};
 
 
 		// apply.Model

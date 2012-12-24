@@ -40,7 +40,7 @@ module.exports = function (grunt) {
 			tasks: 'jasmine'
 		},
 		jasmine: {
-			src: ['src/loaders/amd.js', 'lib/**/*.js', 'test/helpers/**/*.js', 'src/apply.js', 'src/apply.web.js'],
+			src: ['src/loaders/amd.js', 'lib/**/*.js', 'test/helpers/**/*.js', 'src/apply.js', 'src/apply.web.js', 'src/node/apply.mongo.js'],
 			specs: ['test/**/*.js']
 		},
 		jshint: {
@@ -67,12 +67,8 @@ module.exports = function (grunt) {
 				xit: false,
 				spyOn: false,
 
-				// amd
 				define: false,
-				require: false,
 
-
-				// apply.js
 				apply: false
 			}
 		}

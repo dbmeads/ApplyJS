@@ -3,7 +3,7 @@
  * Copyright 2012 David Meads
  * Released under the MIT license
  */
-(function (root, undefined) {
+(function (root) {
 	'use strict';
 
 	var defined = false;
@@ -73,15 +73,6 @@
 
 			// apply.Crud
 			// ----------
-			var delegateOrHandle = function (method, callback) {
-				return function () {
-					if (this.parent && this.parent[method]) {
-						return this.parent[method].apply(this.parent, arguments);
-					}
-					return callback.apply(this, arguments);
-				};
-			};
-
 			var wrapAjax = function (context) {
 				var deferred = $.Deferred();
 				var options = {};
@@ -114,7 +105,7 @@
 			};
 
 			var crud = apply.Crud = apply.Events({
-				save: delegateOrHandle('save', function (options) {
+				save: apply.delegateToParent('save', function (options) {
 					return wrapAjax(this, {
 						contentType: this.contentType,
 						data: this.toString(),
@@ -122,13 +113,13 @@
 						url: this.getUrl()
 					}, options);
 				}),
-				fetch: delegateOrHandle('fetch', function (options) {
+				fetch: apply.delegateToParent('fetch', function (options) {
 					return wrapAjax(this, {
 						url: this.getUrl(),
 						type: 'GET'
 					}, options);
 				}),
-				destroy: delegateOrHandle('destroy', function (options) {
+				destroy: apply.delegateToParent('destroy', function (options) {
 					return wrapAjax(this, {
 						url: this.getUrl(),
 						type: 'DELETE'

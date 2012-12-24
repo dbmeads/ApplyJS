@@ -1,4 +1,4 @@
-(function (root, undefined) {
+(function (root) {
 	'use strict';
 
 	describe('apply.Router', function () {
