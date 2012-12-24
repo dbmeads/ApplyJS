@@ -14,7 +14,7 @@ One thing you might notice is that the example looks more like AMD then CommonJS
 That's because we've decided to adopt AMD as our standard for consistency between the server and browser.
 As long as your main app file requires ApplyJS (e.g.: require('applyjs');) then you'll be able to use define in your modules.
 
-The following example demonstrates how you might include one of your relative modules using define:
+The following example demonstrates how you might include a relative modules using define:
 
 ###Directory Structure:
 
