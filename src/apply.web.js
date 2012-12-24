@@ -354,27 +354,10 @@
 			// apply.Router.Web
 			// ----------------
 			apply.Router.Web = apply.Router({
-				autostart: true,
 				check: function () {
 					if (root.location.hash !== this.current) {
 						var route = this.current = root.location.hash;
-						var parts = route.replace(/^#?\/?/, '').split('/');
-						var args = [];
-						var fragments = this.routes;
-						for (var i = 0; i < parts.length; i++) {
-							var part = parts[i];
-							if (fragments[part]) {
-								fragments = fragments[part];
-							} else if (fragments['*']) {
-								args.push(apply.string.isNumeric(part) ? Number(part) : part);
-								fragments = fragments['*'];
-							} else {
-								break;
-							}
-						}
-						if (apply.isFunction(fragments)) {
-							fragments.apply(this, args);
-						}
+						this.navigate(route);
 					}
 				},
 				start: function (options) {
@@ -389,7 +372,7 @@
 				}
 			});
 
-			var router = apply.router = root.document ? apply.Router.Web.singleton() : apply.Router.singleton();
+			var router = apply.router = new apply.Router.Web();
 
 
 			// apply.route

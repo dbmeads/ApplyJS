@@ -729,19 +729,38 @@
 				this.routes = {};
 				this.current = undefined;
 			},
-			compile: function (routes) {
-				try {
-					for (var key in routes) {
-						namespace(this.routes, key.replace(/^\//, '').replace('\/', '.'), routes[key]);
+			navigate: function (route) {
+				var parts = route.replace(/^#?\/?/, '').split('/');
+				var args = [];
+				var fragments = this.routes;
+				for (var i = 0; i < parts.length; i++) {
+					var part = parts[i];
+					if (fragments[part]) {
+						fragments = fragments[part];
+					} else if (fragments['*']) {
+						args.push(apply.string.isNumeric(part) ? Number(part) : part);
+						fragments = fragments['*'];
+					} else {
+						break;
 					}
-				} catch (e) {
-					console.log(e);
+				}
+				if (apply.isFunction(fragments)) {
+					fragments.apply(this, args);
 				}
 			},
 			route: function (routes) {
-				this.compile(routes);
-				if (!this.iid && this.autostart) {
-					this.start();
+				if (isString(routes)) {
+					routes = {};
+					if (arguments.length === 2 && isFunction(arguments[1])) {
+						routes[arguments[0]] = arguments[1];
+					}
+				}
+				try {
+					for (var key in routes) {
+						namespace(this.routes, key.replace(/^\//, '').replace(/\//g, '.'), routes[key]);
+					}
+				} catch (e) {
+					console.log(e);
 				}
 				return this;
 			}
