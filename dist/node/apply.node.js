@@ -9,7 +9,7 @@
 	var modules = {},
 		waiting = {};
 
-	var define = root.define = GLOBAL.define = function () {
+	root.define = GLOBAL.define = function () {
 		var dependencies, factory, module;
 		for (var i = 0; i < arguments.length; i++) {
 			var arg = arguments[i],
@@ -26,10 +26,6 @@
 			console.log('resolving: ' + module);
 		}
 		resolveDependencies(factory, dependencies, module);
-	};
-
-	define.options = {
-		basedir: ''
 	};
 
 	function resolveDependencies(factory, dependencies, module) {
