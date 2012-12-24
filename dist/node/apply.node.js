@@ -26,7 +26,7 @@
 	};
 
 	function resolveDependencies(factory, dependencies, module) {
-		console.log('resolved ', module);
+		console.log('resolved: ' + module);
 		var resolved = [];
 		if (dependencies) {
 			for (var i = 0; i < dependencies.length; i++) {
