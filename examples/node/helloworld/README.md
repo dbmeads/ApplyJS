@@ -1,4 +1,6 @@
-Getting the hello world example running.
+###Getting the hello world example running.
+
+##Instructions:
 
 1. Install Node.js
 2. Copy the helloworld.js to a directory of your choosing.
@@ -6,7 +8,7 @@ Getting the hello world example running.
 3. Start the server by running "node helloworld.js".
 4. Point your browser at "http://localhost:9000".
 
-Notes:
+##Notes:
 
 One thing you might notice is that the example looks more like AMD then CommonJS.
 That's because we've decided to adopt AMD as our standard for consistency between the server and browser.
@@ -14,14 +16,14 @@ As long as your main app file requires ApplyJS (e.g.: require('applyjs');) then 
 
 The following example demonstrates how you might include one of your relative modules using define:
 
-Directory Structure:
+###Directory Structure:
 
     project/myModule.js
     project/subdirectory/myOtherModule.js
 
-Define Call:
+###Define Call:
 
-// myModule.js
+#### myModule.js
 
 define('myModule', [__dirname+'/subdirectory/myOtherModule'], function(myOtherModule) {
     // do something
