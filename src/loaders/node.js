@@ -68,7 +68,6 @@
 		}
 		factory.apply(root, resolvedDependencies);
 		if (module) {
-			console.log('Adding module ' + module);
 			modules[module] = factory;
 			resolveWaiting(module);
 		}
