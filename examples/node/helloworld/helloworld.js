@@ -3,7 +3,7 @@
 
     require('applyjs');
 
-    define('server', ['http', 'apply'], function (http, apply) {
+    define(['http', 'apply'], function (http, apply) {
 
         apply.router.add('', function(request, response) {
             response.writeHead(200, {'Content-Type': 'text/plain'});
