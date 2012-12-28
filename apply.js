@@ -171,9 +171,18 @@
 		// apply.extend
 		// ------------
 		var extend = apply.extend = function (dest) {
+			var deep = false;
+			if (dest === true) {
+				deep = true;
+				dest = arguments[1];
+			}
 			for (var i = 1; i < arguments.length; i++) {
 				for (var key in arguments[i]) {
-					dest[key] = arguments[i][key];
+					if (deep && isPlainObject(dest[key])) {
+						extend(true, dest[key], arguments[i][key]);
+					} else {
+						dest[key] = arguments[i][key];
+					}
 				}
 			}
 			return dest;
@@ -446,7 +455,7 @@
 			function decorateConstructor(constructor, mixins) {
 				constructor.objects = [];
 				constructor.mixins = mixins;
-				constructor.generators = [];
+				constructor.composers = [];
 				constructor.cascades = {
 					'init': ['init']
 				};
@@ -473,9 +482,9 @@
 					}
 					return compose.apply(this, prepArgs(constructor, arguments));
 				};
-				constructor.generator = function (generator) {
-					if (generator) {
-						constructor.generators.push(generator);
+				constructor.composer = function (composer) {
+					if (composer) {
+						constructor.composers.push(composer);
 					}
 					return constructor;
 				};
@@ -483,8 +492,8 @@
 					if (isFunction(mixin)) {
 						constructor.objects.push(mixin.prototype);
 						extend(constructor.cascades, mixin['cascades']);
-						if (mixin.generators) {
-							push.apply(constructor.generators, mixin.generators);
+						if (mixin.composers) {
+							push.apply(constructor.composers, mixin.composers);
 						}
 					} else {
 						constructor.objects.push(mixin);
@@ -511,9 +520,9 @@
 				addIsInstanceOf(constructor);
 			}
 
-			function invokeGenerators(constructor) {
-				loop(constructor.generators, function (generator) {
-					generator.call(constructor, constructor);
+			function invokecomposers(constructor) {
+				loop(constructor.composers, function (composer) {
+					composer.call(constructor, constructor);
 				});
 			}
 
@@ -523,7 +532,7 @@
 				}
 				decorateConstructor(constructor, mixins);
 				decoratePrototype(constructor);
-				invokeGenerators(constructor);
+				invokecomposers(constructor);
 				return constructor;
 			};
 		})();
@@ -1193,7 +1202,7 @@
 					return source || '';
 				};
 			}
-		}, dataBinding).generator(function () {
+		}, dataBinding).composer(function () {
 			var prototype = this.prototype;
 			if (prototype.resource) {
 				delete prototype.template;

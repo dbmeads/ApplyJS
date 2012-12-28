@@ -145,9 +145,18 @@
 		// apply.extend
 		// ------------
 		var extend = apply.extend = function (dest) {
+			var deep = false;
+			if (dest === true) {
+				deep = true;
+				dest = arguments[1];
+			}
 			for (var i = 1; i < arguments.length; i++) {
 				for (var key in arguments[i]) {
-					dest[key] = arguments[i][key];
+					if (deep && isPlainObject(dest[key])) {
+						extend(true, dest[key], arguments[i][key]);
+					} else {
+						dest[key] = arguments[i][key];
+					}
 				}
 			}
 			return dest;
@@ -420,7 +429,7 @@
 			function decorateConstructor(constructor, mixins) {
 				constructor.objects = [];
 				constructor.mixins = mixins;
-				constructor.generators = [];
+				constructor.composers = [];
 				constructor.cascades = {
 					'init': ['init']
 				};
@@ -447,9 +456,9 @@
 					}
 					return compose.apply(this, prepArgs(constructor, arguments));
 				};
-				constructor.generator = function (generator) {
-					if (generator) {
-						constructor.generators.push(generator);
+				constructor.composer = function (composer) {
+					if (composer) {
+						constructor.composers.push(composer);
 					}
 					return constructor;
 				};
@@ -457,8 +466,8 @@
 					if (isFunction(mixin)) {
 						constructor.objects.push(mixin.prototype);
 						extend(constructor.cascades, mixin['cascades']);
-						if (mixin.generators) {
-							push.apply(constructor.generators, mixin.generators);
+						if (mixin.composers) {
+							push.apply(constructor.composers, mixin.composers);
 						}
 					} else {
 						constructor.objects.push(mixin);
@@ -485,9 +494,9 @@
 				addIsInstanceOf(constructor);
 			}
 
-			function invokeGenerators(constructor) {
-				loop(constructor.generators, function (generator) {
-					generator.call(constructor, constructor);
+			function invokecomposers(constructor) {
+				loop(constructor.composers, function (composer) {
+					composer.call(constructor, constructor);
 				});
 			}
 
@@ -497,7 +506,7 @@
 				}
 				decorateConstructor(constructor, mixins);
 				decoratePrototype(constructor);
-				invokeGenerators(constructor);
+				invokecomposers(constructor);
 				return constructor;
 			};
 		})();
@@ -908,4 +917,60 @@
 		return apply;
 	});
 
+})(this);
+/*
+ * Module: apply.mongo
+ * Copyright 2012 David Meads
+ * Released under the MIT license
+ */
+(function (root) {
+	'use strict';
+
+	function module(apply, mongodb) {
+		var url = function (model) {
+			return 'mongodb://' + model.options.host + ':' + model.options.port + '/' + model.options.db;
+		};
+
+		var collection = function (model, callback) {
+			mongodb.MongoClient.connect(url(model), function (err, db) {
+				db.collection(model.options.collection, function (err, coll) {
+					callback.call(model, coll);
+				});
+			});
+		};
+
+		apply.namespace('apply.crud.mongo', {
+			init: function () {
+				if (!this.options.db || !this.options.collection) {
+					throw 'All mongoDB models must have a db and collection declared.';
+				}
+			},
+			client: mongodb.MongoClient,
+			options: {
+				host: 'localhost',
+				port: 27017
+			},
+			save: function () {
+				collection(this, function (model, coll) {
+
+				});
+			},
+			fetch: function () {
+				collection(this, function (model, coll) {
+
+				});
+			},
+			destroy: function () {
+				collection(this, function (model, coll) {
+
+				});
+			}
+		});
+
+		apply.namespace('apply.model.Mongo', apply.Model(apply.crud.mongo));
+	}
+
+	define('apply/mongo', ['apply', 'mongodb'], function (apply, mongodb) {
+		return apply.module(module, mongodb);
+	});
 })(this);

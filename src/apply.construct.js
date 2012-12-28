@@ -69,7 +69,7 @@
 			function decorateConstructor(constructor, mixins) {
 				constructor.objects = [];
 				constructor.mixins = mixins;
-				constructor.generators = [];
+				constructor.composers = [];
 				constructor.cascades = {
 					'init': ['init']
 				};
@@ -96,9 +96,9 @@
 					}
 					return compose.apply(this, prepArgs(constructor, arguments));
 				};
-				constructor.generator = function (generator) {
-					if (generator) {
-						constructor.generators.push(generator);
+				constructor.composer = function (composer) {
+					if (composer) {
+						constructor.composers.push(composer);
 					}
 					return constructor;
 				};
@@ -106,8 +106,8 @@
 					if (isFunction(mixin)) {
 						constructor.objects.push(mixin.prototype);
 						extend(constructor.cascades, mixin['cascades']);
-						if (mixin.generators) {
-							push.apply(constructor.generators, mixin.generators);
+						if (mixin.composers) {
+							push.apply(constructor.composers, mixin.composers);
 						}
 					} else {
 						constructor.objects.push(mixin);
@@ -134,9 +134,9 @@
 				addIsInstanceOf(constructor);
 			}
 
-			function invokeGenerators(constructor) {
-				loop(constructor.generators, function (generator) {
-					generator.call(constructor, constructor);
+			function invokecomposers(constructor) {
+				loop(constructor.composers, function (composer) {
+					composer.call(constructor, constructor);
 				});
 			}
 
@@ -146,7 +146,7 @@
 				}
 				decorateConstructor(constructor, mixins);
 				decoratePrototype(constructor);
-				invokeGenerators(constructor);
+				invokecomposers(constructor);
 				return constructor;
 			};
 		})();

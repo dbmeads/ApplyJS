@@ -2,7 +2,7 @@
 	'use strict';
 
 	describe('apply.composer', function () {
-		xit('should register a callback to be invoked on any new composed constructor that utilizes the constructor it\'s attached to', function () {
+		it('should register a callback to be invoked on any new composed constructor that utilizes the constructor it\'s attached to', function () {
 			var Constructor1 = apply.compose({});
 			Constructor1.composer(function (constructor) {
 				constructor.prop = 'prop';

@@ -15,9 +15,18 @@
 		// apply.extend
 		// ------------
 		var extend = apply.extend = function (dest) {
+			var deep = false;
+			if (dest === true) {
+				deep = true;
+				dest = arguments[1];
+			}
 			for (var i = 1; i < arguments.length; i++) {
 				for (var key in arguments[i]) {
-					dest[key] = arguments[i][key];
+					if (deep && isPlainObject(dest[key])) {
+						extend(true, dest[key], arguments[i][key]);
+					} else {
+						dest[key] = arguments[i][key];
+					}
 				}
 			}
 			return dest;

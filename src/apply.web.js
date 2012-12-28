@@ -256,7 +256,7 @@
 					return source || '';
 				};
 			}
-		}, dataBinding).generator(function () {
+		}, dataBinding).composer(function () {
 			var prototype = this.prototype;
 			if (prototype.resource) {
 				delete prototype.template;

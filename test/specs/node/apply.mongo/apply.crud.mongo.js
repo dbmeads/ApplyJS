@@ -47,6 +47,8 @@
 
 					expect(model.client.connect).toHaveBeenCalled();
 				});
+
+				it('should attempt to insert a document', function () {});
 			});
 
 			describe('fetch', function () {

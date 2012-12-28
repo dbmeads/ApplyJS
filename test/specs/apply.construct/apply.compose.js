@@ -128,18 +128,6 @@
 			expect(root.Mixin.MyObject.prototype.prop2).toBe('prop2');
 		});
 
-		it('should support the registration of code generators to be invoked when descendants of a constructor have been created', function () {
-			var composed = apply.compose({
-				test: 1
-			}).generator(function (descendant) {
-				descendant.prototype.test = 2;
-			});
-
-			expect(composed.compose({
-				prop2: 'prop'
-			}).prototype.test).toBe(2);
-		});
-
 		it('should retain the list of original mixins on the constructor', function () {
 			var mixins = [{},
 			{}];
