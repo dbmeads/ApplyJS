@@ -165,14 +165,14 @@
 
 		// apply.proxy
 		// -----------
-		var proxy = apply.proxy = function (func, context) {
+		apply.proxy = function (func, context) {
 			return function () {
 				return func.apply(context, arguments);
 			};
 		};
 
 
-		var array = apply.array = function (obj) {
+		apply.array = function (obj) {
 			return slice.call(obj);
 		};
 
