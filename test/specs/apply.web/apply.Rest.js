@@ -1,9 +1,9 @@
 (function (root, apply, ajaxSpy) {
 	'use strict';
 
-	describe('apply.Crud', function () {
+	describe('apply.Rest', function () {
 
-		var TestCrud = apply.Crud({
+		var TestRest = apply.Rest({
 			getUrl: function () {
 				return 'testUrl';
 			}
@@ -17,7 +17,7 @@
 					expect(options.contentType).toBe('text/xml');
 				});
 
-				new(apply.Crud({
+				new(apply.Rest({
 					toString: function () {
 						return 'something';
 					},
@@ -33,7 +33,7 @@
 					expect(options.type).toBe("POST");
 				});
 
-				new TestCrud().save();
+				new TestRest().save();
 			});
 
 			it('should PUT if the object has a "getId()" function and it returns an id', function () {
@@ -41,7 +41,7 @@
 					expect(options.type).toBe("PUT");
 				});
 
-				new(TestCrud.compose({
+				new(TestRest.compose({
 					getId: function () {
 						return '1';
 					}
@@ -57,7 +57,7 @@
 				ajaxSpy.setResult(result);
 				var called = false;
 				var callback = jasmine.createSpy();
-				var obj = new TestCrud();
+				var obj = new TestRest();
 
 				obj.fetch(callback).then(function (model, response, options) {
 					expect(model).toBe(obj);
@@ -68,10 +68,6 @@
 				expect(called).toBe(true);
 				expect(callback).toHaveBeenCalled();
 			});
-
-		});
-
-		describe('destroy', function () {
 
 		});
 

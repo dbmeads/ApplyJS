@@ -66,7 +66,7 @@
 		};
 
 
-		// apply.Crud
+		// apply.Rest
 		// ----------
 		var wrapAjax = function (context) {
 			var deferred = $.Deferred();
@@ -99,7 +99,7 @@
 			}
 		};
 
-		var crud = apply.Crud = apply.Events({
+		var rest = apply.Rest = apply.Events({
 			save: apply.delegateToParent('save', function (options) {
 				return wrapAjax(this, {
 					contentType: this.contentType,
@@ -129,8 +129,8 @@
 			contentType: 'application/json'
 		});
 
-		apply.List = apply.List(crud);
-		apply.Model = apply.Model(crud);
+		apply.namespace('apply.rest.List', apply.List(rest));
+		apply.namespace('apply.rest.Model', apply.Model(rest));
 
 
 		// apply.View

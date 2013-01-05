@@ -146,30 +146,6 @@
 			expect(list.get(0).get('name')).toBe('Jim');
 		});
 
-		it('should support fetching from a server', function () {
-			ajaxSpy.setResult([{
-				name: 'Don'
-			},
-			{
-				name: 'Pam'
-			}]);
-			var list = new(apply.List({
-				urlRoot: '/animals'
-			}))();
-
-			list.fetch(function (list) {
-				expect(list.size()).toBe(2);
-				expect(list.get(0).get('name')).toBe('Don');
-				expect(list.get(1).get('name')).toBe('Pam');
-			});
-		});
-
-		it('should have a getUrl function that returns urlRoot by default', function () {
-			expect(new(apply.List({
-				urlRoot: 'test'
-			}))().getUrl()).toBe('test');
-		});
-
 		it('should be able to deflate back into the base javascript objects', function () {
 			var data = [{
 				name: 'Tom'
