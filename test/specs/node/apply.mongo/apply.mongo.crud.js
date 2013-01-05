@@ -23,7 +23,7 @@
 
 		it('should throw an exception if a model is instantiated without declaring db and collection options', function () {
 			expect(function () {
-				apply.Model(mongo).singleton();
+				apply.Model(mongo).instance();
 			}).toThrow('All mongoDB models must have a db and collection declared.');
 		});
 
@@ -35,7 +35,7 @@
 				model = apply.Model(mongo, {
 					db: 'int',
 					collection: 'user'
-				}).singleton();
+				}).instance();
 			});
 
 			describe('save', function () {

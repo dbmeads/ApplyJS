@@ -47,7 +47,7 @@
 			}
 		}).cascade('log', true);
 
-		var logger = apply.logger = Logger.singleton();
+		var logger = apply.logger = Logger.instance();
 	}
 
 	define('apply/logger', ['apply/construct'], function (apply) {

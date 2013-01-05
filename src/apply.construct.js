@@ -81,10 +81,10 @@
 					}
 					return constructor;
 				};
-				constructor.singleton = function () {
+				constructor.instance = function () {
 					var args = array(arguments);
 					args.push(constructor);
-					return singleton.apply(this, args);
+					return instance.apply(this, args);
 				};
 				constructor.merge = function (object) {
 					extend(constructor.prototype, object);
@@ -190,11 +190,11 @@
 			return constructor;
 		};
 
-		// apply.singleton
+		// apply.instance
 		// ---------------
 		var con = function () {};
 
-		var singleton = apply.singleton = function () {
+		var instance = apply.instance = function () {
 			var args = array(arguments);
 			var nsargs = [];
 			if (isPlainObject(args[0])) {

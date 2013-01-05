@@ -48,7 +48,7 @@
 			}
 		});
 
-		apply.router = apply.Router.singleton();
+		apply.router = apply.Router.instance();
 	}
 
 	define('apply/router', ['apply/util', 'apply/construct'], function (apply) {

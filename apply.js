@@ -467,10 +467,10 @@
 					}
 					return constructor;
 				};
-				constructor.singleton = function () {
+				constructor.instance = function () {
 					var args = array(arguments);
 					args.push(constructor);
-					return singleton.apply(this, args);
+					return instance.apply(this, args);
 				};
 				constructor.merge = function (object) {
 					extend(constructor.prototype, object);
@@ -576,11 +576,11 @@
 			return constructor;
 		};
 
-		// apply.singleton
+		// apply.instance
 		// ---------------
 		var con = function () {};
 
-		var singleton = apply.singleton = function () {
+		var instance = apply.instance = function () {
 			var args = array(arguments);
 			var nsargs = [];
 			if (isPlainObject(args[0])) {
@@ -785,7 +785,7 @@
 			}
 		}).cascade('log', true);
 
-		var logger = apply.logger = Logger.singleton();
+		var logger = apply.logger = Logger.instance();
 	}
 
 	define('apply/logger', ['apply/construct'], function (apply) {
@@ -924,7 +924,7 @@
 			}
 		});
 
-		apply.router = apply.Router.singleton();
+		apply.router = apply.Router.instance();
 	}
 
 	define('apply/router', ['apply/util', 'apply/construct'], function (apply) {

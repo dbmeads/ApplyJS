@@ -9,12 +9,12 @@
 				children: {
 					'.child1': apply.View({
 						source: '<span>child1</span>'
-					}).singleton(),
+					}).instance(),
 					'.child2': apply.View({
 						source: '<span>child2</span>'
-					}).singleton()
+					}).instance()
 				}
-			}).singleton();
+			}).instance();
 
 			view.render();
 
@@ -27,11 +27,11 @@
 				children: {
 					'.children': [apply.View({
 						source: '<span>child1</span>'
-					}).singleton(), apply.View({
+					}).instance(), apply.View({
 						source: '<span>child2</span>'
-					}).singleton()]
+					}).instance()]
 				}
-			}).singleton();
+			}).instance();
 
 			view.render();
 

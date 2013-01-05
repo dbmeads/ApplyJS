@@ -79,7 +79,7 @@
 		it('should provide a default model for data if data is undefined', function () {
 			var view = DataBindingView({
 				source: '<form><input type="text" data="name"/></form>'
-			}).singleton();
+			}).instance();
 
 			view.render().find('[data="name"]').val('Ted').change();
 

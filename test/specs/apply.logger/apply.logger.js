@@ -70,7 +70,7 @@
 		it('should expose the apply.Logger constructor so that we can add features and create additional loggers if desired', function () {
 			var myLogger = apply.Logger({
 				test: 'prop'
-			}).singleton();
+			}).instance();
 
 			myLogger.debug('test');
 
@@ -84,7 +84,7 @@
 					log: function (options) {
 						options.message = '{{' + options.message + '}}';
 					}
-				}).singleton();
+				}).instance();
 			});
 
 

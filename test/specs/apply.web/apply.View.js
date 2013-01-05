@@ -64,7 +64,7 @@
 		it('should retain any outer element attributes', function () {
 			var view = apply.View({
 				source: '<div class="cool" id="1">test</div>'
-			}).singleton();
+			}).instance();
 
 			view.render();
 
@@ -77,7 +77,7 @@
 				data: {
 					name: 'Greg'
 				}
-			}).singleton();
+			}).instance();
 
 			expect(view.data.name).toBe('Greg');
 		});
@@ -116,7 +116,7 @@
 							called = true;
 						}
 					}
-				}).singleton();
+				}).instance();
 
 				view.render().submit();
 
@@ -133,7 +133,7 @@
 							called = true;
 						}
 					}
-				}).singleton();
+				}).instance();
 
 				view.render().submit();
 
@@ -154,7 +154,7 @@
 					events: {
 						'submit': function () {}
 					}
-				}).singleton();
+				}).instance();
 
 				view.render().submit();
 
