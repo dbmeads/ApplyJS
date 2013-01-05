@@ -1,12 +1,12 @@
 (function (root, apply) {
 	'use strict';
 
-	describe('apply.crud.mongo', function () {
+	describe('apply.mixins.mongo', function () {
 
 		var mongo, mongodb;
 
 		beforeEach(function () {
-			mongo = apply.mongo.crud;
+			mongo = apply.mixins.mongo;
 			mongodb = root.mongodb;
 		});
 

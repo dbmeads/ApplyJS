@@ -99,7 +99,7 @@
 			}
 		};
 
-		var rest = apply.Rest = apply.Events({
+		apply.namespace('apply.mixins.rest', {
 			save: apply.delegateToParent('save', function (options) {
 				return wrapAjax(this, {
 					contentType: this.contentType,
@@ -129,8 +129,10 @@
 			contentType: 'application/json'
 		});
 
-		apply.namespace('apply.rest.List', apply.List(rest));
-		apply.namespace('apply.rest.Model', apply.Model(rest));
+		apply.namespace('apply.rest', {
+			List: apply.List(apply.mixins.rest),
+			Model: apply.Model(apply.mixins.rest)
+		});
 
 
 		// apply.View
@@ -272,69 +274,67 @@
 
 		// apply.mixins
 		// -------------
-		apply.mixins = {
-			view: {
-				dataBinding: dataBinding,
-				renderer: {
-					dynamic: {
-						attachTo: '',
-						render: function (view) {
-							var $el = this.$el;
-							if (view) {
-								if (this.attachTo) {
-									$el.find(this.attachTo).html(view.render());
-								} else {
-									$el.html(view.render());
-								}
-							}
-							return $el;
-						}
-					},
-					children: {
-						children: {},
-						render: function (children) {
-							var $el = this.$el;
-							for (var key in this.children) {
-								var $attachTo = $el.find(key).empty();
-								if ($attachTo.size() === 0 && $el.is(key)) {
-									$attachTo = $el;
-								}
-								var views = this.children[key];
-								if (apply.isArray(views)) {
-									for (var i = 0; i < views.length; i++) {
-										$attachTo.append(views[i].render());
-									}
-								} else {
-									$attachTo.append(views.render());
-								}
-							}
-							return $el;
-						}
-					},
-					list: {
-						itemView: view,
-						render: function () {
-							var $el = this.$el;
-							var $attachTo = $el;
+		apply.namespace('apply.mixins.view', {
+			dataBinding: dataBinding,
+			renderer: {
+				dynamic: {
+					attachTo: '',
+					render: function (view) {
+						var $el = this.$el;
+						if (view) {
 							if (this.attachTo) {
-								$attachTo = $el.find(this.attachTo);
+								$el.find(this.attachTo).html(view.render());
+							} else {
+								$el.html(view.render());
 							}
-							var ItemView = this.itemView;
-							var data = this.data || [];
-							if (data.list) {
-								data = data.list;
-							}
-							$.each(data, function (index, value) {
-								$attachTo.append(new ItemView({
-									data: value
-								}).render());
-							});
-							return $el;
 						}
+						return $el;
+					}
+				},
+				children: {
+					children: {},
+					render: function (children) {
+						var $el = this.$el;
+						for (var key in this.children) {
+							var $attachTo = $el.find(key).empty();
+							if ($attachTo.size() === 0 && $el.is(key)) {
+								$attachTo = $el;
+							}
+							var views = this.children[key];
+							if (apply.isArray(views)) {
+								for (var i = 0; i < views.length; i++) {
+									$attachTo.append(views[i].render());
+								}
+							} else {
+								$attachTo.append(views.render());
+							}
+						}
+						return $el;
+					}
+				},
+				list: {
+					itemView: view,
+					render: function () {
+						var $el = this.$el;
+						var $attachTo = $el;
+						if (this.attachTo) {
+							$attachTo = $el.find(this.attachTo);
+						}
+						var ItemView = this.itemView;
+						var data = this.data || [];
+						if (data.list) {
+							data = data.list;
+						}
+						$.each(data, function (index, value) {
+							$attachTo.append(new ItemView({
+								data: value
+							}).render());
+						});
+						return $el;
 					}
 				}
 			}
-		};
+		});
 
 
 		// apply.Router.Web

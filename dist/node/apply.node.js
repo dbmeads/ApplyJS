@@ -948,7 +948,7 @@
 			return false;
 		};
 
-		apply.namespace('apply.mongo.crud', {
+		apply.namespace('apply.mixins.mongo', {
 			init: function () {
 				if (!this.db || !this.collection) {
 					throw 'All mongoDB models must have a db and collection declared.';
@@ -994,7 +994,7 @@
 			}
 		});
 
-		apply.namespace('apply.mongo.Model', apply.Model(apply.mongo.crud));
+		apply.namespace('apply.mongo.Model', apply.Model(apply.mixins.mongo));
 	}
 
 	define('apply/mongo', ['apply', 'mongodb'], function (apply, mongodb) {

@@ -1,9 +1,9 @@
 (function (root, apply, ajaxSpy) {
 	'use strict';
 
-	describe('apply.Rest', function () {
+	describe('apply.mixins.rest', function () {
 
-		var TestRest = apply.Rest({
+		var Rest = apply.compose(apply.mixins.rest, {
 			getUrl: function () {
 				return 'testUrl';
 			}
@@ -17,7 +17,7 @@
 					expect(options.contentType).toBe('text/xml');
 				});
 
-				new(apply.Rest({
+				new(Rest({
 					toString: function () {
 						return 'something';
 					},
@@ -33,7 +33,7 @@
 					expect(options.type).toBe("POST");
 				});
 
-				new TestRest().save();
+				new Rest().save();
 			});
 
 			it('should PUT if the object has a "getId()" function and it returns an id', function () {
@@ -41,7 +41,7 @@
 					expect(options.type).toBe("PUT");
 				});
 
-				new(TestRest.compose({
+				new(Rest({
 					getId: function () {
 						return '1';
 					}
@@ -57,7 +57,7 @@
 				ajaxSpy.setResult(result);
 				var called = false;
 				var callback = jasmine.createSpy();
-				var obj = new TestRest();
+				var obj = new Rest();
 
 				obj.fetch(callback).then(function (model, response, options) {
 					expect(model).toBe(obj);
