@@ -1069,8 +1069,8 @@
 			toString: function () {
 				return JSON.stringify(this.deflate ? this.deflate() : this);
 			},
-			parse: function (response) {
-				return response;
+			parse: function (data) {
+				return data;
 			},
 			contentType: 'application/json'
 		});
