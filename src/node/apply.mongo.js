@@ -7,47 +7,74 @@
 	'use strict';
 
 	function module(apply, mongodb) {
+
 		var url = function (model) {
-			return 'mongodb://' + model.options.host + ':' + model.options.port + '/' + model.options.db;
+			return 'mongodb://' + model.host + ':' + model.port + '/' + model.db;
 		};
 
 		var collection = function (model, callback) {
 			mongodb.MongoClient.connect(url(model), function (err, db) {
-				db.collection(model.options.collection, function (err, coll) {
-					callback.call(model, coll);
+				db.collection(model.collection, function (err, coll) {
+					callback.call(this, coll, model);
 				});
 			});
 		};
 
-		apply.namespace('apply.crud.mongo', {
+		var error = function (model, err, options) {
+			if (err && options.error) {
+				options.error.call(err, model);
+				return true;
+			}
+			return false;
+		};
+
+		apply.namespace('apply.mongo.crud', {
 			init: function () {
-				if (!this.options.db || !this.options.collection) {
+				if (!this.db || !this.collection) {
 					throw 'All mongoDB models must have a db and collection declared.';
 				}
 			},
-			client: mongodb.MongoClient,
-			options: {
-				host: 'localhost',
-				port: 27017
-			},
-			save: function () {
-				collection(this, function (model, coll) {
-
+			host: 'localhost',
+			port: 27017,
+			save: function (options) {
+				collection(this, function (coll, model) {
+					coll.insert(model.deflate(), function (err, data) {
+						if (!error(this, err, options)) {
+							if (options.success) {
+								options.success.call(this, model.set(data[0]));
+							}
+						}
+					});
 				});
 			},
-			fetch: function () {
-				collection(this, function (model, coll) {
-
+			fetch: function (options) {
+				collection(this, function (coll, model) {
+					coll.findOne(model.deflate(), function (err, data) {
+						if (!error(this, err, options)) {
+							if (options.success) {
+								options.success.call(this, model.inflate(data));
+							}
+						}
+					});
 				});
 			},
-			destroy: function () {
-				collection(this, function (model, coll) {
-
+			destroy: function (options) {
+				collection(this, function (coll, model) {
+					coll.remove(this.deflate(), function (err) {
+						if (!error(this, err, options)) {
+							if (options.success) {
+								options.success.call(this, model);
+							}
+						}
+					});
 				});
+			},
+			toString: function () {
+				return JSON.stringify(this.deflate ? this.deflate() : this);
 			}
 		});
 
-		apply.namespace('apply.model.Mongo', apply.Model(apply.crud.mongo));
+		apply.namespace('apply.mongo.Model', apply.Model(apply.mongo.crud));
 	}
 
 	define('apply/mongo', ['apply', 'mongodb'], function (apply, mongodb) {

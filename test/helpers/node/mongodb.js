@@ -1,16 +1,28 @@
 (function (root) {
 	'use strict';
 
-	root.mongodb = {
-		MongoClient: {
-			connect: function () {
+    if(!root.mongodb) {
+        root.mongodb = {
+            collection: {
+                insert: function (model) {
 
-			}
-		}
-	};
+                }
+            },
+            db: {
+                collection: function (name, callback) {
+                    callback.call(this, '', mongodb.collection);
+                }
+            },
+            MongoClient: {
+                connect: function (url, callback) {
+                    callback.call(this, '', mongodb.db);
+                }
+            }
+        };
 
-	define('mongodb', function () {
-		return root.mongodb;
-	});
+        define('mongodb', function () {
+            return root.mongodb;
+        });
+    }
 
 })(this);

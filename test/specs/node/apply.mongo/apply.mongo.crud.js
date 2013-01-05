@@ -3,10 +3,11 @@
 
 	describe('apply.crud.mongo', function () {
 
-		var mongo;
+		var mongo, mongodb;
 
 		beforeEach(function () {
-			mongo = apply.crud.mongo;
+			mongo = apply.mongo.crud;
+			mongodb = root.mongodb;
 		});
 
 		it('should define a crud mixin', function () {
@@ -16,8 +17,8 @@
 		});
 
 		it('should have server and port properties that are defaulted to "localhost" and "27017"', function () {
-			expect(mongo.options.host).toBe('localhost');
-			expect(mongo.options.port).toBe(27017);
+			expect(mongo.host).toBe('localhost');
+			expect(mongo.port).toBe(27017);
 		});
 
 		it('should throw an exception if a model is instantiated without declaring db and collection options', function () {
@@ -32,20 +33,18 @@
 
 			beforeEach(function () {
 				model = apply.Model(mongo, {
-					options: {
-						db: 'int',
-						collection: 'user'
-					}
+					db: 'int',
+					collection: 'user'
 				}).singleton();
 			});
 
 			describe('save', function () {
 				it('should attempt to connect to mongodb when save is invoked', function () {
-					spyOn(model.client, 'connect');
+					spyOn(root.mongodb.MongoClient, 'connect');
 
 					model.save();
 
-					expect(model.client.connect).toHaveBeenCalled();
+					expect(mongodb.MongoClient.connect).toHaveBeenCalled();
 				});
 
 				it('should attempt to insert a document', function () {});
@@ -53,21 +52,21 @@
 
 			describe('fetch', function () {
 				it('should attempt to connect to mongodb when save is invoked', function () {
-					spyOn(model.client, 'connect');
+					spyOn(mongodb.MongoClient, 'connect');
 
 					model.fetch();
 
-					expect(model.client.connect).toHaveBeenCalled();
+					expect(mongodb.MongoClient.connect).toHaveBeenCalled();
 				});
 			});
 
 			describe('destroy', function () {
 				it('should attempt to connect to mongodb when save is invoked', function () {
-					spyOn(model.client, 'connect');
+					spyOn(mongodb.MongoClient, 'connect');
 
 					model.destroy();
 
-					expect(model.client.connect).toHaveBeenCalled();
+					expect(mongodb.MongoClient.connect).toHaveBeenCalled();
 				});
 			});
 		});
