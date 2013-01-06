@@ -860,6 +860,14 @@
 			getUrl: function () {
 				return this.urlRoot + (this.attributes.id ? '/' + this.attributes.id : '');
 			},
+			clear: function () {
+				var attributes = this.attributes;
+				this.attributes = {};
+				for (var key in attributes) {
+					this.trigger('change:' + key, undefined, this);
+					this.trigger('change', undefined, key, this);
+				}
+			},
 			deflate: function () {
 				return deflate(extend({}, this.attributes), this.mappings);
 			},

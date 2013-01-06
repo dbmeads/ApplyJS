@@ -3,33 +3,20 @@
 
 	describe('apply.Model', function () {
 
-		var callback;
+		var callback, model;
 
 		beforeEach(function () {
 			callback = jasmine.createSpy();
+			model = new apply.Model({
+				firstname: 'Dave'
+			});
 		});
 
 		it('should be able to construct a model that has attributes set on it', function () {
-			var model = new apply.Model({
-				name: 'Dave'
-			});
-
-			expect(model.attributes.name).toBe('Dave');
-		});
-
-		it('should be able to create a 2nd mixed in constructor from apply.Model by calling apply.Model.compose()', function () {
-			var NewModel = apply.Model.compose({
-				prop1: 'Model'
-			});
-
-			expect(NewModel.prototype.prop1).toBe('Model');
+			expect(model.attributes.firstname).toBe('Dave');
 		});
 
 		it('should support setting of attributes after a model is created without touching other attributes', function () {
-			var model = new apply.Model({
-				firstname: 'Dave'
-			});
-
 			model.set({
 				lastname: 'Meads'
 			});
@@ -39,11 +26,13 @@
 		});
 
 		it('should support the return of attributes via a get method', function () {
-			var model = new apply.Model({
-				firstname: 'Dave'
-			});
-
 			expect(model.get('firstname')).toBe('Dave');
+		});
+
+		it('should support a clear method that clears all attributes', function () {
+			model.clear();
+
+			expect(model.attributes).toEqual({});
 		});
 
 		it('should be able to handle nested models via mappings', function () {
@@ -105,6 +94,16 @@
 				}, false);
 
 				expect(callback).toHaveBeenCalledWith('Dave', model);
+			});
+
+			it('should fire change events when a clear occurs', function () {
+				model.on('change:firstname', callback);
+				model.on('change', callback);
+
+				model.clear();
+
+				expect(callback).toHaveBeenCalledWith(undefined, model);
+				expect(callback).toHaveBeenCalledWith(undefined, 'firstname', model);
 			});
 		});
 	});
