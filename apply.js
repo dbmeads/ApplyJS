@@ -886,7 +886,7 @@
 
 		var validations = {
 			'required': function (value) {
-				if (value && apply.isObject(value) || (value.length && value.length > 0)) {
+				if (value && (apply.isObject(value) || (value.length && value.length > 0))) {
 					return true;
 				}
 				return false;
