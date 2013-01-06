@@ -1,7 +1,7 @@
 module.exports = function (grunt) {
 	'use strict';
 
-	var apply = ['src/apply.core.js', 'src/apply.util.js', 'src/apply.construct.js', 'src/apply.events.js', 'src/apply.list.js', 'src/apply.logger.js', 'src/apply.model.js', 'src/apply.router.js', 'src/apply.js'];
+	var apply = ['src/apply.core.js', 'src/apply.util.js', 'src/apply.construct.js', 'src/apply.events.js', 'src/apply.list.js', 'src/apply.logger.js', 'src/apply.model.js', 'src/apply.validation.js', 'src/apply.router.js', 'src/apply.js'];
 
 	// Project configuration.
 	grunt.initConfig({
