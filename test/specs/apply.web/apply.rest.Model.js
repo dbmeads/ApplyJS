@@ -1,7 +1,7 @@
 (function (root, apply, $, ajaxSpy) {
 	'use strict';
 
-	describe('crud', function () {
+	describe('apply.rest.Model', function () {
 		it('should support a save method that will POST to a urlRoot if id is not defined', function () {
 			ajaxSpy.setResult();
 			var model = new(apply.rest.Model.compose({
@@ -37,6 +37,23 @@
 				data: '{"id":1,"firstname":"Dave"}',
 				contentType: 'application/json'
 			});
+		});
+
+		xit('should automatically update the model with the response from save', function () {
+			ajaxSpy.setResult({
+				id: 3,
+				firstname: 'Dave'
+			});
+			var model = new(apply.rest.Model.compose({
+				urlRoot: '/users'
+			}))({
+				firstname: 'Dave'
+			});
+
+			model.save();
+
+			expect(model.get('id')).toBe(3);
+			expect(model.get('firstname')).toBe('Dave');
 		});
 
 		it('should support a destroy method that will DELETE a urlRoot/{id}', function () {

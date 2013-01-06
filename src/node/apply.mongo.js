@@ -74,7 +74,9 @@
 			}
 		});
 
-		apply.namespace('apply.mongo.Model', apply.Model(apply.mixins.mongo));
+		apply.namespace('apply.mongo.Model', apply.Model(apply.mixins.mongo, {
+			id: '_id'
+		}));
 	}
 
 	define('apply/mongo', ['apply', 'mongodb'], function (apply, mongodb) {
