@@ -3,10 +3,15 @@
 
 	describe('apply.Events', function () {
 
-		it('should support an \'on\' method that allows callbacks to be registered', function () {
-			var events = new apply.Events();
-			var callback = function () {};
+		var callback, events;
 
+		beforeEach(function () {
+			callback = jasmine.createSpy();
+			events = new apply.Events();
+
+		});
+
+		it('should support an \'on\' method that allows callbacks to be registered', function () {
 			events.on('test', callback);
 
 			expect(events.events['test']).toEqual([callback]);
@@ -25,11 +30,17 @@
 			expect(callbacks[1]).toHaveBeenCalled();
 		});
 
+		it('should support a third parameter that takes the context to apply the callback to', function () {
+			var obj = {};
+
+			events.on('test', callback, obj);
+			events.trigger('test');
+
+			expect(callback.mostRecentCall.object).toBe(obj);
+		});
+
 		describe('trigger', function () {
 			it('should support arguments that will be passed on to callbacks', function () {
-				var events = new apply.Events();
-				var callback = jasmine.createSpy();
-
 				events.on('test', callback);
 				events.trigger('test', 'an argument');
 
