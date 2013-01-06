@@ -822,7 +822,7 @@
 				for (var key in attributes) {
 					this.trigger('change:' + key, this.attributes[key], this);
 				}
-				this.trigger('change', this.attributes[key], key);
+				this.trigger('change', this.attributes[key], key, this);
 				return this;
 			},
 			get: function (key) {

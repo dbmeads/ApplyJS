@@ -3,6 +3,12 @@
 
 	describe('apply.Model', function () {
 
+		var callback;
+
+		beforeEach(function () {
+			callback = jasmine.createSpy();
+		});
+
 		it('should be able to construct a model that has attributes set on it', function () {
 			var model = new apply.Model({
 				name: 'Dave'
@@ -79,35 +85,26 @@
 		describe('events', function () {
 			it('should support a change event that fires when any attribute changes', function () {
 				var model = new apply.Model();
-				var check = jasmine.createSpy();
 
-				model.on('change', function (name, key) {
-					expect(name).toBe('Dave');
-					expect(key).toBe('name');
-					check();
-				});
+				model.on('change', callback);
 
 				model.set({
 					name: 'Dave'
 				}, false);
 
-				expect(check).toHaveBeenCalled();
+				expect(callback).toHaveBeenCalledWith('Dave', 'name', model);
 			});
 
 			it('should support a change event that fires when any attribute changes', function () {
 				var model = new apply.Model();
-				var check = jasmine.createSpy();
 
-				model.on('change:name', function (name) {
-					expect(name).toBe('Dave');
-					check();
-				});
+				model.on('change:name', callback);
 
 				model.set({
 					name: 'Dave'
 				}, false);
 
-				expect(check).toHaveBeenCalled();
+				expect(callback).toHaveBeenCalledWith('Dave', model);
 			});
 		});
 	});
