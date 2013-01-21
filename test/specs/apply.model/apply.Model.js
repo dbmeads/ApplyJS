@@ -71,6 +71,27 @@
 			}).getId()).toBe(2);
 		});
 
+		it('should support a default representation that will be used to set the default values for attributes', function () {
+			var school = {
+				name: 'Test High'
+			};
+			var Model = apply.Model({
+			default:
+				{
+					name: 'Tim',
+					school: school
+				}, mappings: {
+					'school': apply.Model
+				}
+			});
+
+			var model = new Model();
+
+			expect(model.get('name')).toBe('Tim');
+			expect(model.get('school')).not.toBe(school);
+			expect(model.get('school').get('name')).toBe('Test High');
+		});
+
 		describe('events', function () {
 			it('should support a change event that fires when any attribute changes', function () {
 				var model = new apply.Model();

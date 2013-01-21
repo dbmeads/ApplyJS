@@ -833,11 +833,17 @@
 			return object;
 		};
 
+		var defaultAttributes = function (model) {
+			model.attributes = {};
+			model.set(model.
+		default);
+		};
+
 		var model = apply.Model = apply.Events({
 			id: 'id',
 			urlRoot: '',
 			init: function (attributes) {
-				this.attributes = {};
+				defaultAttributes(this);
 				this.set(attributes);
 			},
 			set: function (attributes) {
@@ -862,7 +868,7 @@
 			},
 			clear: function () {
 				var attributes = this.attributes;
-				this.attributes = {};
+				defaultAttributes(this);
 				for (var key in attributes) {
 					this.trigger('change:' + key, undefined, this);
 					this.trigger('change', undefined, key, this);
@@ -1151,13 +1157,6 @@
 			}
 		};
 
-		var setupRootEl = function (context) {
-			context.$el = $(context.rootHtml);
-			if (context.events) {
-				bind(context.$el, context.events, context);
-			}
-		};
-
 		var peel = function (prototype, source) {
 			if (source) {
 				var $el = $(source);
@@ -1229,6 +1228,9 @@
 		var view = apply.View = apply.compose({
 			urlRoot: '',
 			rootHtml: div,
+			bind: function () {
+				bind(this.$el, this.events, this);
+			},
 			init: function (options) {
 				options = options || {};
 				if (options.data) {
@@ -1243,7 +1245,10 @@
 					throw 'Please wait for ' + this.resource + ' before rendering.';
 				}
 				if (!this.$el) {
-					setupRootEl(this);
+					this.$el = $(this.rootHtml);
+				}
+				if (this.events) {
+					this.bind();
 				}
 				return this.$el.html(this.template(this.data));
 			},
@@ -1343,6 +1348,9 @@
 					this.route(route);
 				}
 			},
+			route: function (route) {
+				root.location.hash = route;
+			},
 			start: function (options) {
 				options = options || {};
 				var callback = proxy(this.check, this);
@@ -1353,7 +1361,7 @@
 				clearInterval(this.iid);
 				delete this.iid;
 			}
-		});
+		}).cascade('route', true);
 
 		var router = apply.router = new apply.Router.Web();
 	}

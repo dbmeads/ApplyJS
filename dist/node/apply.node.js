@@ -807,11 +807,17 @@
 			return object;
 		};
 
+		var defaultAttributes = function (model) {
+			model.attributes = {};
+			model.set(model.
+		default);
+		};
+
 		var model = apply.Model = apply.Events({
 			id: 'id',
 			urlRoot: '',
 			init: function (attributes) {
-				this.attributes = {};
+				defaultAttributes(this);
 				this.set(attributes);
 			},
 			set: function (attributes) {
@@ -836,7 +842,7 @@
 			},
 			clear: function () {
 				var attributes = this.attributes;
-				this.attributes = {};
+				defaultAttributes(this);
 				for (var key in attributes) {
 					this.trigger('change:' + key, undefined, this);
 					this.trigger('change', undefined, key, this);
