@@ -837,9 +837,6 @@
 			getId: function () {
 				return this.attributes[this.id];
 			},
-			getUrl: function () {
-				return this.urlRoot + (this.attributes.id ? '/' + this.attributes.id : '');
-			},
 			clear: function () {
 				var attributes = this.attributes;
 				defaultAttributes(this);
@@ -1050,6 +1047,10 @@
 
 		apply.namespace('apply.mongo.Model', apply.Model(apply.mixins.mongo, {
 			id: '_id'
+		}));
+
+		apply.namespace('apply.mongo.List', apply.List(apply.mixins.mongo, {
+			mapping: apply.mongo.Model
 		}));
 	}
 

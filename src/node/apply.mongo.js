@@ -77,6 +77,10 @@
 		apply.namespace('apply.mongo.Model', apply.Model(apply.mixins.mongo, {
 			id: '_id'
 		}));
+
+		apply.namespace('apply.mongo.List', apply.List(apply.mixins.mongo, {
+			mapping: apply.mongo.Model
+		}));
 	}
 
 	define('apply/mongo', ['apply', 'mongodb'], function (apply, mongodb) {

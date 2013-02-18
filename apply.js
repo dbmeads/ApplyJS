@@ -863,9 +863,6 @@
 			getId: function () {
 				return this.attributes[this.id];
 			},
-			getUrl: function () {
-				return this.urlRoot + (this.attributes.id ? '/' + this.attributes.id : '');
-			},
 			clear: function () {
 				var attributes = this.attributes;
 				defaultAttributes(this);
@@ -1120,6 +1117,9 @@
 					type: 'DELETE'
 				}, options);
 			}),
+			getUrl: function () {
+				return this.urlRoot + ((this.getId && this.getId()) ? '/' + this.getId() : '');
+			},
 			toString: function () {
 				return JSON.stringify(this.deflate ? this.deflate() : this);
 			},
@@ -1148,7 +1148,7 @@
 
 		var bind = function ($el, events, context) {
 			for (var key in events) {
-				var event = key.split(' ').pop();
+				var event = key.split(' ').shift();
 				var callback = events[key];
 				if (event === 'submit') {
 					callback = preventDefault(callback);
