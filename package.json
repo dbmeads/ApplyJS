@@ -25,6 +25,8 @@
 		"grunt-contrib-copy": "0.3.2",
 		"grunt-mindirect": "0.1.3",
 		"grunt-jasmine-runner": "latest",
-		"grunt": "0.3.17"
+		"grunt": "0.3.17",
+		"node-static": "latest",
+		"mongodb": "latest"
 	}
 }
