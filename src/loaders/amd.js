@@ -6,7 +6,7 @@
 (function (root) {
 	'use strict';
 
-	var modules = {},
+	var last, modules = {},
 		waiting = {};
 
 	if (typeof root.define === 'function' && root.define.amd && typeof root.require === 'function') {
@@ -38,6 +38,7 @@
 	}
 
 	function resolveDependencies(factory, dependencies, module) {
+		record(factory, dependencies, module);
 		var resolved = [];
 		if (dependencies) {
 			for (var i = 0; i < dependencies.length; i++) {
@@ -56,6 +57,14 @@
 		if (!dependencies || resolved.length === dependencies.length) {
 			handleResolved(factory, resolved, module);
 		}
+	}
+
+	function record(factory, dependencies, module) {
+		last = {
+			dependencies: dependencies,
+			factory: factory,
+			module: module
+		};
 	}
 
 	function addToWaiting(factory, dependency, args) {
@@ -114,10 +123,13 @@
 		request.send();
 
 		var response = request.responseText;
-
 		if (request.status === 200) {
-			if (url.indexOf('.js') >= 0) { /*jslint evil: true */
+			if (url.indexOf('.js') >= 0) {
+				last = undefined; /*jslint evil: true */
 				eval(response);
+				if (last) {
+					define(module, last.dependencies, last.factory);
+				}
 			} else {
 				modules[module] = {
 					factory: function () {
