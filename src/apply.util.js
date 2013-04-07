@@ -6,7 +6,8 @@
 (function (root) {
 	'use strict';
 
-	function module(apply) {
+	define('apply/util', ['apply/core'], function (apply) {
+
 		// On Loan
 		// -------
 		var slice = [].slice;
@@ -221,10 +222,7 @@
 				return callback.apply(this, arguments);
 			};
 		};
-	}
 
-	define('apply/util', ['apply/core'], function (apply) {
-		return apply.module(module);
+		return apply;
 	});
-
 })(this);

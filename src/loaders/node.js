@@ -7,7 +7,20 @@
 	'use strict';
 
 	var modules = {},
+		slice = Array.prototype.slice,
 		waiting = {};
+
+	function once(func) {
+		var called = false,
+			result;
+		return function () {
+			if (!called) {
+				result = func.apply(null, slice.call(arguments));
+				called = true;
+			}
+			return result;
+		};
+	}
 
 	root.define = GLOBAL.define = function () {
 		var dependencies, factory, module;
@@ -15,7 +28,7 @@
 			var arg = arguments[i],
 				type = typeof arg;
 			if (type === 'function') {
-				factory = arg;
+				factory = once(arg);
 			} else if (type === 'string') {
 				module = arg;
 			} else if (type === 'object' && arg.length) {

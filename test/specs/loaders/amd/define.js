@@ -56,19 +56,6 @@
 			expect(callback).toHaveBeenCalledWith(factory());
 		});
 
-		it('should pass the dependencies every time a factory is called', function () {
-			root.xhr.spy();
-			define('module1', function () {
-				return 'test';
-			});
-			define('module2', ['module1'], callback);
-
-			define('module3', ['module2'], function () {});
-
-			expect(callback.callCount).toBe(2);
-			expect(callback.mostRecentCall.args).toEqual(['test']);
-		});
-
 		describe('remote resources', function () {
 
 			var xhr;

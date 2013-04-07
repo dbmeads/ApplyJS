@@ -3,55 +3,50 @@
  * Copyright 2012 David Meads
  * Released under the MIT license
  */
-(function (root) {
+define('apply/logger', ['apply/construct'], function (apply) {
 	'use strict';
 
-	function module(apply) {
-		var addLoggers = function () {
-			apply.loop(arguments, function (level) {
-				this[level] = function (message) {
-					return this.log({
-						level: level,
-						message: message
-					});
-				};
-			}, {
-				context: this
-			});
-		};
-
-		var Logger = apply.Logger = apply.compose({
-			init: function () {
-				this.levels = {};
-				this.config({
-					debug: true,
-					info: true,
-					warning: true,
-					error: true
+	var addLoggers = function () {
+		apply.loop(arguments, function (level) {
+			this[level] = function (message) {
+				return this.log({
+					level: level,
+					message: message
 				});
-			},
-			config: function (levels) {
-				apply.extend(this.levels, levels);
-				for (var key in levels) {
-					if (!this[key]) {
-						addLoggers.call(this, key);
-					}
+			};
+		}, {
+			context: this
+		});
+	};
+
+	var Logger = apply.Logger = apply.compose({
+		init: function () {
+			this.levels = {};
+			this.config({
+				debug: true,
+				info: true,
+				warning: true,
+				error: true
+			});
+		},
+		config: function (levels) {
+			apply.extend(this.levels, levels);
+			for (var key in levels) {
+				if (!this[key]) {
+					addLoggers.call(this, key);
 				}
-			},
-			log: function (options) {
-				var level = options.level;
-				if (level && this.levels[level] && options.message) {
-					console.log(options.message);
-				}
-				return this;
 			}
-		}).cascade('log', true);
+		},
+		log: function (options) {
+			var level = options.level;
+			if (level && this.levels[level] && options.message) {
+				console.log(options.message);
+			}
+			return this;
+		}
+	}).cascade('log', true);
 
-		var logger = apply.logger = Logger.instance();
-	}
+	apply.logger = Logger.instance();
 
-	define('apply/logger', ['apply/construct'], function (apply) {
-		return apply.module(module);
-	});
-
-})(this);
+	return apply;
+});

@@ -6,7 +6,8 @@
 (function (root) {
 	'use strict';
 
-	function module(apply, $) {
+	define('apply/web', ['jquery', 'apply'], function ($, apply) {
+
 		// On Loan
 		// -------
 		var extend = $.extend;
@@ -366,11 +367,8 @@
 			}
 		}).cascade('route', true);
 
-		var router = apply.router = new apply.Router.Web();
-	}
+		apply.router = new apply.Router.Web();
 
-	define('apply/web', ['jquery', 'apply'], function ($, apply) {
-		return apply.module(module, $);
+		return apply;
 	});
-
 })(this);
