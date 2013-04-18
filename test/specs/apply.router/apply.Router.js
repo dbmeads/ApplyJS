@@ -61,6 +61,16 @@
 
 				expect(callback).toHaveBeenCalled();
 			});
+
+			it('should return true if the route is found', function () {
+				router.add('', callback);
+
+				expect(router.route('')).toBe(true);
+			});
+
+			it('should return false if no route is found', function () {
+				expect(router.route('badroute')).toBe(false);
+			});
 		});
 	});
 })(this, this.apply);

@@ -918,7 +918,9 @@ define('apply/router', ['apply/util', 'apply/construct'], function (apply) {
 			}
 			if (apply.isFunction(fragments)) {
 				fragments.apply(this, args.concat([].slice.call(arguments, 1)));
+				return true;
 			}
+			return false;
 		}
 	});
 
