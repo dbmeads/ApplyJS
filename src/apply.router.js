@@ -6,6 +6,8 @@
 define('apply/router', ['apply/util', 'apply/construct'], function (apply) {
 	'use strict';
 
+	var slice = [].slice;
+
 	apply.Router = apply.compose({
 		init: function () {
 			this.routes = {};
@@ -27,8 +29,11 @@ define('apply/router', ['apply/util', 'apply/construct'], function (apply) {
 			return this;
 		},
 		route: function (route) {
-			var parts = route.replace(/^#?\/?/, '').split('/');
 			var args = [];
+			return this.invoke(this.parse(route, args), args.concat(slice.call(arguments, 1)));
+		},
+		parse: function (route, args) {
+			var parts = route.replace(/^#?\/?/, '').split('/');
 			var fragments = this.routes;
 			for (var i = 0; i < parts.length; i++) {
 				var part = parts[i];
@@ -41,8 +46,11 @@ define('apply/router', ['apply/util', 'apply/construct'], function (apply) {
 					break;
 				}
 			}
-			if (apply.isFunction(fragments)) {
-				fragments.apply(this, args.concat([].slice.call(arguments, 1)));
+			return fragments;
+		},
+		invoke: function (callback, args) {
+			if (apply.isFunction(callback)) {
+				callback.apply(this, args);
 				return true;
 			}
 			return false;
