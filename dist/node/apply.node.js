@@ -951,17 +951,17 @@ define('apply/mongo', ['apply', 'mongodb'], function (apply, mongodb) {
 		return 'mongodb://' + model.host + ':' + model.port + '/' + model.db;
 	};
 
-	var collection = function (model, callback) {
-		mongodb.MongoClient.connect(url(model), function (err, db) {
-			db.collection(model.collection, function (err, coll) {
-				callback.call(this, coll, model);
+	var collection = function (obj, callback) {
+		mongodb.MongoClient.connect(url(obj), function (err, db) {
+			db.collection(obj.collection, function (err, coll) {
+				callback.call(this, coll, obj);
 			});
 		});
 	};
 
-	var error = function (model, err, options) {
+	var error = function (obj, err, options) {
 		if (err && options.error) {
-			options.error.call(err, model);
+			options.error.call(err, obj);
 			return true;
 		}
 		return false;
@@ -976,33 +976,33 @@ define('apply/mongo', ['apply', 'mongodb'], function (apply, mongodb) {
 		host: 'localhost',
 		port: 27017,
 		save: function (options) {
-			collection(this, function (coll, model) {
-				coll.insert(model.deflate(), function (err, data) {
-					if (!error(this, err, options)) {
+			collection(this, function (coll, obj) {
+				coll.insert(obj.deflate(), function (err, data) {
+					if (!error(obj, err, options)) {
 						if (options.success) {
-							options.success.call(this, model.set(data[0]));
+							options.success.call(obj, obj.inflate(data[0]));
 						}
 					}
 				});
 			});
 		},
 		fetch: function (options) {
-			collection(this, function (coll, model) {
-				coll.findOne(model.deflate(), function (err, data) {
-					if (!error(this, err, options)) {
+			collection(this, function (coll, obj) {
+				coll.find(obj.deflate()).toArray(function (err, data) {
+					if (!error(obj, err, options)) {
 						if (options.success) {
-							options.success.call(this, model.inflate(data));
+							options.success.call(obj, obj.inflate(data));
 						}
 					}
 				});
 			});
 		},
 		destroy: function (options) {
-			collection(this, function (coll, model) {
-				coll.remove(this.deflate(), function (err) {
-					if (!error(this, err, options)) {
+			collection(this, function (coll, obj) {
+				coll.remove(obj.deflate(), function (err) {
+					if (!error(obj, err, options)) {
 						if (options.success) {
-							options.success.call(this, model);
+							options.success.call(obj, obj);
 						}
 					}
 				});
