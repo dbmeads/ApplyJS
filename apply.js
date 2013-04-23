@@ -722,6 +722,10 @@ define('apply/model', ['apply/events'], function (apply) {
 			this.trigger('change', this.attributes[key], key, this);
 			return this;
 		},
+		setId: function (id) {
+			this.attributes[this.id] = id;
+			return this;
+		},
 		get: function (key) {
 			return this.attributes[key];
 		},
@@ -735,6 +739,7 @@ define('apply/model', ['apply/events'], function (apply) {
 				this.trigger('change:' + key, undefined, this);
 				this.trigger('change', undefined, key, this);
 			}
+			return this;
 		},
 		deflate: function () {
 			return deflate(extend({}, this.attributes), this.mappings);

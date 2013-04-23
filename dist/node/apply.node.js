@@ -684,6 +684,10 @@ define('apply/model', ['apply/events'], function (apply) {
 			this.trigger('change', this.attributes[key], key, this);
 			return this;
 		},
+		setId: function (id) {
+			this.attributes[this.id] = id;
+			return this;
+		},
 		get: function (key) {
 			return this.attributes[key];
 		},
@@ -697,6 +701,7 @@ define('apply/model', ['apply/events'], function (apply) {
 				this.trigger('change:' + key, undefined, this);
 				this.trigger('change', undefined, key, this);
 			}
+			return this;
 		},
 		deflate: function () {
 			return deflate(extend({}, this.attributes), this.mappings);
@@ -952,28 +957,35 @@ define('apply', ['apply/construct', 'apply/core', 'apply/events', 'apply/list', 
  * Copyright 2012 David Meads
  * Released under the MIT license
  */
-define('apply/mongo', ['apply', 'mongodb'], function (apply, mongodb) {
+define('apply/mongo', ['apply', 'mongodb', 'bson'], function (apply, mongodb, bson) {
 	'use strict';
 
-	var url = function (model) {
+	function url(model) {
 		return 'mongodb://' + model.host + ':' + model.port + '/' + model.db;
-	};
+	}
 
-	var collection = function (obj, callback) {
+	function collection(obj, callback) {
 		mongodb.MongoClient.connect(url(obj), function (err, db) {
 			db.collection(obj.collection, function (err, coll) {
-				callback.call(this, coll, obj);
+				callback.call(this, db, coll, obj);
 			});
 		});
-	};
+	}
 
-	var error = function (obj, err, options) {
+	function error(obj, err, options) {
 		if (err && options.error) {
 			options.error.call(err, obj);
 			return true;
 		}
 		return false;
-	};
+	}
+
+	function normalize(obj) {
+		if (typeof obj._id === 'string') {
+			obj._id = bson.ObjectID(obj._id);
+		}
+		return obj;
+	}
 
 	apply.namespace('apply.mixins.mongo', {
 		init: function () {
@@ -984,35 +996,40 @@ define('apply/mongo', ['apply', 'mongodb'], function (apply, mongodb) {
 		host: 'localhost',
 		port: 27017,
 		save: function (options) {
-			collection(this, function (coll, obj) {
-				coll.insert(obj.deflate(), function (err, data) {
+			collection(this, function (db, coll, obj) {
+				coll.insert(normalize(obj.deflate()), function (err, data) {
 					if (!error(obj, err, options)) {
+						obj.inflate(obj.add ? data : data[0]);
 						if (options.success) {
-							options.success.call(obj, obj.inflate(data[0]));
+							options.success.call(obj, obj);
 						}
 					}
+					db.close();
 				});
 			});
 		},
 		fetch: function (options) {
-			collection(this, function (coll, obj) {
-				coll.find(obj.deflate()).toArray(function (err, data) {
+			collection(this, function (db, coll, obj) {
+				coll.find(normalize(obj.deflate())).toArray(function (err, data) {
 					if (!error(obj, err, options)) {
+						obj.inflate(obj.add ? data : data[0]);
 						if (options.success) {
-							options.success.call(obj, obj.inflate(data));
+							options.success.call(obj, obj);
 						}
 					}
+					db.close();
 				});
 			});
 		},
 		destroy: function (options) {
-			collection(this, function (coll, obj) {
-				coll.remove(obj.deflate(), function (err) {
+			collection(this, function (db, coll, obj) {
+				coll.remove(normalize(obj.deflate()), function (err) {
 					if (!error(obj, err, options)) {
 						if (options.success) {
 							options.success.call(obj, obj);
 						}
 					}
+					db.close();
 				});
 			});
 		},
@@ -1042,11 +1059,20 @@ define('apply/node/router', ['apply'], function (apply) {
 	var invoke = apply.router.invoke;
 
 	apply.router.invoke = function (callback, args) {
-		if (apply.isPlainObject(callback) && apply.isDefined('1.method', args)) {
-			callback = callback[args[1].method];
+		var req = args[args.length - 2];
+		if (apply.isPlainObject(callback) && req.method) {
+			callback = callback[req.method];
 		}
 		return invoke.call(this, callback, args);
 	};
+
+	apply.namespace('apply.connect.router', function () {
+		return function (req, res, next) {
+			if (!apply.router.route.call(apply.router, req.url, req, res)) {
+				next();
+			}
+		};
+	});
 
 	return apply;
 });

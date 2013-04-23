@@ -9,11 +9,20 @@ define('apply/node/router', ['apply'], function (apply) {
 	var invoke = apply.router.invoke;
 
 	apply.router.invoke = function (callback, args) {
-		if (apply.isPlainObject(callback) && apply.isDefined('1.method', args)) {
-			callback = callback[args[1].method];
+		var req = args[args.length - 2];
+		if (apply.isPlainObject(callback) && req.method) {
+			callback = callback[req.method];
 		}
 		return invoke.call(this, callback, args);
 	};
+
+	apply.namespace('apply.connect.router', function () {
+		return function (req, res, next) {
+			if (!apply.router.route.call(apply.router, req.url, req, res)) {
+				next();
+			}
+		};
+	});
 
 	return apply;
 });
