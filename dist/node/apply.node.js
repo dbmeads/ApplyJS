@@ -1031,3 +1031,22 @@ define('apply/mongo', ['apply', 'mongodb'], function (apply, mongodb) {
 
 	return apply;
 });
+/*
+ * Module: apply/node/router
+ * Copyright 2013 David Meads
+ * Released under the MIT license
+ */
+define('apply/node/router', ['apply'], function (apply) {
+	'use strict';
+
+	var invoke = apply.router.invoke;
+
+	apply.router.invoke = function (callback, args) {
+		if (apply.isPlainObject(callback) && apply.isDefined('0.method', args)) {
+			callback = callback[args[0].method];
+		}
+		return invoke.call(this, callback, args);
+	};
+
+	return apply;
+});

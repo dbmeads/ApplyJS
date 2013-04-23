@@ -1,7 +1,7 @@
 {
 	"name": "applyjs",
 	"description": "ApplyJS - Modular. Declaritive. Fun.",
-	"version": "0.0.13",
+	"version": "0.0.14",
 	"url": "http://www.applyjs.com",
 	"author": "David Meads <david.meads@applyjs.com>",
 	"main": "./dist/node/apply.node.js",

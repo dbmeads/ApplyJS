@@ -23,7 +23,7 @@ module.exports = function (grunt) {
 				dest: 'apply.js'
 			},
 			node: {
-				src: ['src/loaders/amd.node.js'].concat(apply).concat('src/node/apply.mongo.js'),
+				src: ['src/loaders/amd.node.js'].concat(apply).concat(['src/node/apply.mongo.js', 'src/node/apply.node.router.js']),
 				dest: 'dist/node/apply.node.js'
 			}
 		},
