@@ -1,11 +1,12 @@
 {
 	"name": "applyjs",
 	"description": "ApplyJS - Modular. Declaritive. Fun.",
-	"version": "0.0.15",
+	"version": "0.0.16",
 	"url": "http://www.applyjs.com",
 	"author": "David Meads <david.meads@applyjs.com>",
 	"main": "./dist/node/apply.node.js",
 	"license": "MIT",
+	"readmeFilename": "README.md",
 	"repository": {
 		"type": "git",
 		"url": "git://github.com/dbmeads/ApplyJS.git"
