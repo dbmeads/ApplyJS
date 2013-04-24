@@ -997,7 +997,7 @@ define('apply/mongo', ['apply', 'mongodb', 'bson'], function (apply, mongodb, bs
 		port: 27017,
 		save: function (options) {
 			collection(this, function (db, coll, obj) {
-				coll.insert(normalize(obj.deflate()), function (err, data) {
+				coll.insert(normalize(options.data || obj.deflate()), function (err, data) {
 					if (!error(obj, err, options)) {
 						obj.inflate(obj.add ? data : data[0]);
 						if (options.success) {
@@ -1010,7 +1010,7 @@ define('apply/mongo', ['apply', 'mongodb', 'bson'], function (apply, mongodb, bs
 		},
 		fetch: function (options) {
 			collection(this, function (db, coll, obj) {
-				coll.find(normalize(obj.deflate())).toArray(function (err, data) {
+				coll.find(normalize(options.data || obj.deflate())).toArray(function (err, data) {
 					if (!error(obj, err, options)) {
 						obj.inflate(obj.add ? data : data[0]);
 						if (options.success) {
@@ -1023,7 +1023,7 @@ define('apply/mongo', ['apply', 'mongodb', 'bson'], function (apply, mongodb, bs
 		},
 		destroy: function (options) {
 			collection(this, function (db, coll, obj) {
-				coll.remove(normalize(obj.deflate()), function (err) {
+				coll.remove(normalize(options.data || obj.deflate()), function (err) {
 					if (!error(obj, err, options)) {
 						if (options.success) {
 							options.success.call(obj, obj);
