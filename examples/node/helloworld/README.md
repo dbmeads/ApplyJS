@@ -2,12 +2,12 @@
 
 ##Instructions:
 
-1. install Node.js
-2. go to the directory you would like to clone ApplyJS to.
-2. run "git clone https://github.com/dbmeads/ApplyJS.git"
-3. run "cd ApplyJS/examples/node/helloworld"
+1. git clone this project
+2. install node.js
+3. go to the examples/node/helloworld directory
 4. run "npm install"
 5. run "node helloworld"
+6. point browser to http://localhost:8080
 
 ##Notes:
 
