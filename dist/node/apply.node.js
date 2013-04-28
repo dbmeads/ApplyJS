@@ -46,7 +46,7 @@
 		var resolved = [];
 		if (dependencies) {
 			for (var i = 0; i < dependencies.length; i++) {
-				var dependency = path.normalize(dependencies[i]);
+				var dependency = dependencies[i] = path.normalize(dependencies[i]);
 				if (modules[dependency]) {
 					resolved.push(modules[dependency].factory.apply(root, modules[dependency].resolved));
 				} else {
