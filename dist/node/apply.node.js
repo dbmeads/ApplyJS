@@ -356,7 +356,18 @@
 			};
 		};
 
+
+		// apply.propogate
+		// ---------------
+		apply.propogate = function (dest, src, field) {
+			if (!dest[field] && src && src[field]) {
+				dest[field] = src[field];
+			}
+			return dest[field];
+		};
+
 		return apply;
+
 	});
 })(this);
 /*
@@ -989,7 +1000,10 @@ define('apply/mongo', ['apply', 'mongodb', 'bson'], function (apply, mongodb, bs
 
 	apply.namespace('apply.mixins.mongo', {
 		init: function () {
-			if (!this.db || !this.collection) {
+			if (!apply.propogate(this, this.mapping, 'db') || !apply.propogate(this, this.mapping, 'collection')) {
+				if (this.mapping) {
+
+				}
 				throw 'All mongoDB models must have a db and collection declared.';
 			}
 		},

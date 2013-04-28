@@ -223,6 +223,17 @@
 			};
 		};
 
+
+		// apply.propogate
+		// ---------------
+		apply.propogate = function (dest, src, field) {
+			if (!dest[field] && src && src[field]) {
+				dest[field] = src[field];
+			}
+			return dest[field];
+		};
+
 		return apply;
+
 	});
 })(this);
