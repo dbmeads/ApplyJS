@@ -944,7 +944,7 @@ define('apply/router', ['apply/util', 'apply/construct'], function (apply) {
 		add: function (routes) {
 			if (apply.isString(routes)) {
 				routes = {};
-				if (arguments.length === 2 && apply.isFunction(arguments[1])) {
+				if (arguments.length === 2) {
 					routes[arguments[0]] = arguments[1];
 				}
 			}

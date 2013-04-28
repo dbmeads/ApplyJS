@@ -6,8 +6,10 @@ define(['apply', 'connect'], function (apply, connect) {
 
     var port = 8080;
 
-    apply.router.add('', function (req, res) {
-        res.end('Hello World!');
+    apply.router.add('', {
+        GET: function (req, res) {
+            res.end('Hello World!');
+        }
     });
 
     connect().use(apply.connect.router()).listen(port);
