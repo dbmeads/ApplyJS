@@ -8,7 +8,8 @@
 
 	var modules = {},
 		slice = Array.prototype.slice,
-		waiting = {};
+		waiting = {},
+		path = require('path');
 
 	function once(func) {
 		var called = false,
@@ -45,7 +46,7 @@
 		var resolved = [];
 		if (dependencies) {
 			for (var i = 0; i < dependencies.length; i++) {
-				var dependency = dependencies[i];
+				var dependency = path.normalize(dependencies[i]);
 				if (modules[dependency]) {
 					resolved.push(modules[dependency].factory.apply(root, modules[dependency].resolved));
 				} else {
