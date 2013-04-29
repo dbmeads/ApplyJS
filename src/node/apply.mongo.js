@@ -12,6 +12,9 @@ define('apply/mongo', ['apply', 'mongodb', 'bson'], function (apply, mongodb, bs
 
 	function collection(obj, callback) {
 		mongodb.MongoClient.connect(url(obj), function (err, db) {
+			if (db === null) {
+				throw 'The \"' + obj.db + '\" database was not found.';
+			}
 			db.collection(obj.collection, function (err, coll) {
 				callback.call(this, db, coll, obj);
 			});
@@ -35,10 +38,7 @@ define('apply/mongo', ['apply', 'mongodb', 'bson'], function (apply, mongodb, bs
 
 	apply.namespace('apply.mixins.mongo', {
 		init: function () {
-			if (!apply.propogate(this, this.mapping, 'db') || !apply.propogate(this, this.mapping, 'collection')) {
-				if (this.mapping) {
-
-				}
+			if (!this.db || !this.collection) {
 				throw 'All mongoDB models must have a db and collection declared.';
 			}
 		},
@@ -93,6 +93,9 @@ define('apply/mongo', ['apply', 'mongodb', 'bson'], function (apply, mongodb, bs
 
 	apply.namespace('apply.mongo.List', apply.List(apply.mixins.mongo, {
 		mapping: apply.mongo.Model
+	}).composer(function () {
+		apply.propogate(this.prototype, this.prototype.mapping.prototype, 'db');
+		apply.propogate(this.prototype, this.prototype.mapping.prototype, 'collection');
 	}));
 
 	return apply;
