@@ -3,7 +3,7 @@
  * Copyright 2012 David Meads
  * Released under the MIT license
  */
-(function (root) {
+(function (root, document) {
 	'use strict';
 
 	var last, modules = {},
@@ -46,7 +46,7 @@
 		};
 
 		root.require = function (dependencies, factory) {
-			resolveDependencies(factory, dependencies);
+			define(dependencies, factory);
 		};
 	}
 
@@ -161,4 +161,14 @@
 		};
 		xhr.send();
 	}
-})(this);
+
+	(function () {
+		var scripts = document.getElementsByTagName('script'),
+			script = scripts[scripts.length - 1];
+
+		if (script.hasAttribute('data-main')) {
+			fetch(script.getAttribute('data-main'));
+		}
+	})();
+
+})(this, this.document);
