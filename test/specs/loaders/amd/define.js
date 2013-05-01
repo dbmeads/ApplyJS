@@ -61,7 +61,8 @@
 			var xhr;
 
 			beforeEach(function () {
-				xhr = root.xhr.spy();
+				xhr = root.xhr.spy(200, content);
+				fakeResource();
 			});
 
 			it('should attempt to request a dependency from the server if not resolved', function () {
@@ -73,28 +74,23 @@
 			it('should assume a file with no extension is a .js file', function () {
 				define(['lib/test2'], callback);
 
-				expect(xhr.open.mostRecentCall.args).toEqual(['GET', 'lib/test2.js', false]);
+				expect(xhr.open.mostRecentCall.args).toEqual(['GET', 'lib/test2.js', true]);
 			});
 
 			it('should eval the dependency if it is returned with a status of 200', function () {
-				fakeResource();
-
 				define(['lib/test3'], callback);
 
 				expect(eval).toHaveBeenCalledWith(content);
 			});
 
 			it('should pass non evaluated content to the factory when the resource is not javascript', function () {
-				fakeResource();
-
 				define(['css/default.css'], callback);
 
 				expect(callback).toHaveBeenCalledWith(content);
 				expect(eval).not.toHaveBeenCalled();
 			});
 
-			function fakeResource(resource) {
-				root.xhr.open(200, content);
+			function fakeResource() {
 				spyOn(root, 'eval');
 			}
 

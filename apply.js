@@ -129,30 +129,37 @@
 	}
 
 	function fetch(module) {
-		var request = new root.XMLHttpRequest(),
+		var xhr = new root.XMLHttpRequest(),
 			url = resolveURL(module);
 
-		request.open('GET', url, false);
-		request.send();
-
-		var response = request.responseText;
-		if (request.status === 200) {
-			if (url.indexOf('.js') >= 0) {
-				last = undefined; /*jslint evil: true */
-				eval(response);
-				if (last) {
-					define(module, last.dependencies, last.factory);
+		xhr.open('GET', url, true);
+		xhr.onload = function () {
+			if (xhr.readyState === 4) {
+				if (xhr.status === 200) {
+					if (url.indexOf('.js') >= 0) {
+						last = undefined; /*jslint evil: true */
+						eval(xhr.responseText);
+						if (last) {
+							define(module, last.dependencies, last.factory);
+						}
+					} else {
+						modules[module] = {
+							factory: function () {
+								return xhr.responseText;
+							},
+							resolved: []
+						};
+						resolveWaiting(module);
+					}
+				} else {
+					console.error(xhr.statusText);
 				}
-			} else {
-				modules[module] = {
-					factory: function () {
-						return response;
-					},
-					resolved: []
-				};
-				resolveWaiting(module);
 			}
-		}
+		};
+		xhr.onerror = function () {
+			console.error(xhr.statusText);
+		};
+		xhr.send();
 	}
 })(this);
 /*

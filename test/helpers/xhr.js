@@ -1,24 +1,34 @@
-(function (root, undefined) {
+(function (root) {
 	'use strict';
 
-	var xhr;
-
 	root.xhr = {
-		spy: function () {
+		spy: function (status, response) {
+			var xhr = {
+				open: function (method, url, async) {
+					this.async = async;
+				},
+				send: function () {
+					this.status = status;
+					this.readyState = 4;
+					if (status === 200) {
+						this.responseText = response;
+						if (this.async && this.onload) {
+							this.onload();
+						}
+					} else {
+						this.statusText = response;
+					}
+				}
+			};
+
+			spyOn(xhr, 'open').andCallThrough();
+
 			if (!jasmine.isSpy(root.XMLHttpRequest)) {
-				xhr = jasmine.createSpyObj('', ['open', 'send']);
 				spyOn(root, 'XMLHttpRequest').andCallFake(function () {
 					return xhr;
 				});
 			}
 			return xhr;
-		},
-		open: function (status, response) {
-			this.spy();
-			xhr.open = function () {
-				this.status = status;
-				this.responseText = response;
-			};
 		}
 	};
 })(this);
