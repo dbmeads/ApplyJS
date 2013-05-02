@@ -54,7 +54,7 @@
 		};
 
 		root.require = function (dependencies, factory) {
-			define(dependencies, factory);
+			define(dependencies, factory || fake.factory);
 		};
 	}
 
