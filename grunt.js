@@ -19,7 +19,7 @@ module.exports = function (grunt) {
 		},
 		concat: {
 			web: {
-				src: ['src/loaders/amd.js'].concat(apply).concat('src/apply.web.js'),
+				src: apply.concat('src/apply.web.js'),
 				dest: 'apply.js'
 			},
 			node: {
@@ -30,19 +30,21 @@ module.exports = function (grunt) {
 		copy: {
 			web: {
 				files: {
+					'apply.loader.js': 'src/loaders/apply.loader.js',
+					'apply.loader.min.js': 'apply.loader.js',
 					'apply.min.js': 'apply.js'
 				}
 			}
 		},
 		mindirect: {
-			web: ['apply.min.js']
+			web: ['dist/apply.loader.min.js', 'dist/apply.min.js']
 		},
 		watch: {
 			files: ['<config:jasmine.specs>'],
 			tasks: 'jasmine'
 		},
 		jasmine: {
-			src: ['src/loaders/amd.js', 'lib/**/*.js', 'test/helpers/**/*.js'].concat(apply).concat(['src/apply.web.js']),
+			src: ['src/loaders/apply.loader.js', 'lib/**/*.js', 'test/helpers/**/*.js'].concat(apply).concat(['src/apply.web.js']),
 			specs: ['test/**/*.js']
 		},
 		jshint: {
