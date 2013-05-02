@@ -6,7 +6,12 @@
 (function (root, document) {
 	'use strict';
 
-	var last, modules = {},
+	var fake = {
+		dependencies: [],
+		factory: function () {}
+	},
+		last, map = {},
+		modules = {},
 		slice = Array.prototype.slice,
 		waiting = {};
 
@@ -42,7 +47,10 @@
 		};
 
 		root.define.amd = {
-			jQuery: true
+			jQuery: true,
+			map: function (mapping) {
+				map = mapping || {};
+			}
 		};
 
 		root.require = function (dependencies, factory) {
@@ -130,7 +138,7 @@
 
 	function fetch(module) {
 		var xhr = new root.XMLHttpRequest(),
-			url = resolveURL(module);
+			url = resolveURL(map[module] || module);
 
 		xhr.open('GET', url, true);
 		xhr.onload = function () {
@@ -139,9 +147,8 @@
 					if (url.indexOf('.js') >= 0) {
 						last = undefined; /*jslint evil: true */
 						eval(xhr.responseText);
-						if (last) {
-							define(module, last.dependencies, last.factory);
-						}
+						last = last || fake;
+						define(module, last.dependencies, last.factory);
 					} else {
 						modules[module] = {
 							factory: function () {
@@ -151,8 +158,6 @@
 						};
 						resolveWaiting(module);
 					}
-				} else {
-					console.error(xhr.statusText);
 				}
 			}
 		};
