@@ -37,7 +37,7 @@ module.exports = function (grunt) {
 			}
 		},
 		mindirect: {
-			web: ['dist/apply.loader.min.js', 'dist/apply.min.js']
+			web: ['apply.loader.min.js', 'apply.min.js']
 		},
 		watch: {
 			files: ['<config:jasmine.specs>'],
