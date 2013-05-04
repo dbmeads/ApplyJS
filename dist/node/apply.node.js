@@ -720,7 +720,10 @@ define('apply/model', ['apply/events'], function (apply) {
 		},
 		inflate: function (data) {
 			return this.set(data);
-		}
+		},
+		toString: function () {
+			return JSON.stringify(this.deflate ? this.deflate() : this);
+		},
 	});
 
 	return apply;
@@ -797,7 +800,10 @@ define('apply/list', ['apply/events', 'apply/model'], function (apply) {
 		},
 		inflate: function (data) {
 			return this.add(data);
-		}
+		},
+		toString: function () {
+			return JSON.stringify(this.deflate ? this.deflate() : this);
+		},
 	});
 
 	return apply;

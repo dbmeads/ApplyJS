@@ -124,9 +124,6 @@
 			getUrl: function () {
 				return this.urlRoot + ((this.getId && this.getId()) ? '/' + this.getId() : '');
 			},
-			toString: function () {
-				return JSON.stringify(this.deflate ? this.deflate() : this);
-			},
 			parse: function (data) {
 				return data;
 			},

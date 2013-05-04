@@ -85,7 +85,10 @@ define('apply/model', ['apply/events'], function (apply) {
 		},
 		inflate: function (data) {
 			return this.set(data);
-		}
+		},
+		toString: function () {
+			return JSON.stringify(this.deflate ? this.deflate() : this);
+		},
 	});
 
 	return apply;
